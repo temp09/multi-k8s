@@ -1,0 +1,413 @@
+Production:
+------------
+
+led35509.wic.west.com
+java version "1.8.0_162"
+Java(TM) SE Runtime Environment (build 1.8.0_162-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.162-b12, mixed mode)
+
+led50868.wic.west.com
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led35490.wic.west.com
+java version "1.8.0_162"
+Java(TM) SE Runtime Environment (build 1.8.0_162-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.162-b12, mixed mode)
+
+led50867.wic.west.com
+bash: java: command not found
+
+led35481.wic.west.com
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led35482.wic.west.com
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led35483.wic.west.com
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led35478.wic.west.com
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led35479.wic.west.com
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led35480.wic.west.com
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led35516.wic.west.com
+java version "1.8.0_162"
+Java(TM) SE Runtime Environment (build 1.8.0_162-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.162-b12, mixed mode)
+
+led35517.wic.west.com
+java version "1.8.0_162"
+Java(TM) SE Runtime Environment (build 1.8.0_162-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.162-b12, mixed mode)
+
+led35518.wic.west.com
+java version "1.8.0_162"
+Java(TM) SE Runtime Environment (build 1.8.0_162-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.162-b12, mixed mode)
+
+led35519.wic.west.com
+java version "1.8.0_162"
+Java(TM) SE Runtime Environment (build 1.8.0_162-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.162-b12, mixed mode)
+
+led35484.wic.west.com
+java version "1.8.0_162"
+Java(TM) SE Runtime Environment (build 1.8.0_162-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.162-b12, mixed mode)
+
+led35485.wic.west.com
+java version "1.8.0_162"
+Java(TM) SE Runtime Environment (build 1.8.0_162-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.162-b12, mixed mode)
+
+led35488.wic.west.com
+openjdk version "1.8.0_232"
+OpenJDK Runtime Environment (build 1.8.0_232-b09)
+OpenJDK 64-Bit Server VM (build 25.232-b09, mixed mode)
+
+led35489.wic.west.com
+openjdk version "1.8.0_232"
+OpenJDK Runtime Environment (build 1.8.0_232-b09)
+OpenJDK 64-Bit Server VM (build 25.232-b09, mixed mode)
+
+led35521.wic.west.com
+openjdk version "1.8.0_232"
+OpenJDK Runtime Environment (build 1.8.0_232-b09)
+OpenJDK 64-Bit Server VM (build 25.232-b09, mixed mode)
+
+led35487.wic.west.com
+openjdk version "1.8.0_232"
+OpenJDK Runtime Environment (build 1.8.0_232-b09)
+OpenJDK 64-Bit Server VM (build 25.232-b09, mixed mode)
+
+led35492.wic.west.com
+openjdk version "1.8.0_232"
+OpenJDK Runtime Environment (build 1.8.0_232-b09)
+OpenJDK 64-Bit Server VM (build 25.232-b09, mixed mode)
+
+led35491.wic.west.com
+openjdk version "1.8.0_232"
+OpenJDK Runtime Environment (build 1.8.0_232-b09)
+OpenJDK 64-Bit Server VM (build 25.232-b09, mixed mode)
+
+led35651.wic.west.com
+openjdk version "1.8.0_232"
+OpenJDK Runtime Environment (build 1.8.0_232-b09)
+OpenJDK 64-Bit Server VM (build 25.232-b09, mixed mode)
+
+led35648.wic.west.com
+openjdk version "1.8.0_232"
+OpenJDK Runtime Environment (build 1.8.0_232-b09)
+OpenJDK 64-Bit Server VM (build 25.232-b09, mixed mode)
+
+led35646.wic.west.com
+java version "1.8.0_162"
+Java(TM) SE Runtime Environment (build 1.8.0_162-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.162-b12, mixed mode)
+
+led35645.wic.west.com
+openjdk version "1.8.0_232"
+OpenJDK Runtime Environment (build 1.8.0_232-b09)
+OpenJDK 64-Bit Server VM (build 25.232-b09, mixed mode)
+
+led35510.wic.west.com
+java version "1.8.0_162"
+Java(TM) SE Runtime Environment (build 1.8.0_162-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.162-b12, mixed mode)
+
+led35512.wic.west.com
+java version "1.8.0_162"
+Java(TM) SE Runtime Environment (build 1.8.0_162-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.162-b12, mixed mode)
+
+led35511.wic.west.com
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led35513.wic.west.com
+java version "1.8.0_162"
+Java(TM) SE Runtime Environment (build 1.8.0_162-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.162-b12, mixed mode)
+
+led36168.west.com
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36170.west.com
+bash: java: command not found
+
+
+
+Appdev:
+----------------
+
+
+[root@linux1410 tmp]# ./java_version_check.sh
+led36913.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_262"
+OpenJDK Runtime Environment (build 1.8.0_262-b10)
+OpenJDK 64-Bit Server VM (build 25.262-b10, mixed mode)
+
+led36914.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36915.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36916.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36917.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36918.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36919.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36920.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36921.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36922.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_212"
+OpenJDK Runtime Environment (build 1.8.0_212-b04)
+OpenJDK 64-Bit Server VM (build 25.212-b04, mixed mode)
+
+led36923.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_212"
+OpenJDK Runtime Environment (build 1.8.0_212-b04)
+OpenJDK 64-Bit Server VM (build 25.212-b04, mixed mode)
+
+led36924.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_212"
+OpenJDK Runtime Environment (build 1.8.0_212-b04)
+OpenJDK 64-Bit Server VM (build 25.212-b04, mixed mode)
+
+led36925.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_222"
+OpenJDK Runtime Environment (build 1.8.0_222-b10)
+OpenJDK 64-Bit Server VM (build 25.222-b10, mixed mode)
+
+led36926.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_262"
+OpenJDK Runtime Environment (build 1.8.0_262-b10)
+OpenJDK 64-Bit Server VM (build 25.262-b10, mixed mode)
+
+led36927.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36928.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_262"
+OpenJDK Runtime Environment (build 1.8.0_262-b10)
+OpenJDK 64-Bit Server VM (build 25.262-b10, mixed mode)
+
+led36929.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36930.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36931.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36932.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36933.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36934.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36935.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36936.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36937.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_212"
+OpenJDK Runtime Environment (build 1.8.0_212-b04)
+OpenJDK 64-Bit Server VM (build 25.212-b04, mixed mode)
+
+led36938.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_212"
+OpenJDK Runtime Environment (build 1.8.0_212-b04)
+OpenJDK 64-Bit Server VM (build 25.212-b04, mixed mode)
+
+led36939.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_212"
+OpenJDK Runtime Environment (build 1.8.0_212-b04)
+OpenJDK 64-Bit Server VM (build 25.212-b04, mixed mode)
+
+led36940.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_222"
+OpenJDK Runtime Environment (build 1.8.0_222-b10)
+OpenJDK 64-Bit Server VM (build 25.222-b10, mixed mode)
+
+led36941.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_262"
+OpenJDK Runtime Environment (build 1.8.0_262-b10)
+OpenJDK 64-Bit Server VM (build 25.262-b10, mixed mode)
+
+led36942.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)
+
+led36943.west.com
+\S
+Kernel \r on an \m
+Authorized users only. All activity monitored and reported.
+openjdk version "1.8.0_292"
+OpenJDK Runtime Environment (build 1.8.0_292-b10)
+OpenJDK 64-Bit Server VM (build 25.292-b10, mixed mode)

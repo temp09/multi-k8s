@@ -1,0 +1,151 @@
+Cronjob creations for apigee maintenance:
+****************************************** 
+
+Create cronjob:   " crontab -e "
+
+list of cronjob: " crontab -l "
+
+Some important commands:
+------------------------
+
+Cron Job	Command
+Run Cron Job Every Minute           	* * * * * /root/backup.sh
+Run Cron Job Every 30 Minutes       	30 * * * * /root/backup.sh
+Run Cron Job Every Hour             	0 * * * */root/backup.sh
+Run Cron Job Every Day at Midnight  	0 0 * * * /root/backup.sh
+Run Cron Job at 2 am Every Day      	0 2 * * * /root/backup.sh
+Run Cron Job Every 1st of the Month 	0 0 1 * * /root/backup.sh
+Run Cron Job Every 15th of the Month	0 0 15 * * /root/backup.sh
+Run Cron Job on December 1st – Midnight	0 0 0 12 * /root/backup.sh
+Run Cron Job on Saturday at Midnight	0 0 * * 6 /root/backup.sh
+
+Delete all files older than 7 days cron jobs:
+---------------------------------------------
+
+0 1 * * 6 /usr/bin/find /var/opt/jfrog/artifactory/backup/backup-weekly -name "*.tmp" -type f -mtime +7 -exec rm -f {} \;
+
+0 1 * * 6 /usr/bin/find /opt/apigee/backup/router -name "*.tar.gz" -type f -mtime +7 -exec rm -f {} \;
+
+0 0 15 * * /usr/bin/find /opt/apigee/backup/router -name "*.tar.gz" -type f -mtime +24 -exec rm -f {} \;
+0 0 15 * * /usr/bin/find /opt/apigee/backup/massage-processor -name "*.tar.gz" -type f -mtime +24 -exec rm -f {} \;
+
+0 0 15 * * /usr/bin/find /opt/apigee/backup/cassandra -name "*.tar.gz" -type f -mtime +24 -exec rm -f {} \;
+0 0 15 * * /usr/bin/find /opt/apigee/backup/zookeeper -name "*.tar.gz" -type f -mtime +24 -exec rm -f {} \;
+
+0 0 15 * * /usr/bin/find /opt/apigee/backup -name "*.tar" -type f -mtime +24 -exec rm -f {} \;
+
+
+Cassandra :
+@@@@@@@@@@@
+
+preconditions:
+ls -l /opt/apigee/apigee-cassandra/bin |grep nodetool
+ls -l /opt/apigee/apigee-cassandra/bin |grep cassandra-cli
+ls -l /opt/apigee/apigee-zookeeper/bin |grep zkCli
+ls -l /usr/bin |grep nc
+
+ls -l /opt/apigee/var/log/apigee-cassandra/
+ls -l /opt/apigee/customer/application/
+
+1.eliminate problems related to Cassandra "forgotten deletes":
+
+nodetool -h localhost repair
+
+nodetool -h localhost repair -pr
+
+2. Log file maintenace:
+
+-rw-r--r--. 1 apigee apigee 36250257 Oct 11  2019 apigee-cassandra.log
+-rw-r--r--. 1 apigee apigee    11235 Jun 11 13:57 config.log
+-rw-r--r--  1 apigee apigee  4941838 Jul 10 11:57 system.log
+-rw-r--r--  1 apigee apigee  1211287 Jun  1 19:12 system.log.1.zip
+-rw-r--r--  1 apigee apigee  1191503 Aug 11  2019 system.log.2.zip
+-rw-r--r--  1 apigee apigee  1206726 Oct 12  2018 system.log.3.zip
+
+
+ls -l /opt/apigee/var/log/apigee-cassandra/
+ls -l /opt/apigee/customer/application/
+
+a.Create file if not exists:
+   sudo touch /opt/apigee/customer/application/cassandra.properties
+
+conf_log4j-server_log4j.appender.r.maxfilesize=20MB # max file size
+conf_log4j-server_log4j.appender.r.maxbackupindex=50 # max open files
+
+b. Owner change as apigee:
+   chown -R apigee:apigee /opt/apigee/customer/application/cassandra.properties
+
+c.Restart :
+   sudo /opt/apigee/apigee-service/bin/apigee-service apigee-cassandra restart
+
+
+Zookeeper:
+@@@@@@@@@@
+
+A. Removing old snapshot Files:
+
+sudo vi /opt/apigee/apigee-zookeeper/conf/zoo.cfg
+
+## The number of snapshots to retain in dataDir:
+autopurge.snapRetainCount=5
+
+# Purge task interval in hours.
+# Set to "0" to disable auto purge feature.
+autopurge.purgeInterval=120
+
+1.To set these properties to different values:
+
+ sudo vi /opt/apigee/customer/application/zookeeper.properties
+ 
+ # Set the snapshot count. In this example set it to 10:
+conf_zoo_autopurge.snapretaincount=10
+
+# Set the purge interval. In this example, set is to 240 hours:
+conf_zoo_autopurge.purgeinterval=240
+
+2.owner change as apigee :
+ sudo chown apigee:apigee /opt/apigee/customer/application/zookeeper.properties
+ 
+3.Restart:
+  sudo /opt/apigee/apigee-service/bin/apigee-service apigee-zookeeper restart
+ 
+
+B.Log file maintenace:(usally not required )
+
+-rw-r--r--. 1 apigee apigee    11108 Oct 26  2019 apigee-zookeeper.log
+-rw-r--r--. 1 apigee apigee     9945 Jun 11 13:57 config.log
+-rw-r--r--  1 apigee apigee  6363286 Jul 10 09:57 zookeeper.log
+-rw-r--r--  1 apigee apigee 10485989 Mar 24 10:11 zookeeper.log.1
+
+
+
+ls -l /opt/apigee/var/log/apigee-zookeeper/
+ls -l /opt/apigee/customer/application/
+
+a.Create file if not exists:
+   sudo touch /opt/apigee/customer/application/zookeeper.properties
+
+conf_log4j_log4j.appender.rollingfile.maxfilesize=10MB # max file size
+conf_log4j_log4j.appender.rollingfile.maxbackupindex=50 # max open files
+
+b. Owner change as apigee:
+   chown -R apigee:apigee /opt/apigee/customer/application/zookeeper.properties
+
+c.Restart :
+   sudo /opt/apigee/apigee-service/bin/apigee-service apigee-zookeeper restart
+
+Zookeeper Maintenanace remember the following points:
+------------------------------------------------------
+The best way to perform maintenance on a ZooKeeper ensemble is to perform it one node at a time. Remember:
+
+You must maintain a quorum of voter nodes during maintenance to ensure the ZooKeeper ensemble stays functional
+Taking down an observer node does not affect the quorum or the ability to elect a leader
+The quorum is calculated across all ZooKeeper nodes in all Data Centers
+Proceed with maintenance to the next server after the prior server is operational
+Use the nc command to inspect the ZooKeeper node
+
+
+
+/usr/bin/find /opt/jenkins/jobs/CICD-admin/jobs/xray-test/branches/master/builds -name "*" -type d -mtime +400 -exec rm -rf {} \;
+
+/usr/bin/find /opt/jenkins/jobs/CICD-admin/jobs/xray-test/branches/xray-lon13/builds -name "*" -type d -mtime +400 -exec rm -rf {} \;

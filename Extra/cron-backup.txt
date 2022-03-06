@@ -1,0 +1,26 @@
+#0 20 * * * /opt/apigee/heapdumpcron.sh
+#* * * * * /opt/apigee/apigee-service/bin/apigee-all backup
+#* * * * * /usr/bin/find /opt/apigee/backup/zookeeper -name "*.tar.gz" -type f -mtime +7 -exec rm -f {} \;
+0 0 * * 6 /opt/apigee/backup.sh >> /home/aullah/backup.log 2>&1
+0 1 * * 6 /usr/bin/find /opt/apigee/backup/router -name "*.tar.gz" -type f -mtime +6 -exec rm -f {} \;
+0 0 * * 6 /home/aullah/temp/clean_var.sh
+#* * * * * /opt/scripts/job_run.sh
+
+
+
+SCTASK0579153
+from Arc Sosangyo to everyone:    2:55 PM
+CHG0131339
+
+apigee-test-servers,apigee-misc-servers,apigee-sysdev-servers-dc-3-4-zk-mp,apigee-sysdev-servers-dc-1-2-zk-mp,apigee-sysdev-servers-dc-1-2-qpid,apigee-sysdev-servers-dc-1-2-postgresql,apigee-sysdev-servers-dc-1-2-portal
+
+
+led37097  CICD Datical Service  Platform Operations - CI/CD Operators - GTS
+led35682  CICD Mission Control  Platform Operations - CI/CD Operators - GTS
+led35683  Xray                  Platform Operations - CI/CD Operators - GTS
+SWN01: 
+led35651            Apigee_router_external             INF ENG Apigee-Zabbix
+led35682            CICD Mission Control                  Platform Operations - CI/CD Operators - GTS
+led35488            Apigee_router                                INF ENG Apigee-Zabbix
+led35521            Apigee_router                                INF ENG Apigee-Zabbix
+led35683            Xray                                                     Platform Operations - CI/CD Operators - GTS

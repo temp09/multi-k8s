@@ -1,0 +1,502 @@
+ diff /etc/systemd/system/multi-user.target.wants/zabbix-agent.service /usr/lib/systemd/system/zabbix-agent.service
+    4  ls -l /etc/systemd/system/multi-user.target.wants/zabbix-agent.service
+    5  cat /etc/systemd/system/multi-user.target.wants/zabbix-agent.service
+    6  vim /etc/systemd/system/multi-user.target.wants/zabbix-agent.service
+    7  systemctl start zabbix-agent
+    8  systemctl daemon-reload
+    9  systemctl start zabbix-agent
+   10  free -h
+   11  getenforce
+   12  id zabbix
+   13  ll
+   14  cd ..
+   15  ll
+   16  getfacl zabbix
+   17  chmod a+w zabbix
+   18  systemctl start zabbix-agent
+   19  ls -l
+   20  cd /opt/apigee/
+   21  ls -l
+   22  du -s *
+   23  cd data
+   24  ls -l
+   25  du -s *
+   26  cd apigee-postgresql/
+   27  du -s *
+   28  cd pgdata/
+   29  ls
+   30  du -s *
+   31  cd ../..
+   32  ls -l
+   33  cd ..
+   34  ls -l
+   35  du -s *
+   36  ls -l apigee-postgresql
+   37  ls -l /opt/apigee/apigee-postgresql-9.4.11-0.0.1092
+   38  cd /opt/apigee/apigee-postgresql-9.4.11-0.0.1092/
+   39  du -s *
+   40  ls conf/
+   41  cd token/
+   42  ls -l
+   43  more default.properties
+   44  cd ..
+   45  ls
+   46  cd ..
+   47  ls
+   48  pwd
+   49  du -s *
+   50  pwd
+   51  ls -l
+   52  cd var
+   53  ls -l
+   54  cd log
+   55  ls
+   56  df -m
+   57  df -i
+   58  cd
+   59  who
+   60  exit
+   61  /opt/apigee/apigee-service/bin/apigee-all status
+   62  cd /opt/apigee/
+   63  ls
+   64  cd apigee-postgresql
+   65  ls
+   66  /opt/apigee/apigee-service/bin/apigee-all status
+   67  ls
+   68  cd source/
+   69  ls
+   70  cd conf/
+   71  ls
+   72  cat postgresql.conf
+   73  cd ..
+   74  ls
+   75  cd ..
+   76  ls
+   77  cd token/
+   78  ls
+   79  cat default.properties
+   80  cd ..
+   81  ls
+   82  cd ..
+   83  ls
+   84  cd data/
+   85  ls
+   86  cd apigee-postgresql/
+   87  ls
+   88  cd pgdata/
+   89  ls
+   90  cat postgresql.conf
+   91  clear
+   92  cd ../../
+   93  ls
+   94  cd edge-postgres-server/
+   95  ls
+   96  cat 6989f2c4-c229-49f8-942d-a90355cec41b/
+   97  cd 6
+   98  cd 6
+   99  cd 6989f2c4-c229-49f8-942d-a90355cec41b/
+  100  ls
+  101  cd ../..
+  102  ls
+  103  cd ..
+  104  ls
+  105  cd var/log/
+  106  ls
+  107  cd apigee-postgresql/
+  108  ls
+  109  tail -100 apigee-postgresql.log
+  110  df -h
+  111  cd /opt/apigee/token/application
+  112  ls
+  113  cat postgres-server.properties
+  114  cat postgresql.properties
+  115  pwd
+  116  ls
+  117  clear
+  118  hostname
+  119  ifconfig
+  120  ping led35512
+  121  ping led35487
+  122  ping led35490
+  123  ping led35509
+  124  nmap 10.65.149.54 -p 5432
+  125  cd /tmp/
+  126  ls
+  127  ls
+  128  ./fwtest led35512 5432
+  129  ./fwtest led35512 5431
+  130  ./fwtest led35512 5433
+  131  nc -vz 10.65.149.54
+  132  nc -vz 10.65.149.54 5432
+  133  nc -vz led35513 5432
+  134  nc -vz led35513 8079
+  135  exit
+  136  cd /var/log
+  137  ls -altr
+  138  more messages
+  139  ls -altr
+  140  cd ..
+  141  ls
+  142  cd log
+  143  ls -altr
+  144  cd messages
+  145  cd archive/
+  146  ls -altr
+  147  zcat messages-20190629.gz
+  148  zcat messages-20190630.gz
+  149  zcat messages-20190701.gz
+  150  uptime
+  151  cd var/log
+  152  ls
+  153  cd /avr/log
+  154  cd /var/log
+  155  ls -altr
+  156  cd zookeeper/
+  157  ls -altr
+  158  cd ..
+  159  ls -altr
+  160  cd ..
+  161  ls
+  162  pwd
+  163  cd
+  164  ls -altr
+  165  ps -eflwww
+  166  ps -eflwww|grep apigee
+  167  ls -altr
+  168  cd /opt/apigee/var/
+  169  ls -altt
+  170  ls -altr
+  171  df -m
+  172  ls -altr
+  173  cd log
+  174  ls -altr
+  175  cd edge-postgres-server/
+  176  ls -altr
+  177  cd logs
+  178  ls -altr
+  179  more system.log
+  180  netstat -an|more
+  181  ps -elfwww|grep zoo
+  182  cd /opt/apigee/
+  183  ls -l
+  184  ls -altr
+  185  cd var/log
+  186  ls -altr
+  187  cd apigee-postgresql
+  188  ls -altr
+  189  tail -400 postgresql.log
+  190  ls -altr
+  191  more postgresql.log
+  192  tail -400 postgresql.log
+  193  tail -40000 postgresql.log |more
+  194  ls -altr
+  195  more apigee-postgresql.log
+  196  ls -altr
+  197  more config.log
+  198  ls -altr
+  199  more pgstartup.log
+  200  ls -altr
+  201  cd ..
+  202  ls
+  203  cd edge-postgres-server/
+  204  l s-alt
+  205  l s-altr
+  206  ls -altr
+  207  more config.log
+  208  cd logs/
+  209  ls -altr
+  210  more system.log
+  211  ls -altr
+  212  netstat -an|more
+  213  ls -altr
+  214  cd ..
+  215  ls
+  216  cd ..
+  217  ls
+  218  cd apigee-setup/
+  219  ls
+  220  more setup.log
+  221  ls -l
+  222  cd /opt/apigee/
+  223  ls
+  224  ls -altr
+  225  cd edge-postgres-server
+  226  ls -altr
+  227  cd bin
+  228  ls
+  229  ls lib.sh
+  230  ls lua_scripts/
+  231  cd ..
+  232  ls -altr
+  233  cd apigee-postgresql
+  234  ls -altr
+  235  cd pgsql/
+  236  ls -altr
+  237  cd bin
+  238  ls -l
+  239  ls -altr
+  240  cd
+  241  exit
+  242  cat /etc/redhat-release
+  243  timedatectl status
+  244  vmware-toolbox-cmd timesync status
+  245  systemctl grep -i chrony
+  246  systemctl | grep -i chrony
+  247  cat /etc/chron
+  248  cat /etc/chrony.conf
+  249  systemctl | grep -i chrony
+  250  /opt/apigee/apigee-service/bin/apigee-all status
+  251  exit
+  252  /opt/apigee/apigee-service/bin/apigee-all status
+  253  exit
+  254  exit
+  255  /opt/apigee/apigee-service/bin/apigee-all status
+  256  exit
+  257  cd /etc/zabbix
+  258  vi zabbix_agentd.conf
+  259  systemctl restart zabbix-agent
+  260  /opt/apigee/apigee-service/bin/apigee-all status
+  261  ps -eflwww|grep postgres
+  262  /opt/apigee/apigee-service/bin/apigee-all status
+  263  exit
+  264  /opt/apigee/apigee-service/bin/apigee-all status
+  265  /opt/apigee/apigee-service/bin/apigee-all status
+  266  /opt/apigee/apigee-service/bin/apigee-all status
+  267  ps -eflwww|grep apigee
+  268  netstat -ano |grep 5432
+  269  netstat -anop |grep 5432
+  270  /opt/apigee/apigee-service/bin/apigee-service edge-postgres-server stop
+  271  /opt/apigee/apigee-service/bin/apigee-service edge-postgres-server status
+  272  ps -eflwww|grep apigee
+  273  /opt/apigee/apigee-service/bin/apigee-all status
+  274  clear
+  275  /opt/apigee/apigee-service/bin/apigee-all status
+  276  ps -eflwww|grep apigee
+  277  exit
+  278  history|grep master
+  279  /opt/apigee/apigee-service/bin/apigee-service apigee-postgresql postgres-check-master
+  280  /opt/apigee/apigee-service/bin/apigee-service apigee-postgresql postgres-check-standby
+  281  ps -eflwww
+  282  ps -eflwww|grep java
+  283  /opt/apigee/apigee-service/bin/apigee-service apigee-postgresql postgres-check-standby
+  284  /opt/apigee/apigee-service/bin/apigee-service apigee-postgresql postgres-check-master
+  285  exit
+  286  /etc/init.d/besclient status
+  287  exit
+  288  /opt/apigee/apigee-service/bin/apigee-service apigee-postgresql postgres-check-master
+  289  /opt/apigee/apigee-service/bin/apigee-service apigee-postgresql postgres-check-standby
+  290  stty -echo
+  291  export PS1=""
+  292  export PS2=""
+  293  echo "___BO""F___"
+  294  if [ `id|grep -c "uid=0"` -gt 0 ]; then echo "yes"; else echo "no";fi
+  295  echo "___EO""F___"
+  296  stty -echo
+  297  export PS1=""
+  298  export PS2=""
+  299  echo "___BO""F___"
+  300  if [ `id|grep -c "uid=0"` -gt 0 ]; then echo "yes"; else echo "no";fi
+  301  echo "___EO""F___"
+  302  stty -echo
+  303  export PS1=""
+  304  export PS2=""
+  305  echo "___BO""F___"
+  306  if [ `rpm -qa | egrep -ic "taniumclient[-_]"` -gt 0 -o -f /opt/Tanium/TaniumClient/TaniumClient ]; then echo "yes"; else echo "no"; fi
+  307  if [ `ps ax | grep -v grep | grep -ic "[t]aniumclient/taniumclient"` -gt 0 ]; then echo "yes"; else echo "no"; fi
+  308  echo "yes"
+  309  if [ `ps ax | grep -v grep | grep -ic "[t]aniumclient/taniumclient"` -gt 0 ]; then echo "yes"; else echo "no"; fi
+  310  echo "___EO""F___"
+  311  stty -echo
+  312  export PS1=""
+  313  export PS2=""
+  314  echo "___BO""F___"
+  315  if [ `id|grep -c "uid=0"` -gt 0 ]; then echo "yes"; else echo "no";fi
+  316  echo "___EO""F___"
+  317  stty -echo
+  318  export PS1=""
+  319  export PS2=""
+  320  echo "___BO""F___"
+  321  TC="/opt/Tanium";PREF="/opt/Tanium";MINSZ="175000";DFC="klP";    checkSufficientSpace() {       PD=`echo $PREF | sed 's/\/$//'`;D="$PD";if [ "$D" = "" ]; then D="$TC"; fi;       while [ "$D" != "" ]; do if [ -d "$D" ]; then break; fi; D=`echo $D | sed 's/\/[^\/]*$//g'`; done; if [ "$D" = "" ]; then D="/"; fi;       S=`df -$DFC "$D" | grep \/ | grep "[0-9][0-9][0-9]" | awk '{print $4}'`; if [ "$S" = "" ]; then S=0; fi; if [ $S -ge $MINSZ ]; then echo "PASSED"; return; fi ; echo "FAILED";     }
+  322      checkSufficientSpace
+  323  echo "___EO""F___"
+  324  stty -echo
+  325  export PS1=""
+  326  export PS2=""
+  327  echo "___BO""F___"
+  328  if [ `id|grep -c "uid=0"` -gt 0 ]; then echo "yes"; else echo "no";fi
+  329  echo "___EO""F___"
+  330  stty -echo
+  331  export PS1=""
+  332  export PS2=""
+  333  echo "___BO""F___"
+  334  mkdir -p "/opt/Tanium"; chmod 700 "/opt/Tanium"
+  335  echo "___EO""F___"
+  336  stty -echo
+  337  export PS1=""
+  338  export PS2=""
+  339  echo "___BO""F___"
+  340  if [ `id|grep -c "uid=0"` -gt 0 ]; then echo "yes"; else echo "no";fi
+  341  echo "___EO""F___"
+  342  stty -echo
+  343  export PS1=""
+  344  export PS2=""
+  345  echo "___BO""F___"
+  346  ps axo pid,etime,command|grep installTAIM.sh|grep -v grep|sed s/\[0-9\]*-//|sed s/://g|sed s/\ \ */\ /g|sed s/^\ \*//
+  347  echo "___EO""F___"
+  348  stty -echo
+  349  export PS1=""
+  350  export PS2=""
+  351  echo "___BO""F___"
+  352  if [ `id|grep -c "uid=0"` -gt 0 ]; then echo "yes"; else echo "no";fi
+  353  echo "___EO""F___"
+  354  stty -echo
+  355  export PS1=""
+  356  export PS2=""
+  357  echo "___BO""F___"
+  358  mkdir -p "/opt/Tanium"
+  359  chown "eittatmp" "/opt/Tanium"
+  360  chmod 700 "/opt/Tanium"
+  361  echo "___EO""F___"
+  362  stty -echo
+  363  export PS1=""
+  364  export PS2=""
+  365  echo "___BO""F___"
+  366  if [ `id|grep -c "uid=0"` -gt 0 ]; then echo "yes"; else echo "no";fi
+  367  echo "___EO""F___"
+  368  stty -echo
+  369  export PS1=""
+  370  export PS2=""
+  371  echo "___BO""F___"
+  372  rm -f "/opt/Tanium/tanium.pub" >/dev/null 2>&1
+  373  echo "___EO""F___"
+  374  stty -echo
+  375  export PS1=""
+  376  export PS2=""
+  377  echo "___BO""F___"
+  378  if [ `id|grep -c "uid=0"` -gt 0 ]; then echo "yes"; else echo "no";fi
+  379  echo "___EO""F___"
+  380  stty -echo
+  381  export PS1=""
+  382  export PS2=""
+  383  echo "___BO""F___"
+  384  rm -f "/opt/Tanium/installTAIM.sh" >/dev/null 2>&1
+  385  echo "___EO""F___"
+  386  stty -echo
+  387  export PS1=""
+  388  export PS2=""
+  389  echo "___BO""F___"
+  390  if [ `id|grep -c "uid=0"` -gt 0 ]; then echo "yes"; else echo "no";fi
+  391  echo "___EO""F___"
+  392  stty -echo
+  393  export PS1=""
+  394  export PS2=""
+  395  echo "___BO""F___"
+  396  rm -f "/opt/Tanium/TaniumClient-7.2.314.3518-1.rhe7.x86_64.rpm" >/dev/null 2>&1
+  397  echo "___EO""F___"
+  398  stty -echo
+  399  export PS1=""
+  400  export PS2=""
+  401  echo "___BO""F___"
+  402  if [ `id|grep -c "uid=0"` -gt 0 ]; then echo "yes"; else echo "no";fi
+  403  echo "___EO""F___"
+  404  stty -echo
+  405  export PS1=""
+  406  export PS2=""
+  407  echo "___BO""F___"
+  408  chown root "/opt/Tanium"
+  409  echo "___EO""F___"
+  410  stty -echo
+  411  export PS1=""
+  412  export PS2=""
+  413  echo "___BO""F___"
+  414  if [ `id|grep -c "uid=0"` -gt 0 ]; then echo "yes"; else echo "no";fi
+  415  echo "___EO""F___"
+  416  stty -echo
+  417  export PS1=""
+  418  export PS2=""
+  419  echo "___BO""F___"
+  420  cd "/opt/Tanium"
+  421  sh "./installTAIM.sh" "./TaniumClient-7.2.314.3518-1.rhe7.x86_64.rpm" "./tanium.pub" "10.70.116.72,10.65.159.171,75.78.167.210" "17472" "1" 0 "1" "redhat" "7" "InstalledByTAIM_default InstalledByTAIM_20200204" &
+  422  echo "___EO""F___"
+  423  stty -echo
+  424  export PS1=""
+  425  export PS2=""
+  426  echo "___BO""F___"
+  427  if [ `id|grep -c "uid=0"` -gt 0 ]; then echo "yes"; else echo "no";fi
+  428  echo "___EO""F___"
+  429  stty -echo
+  430  export PS1=""
+  431  export PS2=""
+  432  echo "___BO""F___"
+  433  ps axo pid,etime,command|grep installTAIM.sh|grep -v grep|sed s/\[0-9\]*-//|sed s/://g|sed s/\ \ */\ /g|sed s/^\ \*//
+  434  echo "___EO""F___"
+  435  stty -echo
+  436  export PS1=""
+  437  export PS2=""
+  438  echo "___BO""F___"
+  439  if [ `id|grep -c "uid=0"` -gt 0 ]; then echo "yes"; else echo "no";fi
+  440  echo "___EO""F___"
+  441  stty -echo
+  442  export PS1=""
+  443  export PS2=""
+  444  echo "___BO""F___"
+  445  if [ `rpm -qa | egrep -ic "taniumclient[-_]"` -gt 0 -o -f /opt/Tanium/TaniumClient/TaniumClient ]; then echo "yes"; else echo "no"; fi
+  446  if [ `ps ax | grep -v grep | grep -ic "[t]aniumclient/taniumclient"` -gt 0 ]; then echo "yes"; else echo "no"; fi
+  447  echo "yes"
+  448  if [ `ps ax | grep -v grep | grep -ic "[t]aniumclient/taniumclient"` -gt 0 ]; then echo "yes"; else echo "no"; fi
+  449  echo "___EO""F___"
+  450  uptime
+  451  last | head
+  452  t
+  453  top
+  454  sar
+  455  exit
+  456  exit
+  457  df
+  458  ps -ef | grep -i apigee
+  459  exit
+  460  tops
+  461  top
+  462  free
+  463  sar
+  464  exit
+  465  history|grep psql
+  466  psql -h localhost -d devportal -U apigee
+  467  psql -h localhost -d devportal -U apige
+  468  psql -h localhost -d devportal -U apigee
+  469  psql -h localhost -d devportal -U drupaladmin
+  470  psql -h localhost -d devportal -U postgres
+  471  top
+  472  uptime
+  473  free -m
+  474  top
+  475  free -m
+  476  ps -eflwww|grep 12269
+  477  more /usr/local/configFile
+  478  exiy
+  479  exit
+  480  w
+  481  last|less
+  482  top
+  483  df
+  484  ps -ef|grep ostgres
+  485  locate postgres
+  486  ls -ld /usr/pgsql-9.4
+  487  last|less
+  488  sudo -l -U ixmendez
+  489  cat /etc/passwd
+  490  exit
+  491  top
+  492  free -mt
+  493  free -mh
+  494  free -mht
+  495  exit
+  496  ps -ef | grep -i apigee
+  497  ps -ef | grep -i pgsql
+  498  exit
+  499  /opt/apigee/apigee-service/bin/apigee-all status
+  500  exit
+  501  WorkIS%$3
+  502  history
+
+  conf_load_balancing_load.balancing.driver.server.ssl.ciphers=ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256

@@ -1,0 +1,145 @@
+RTM:
+******
+
+Project: Gmail Application
+
+Description: Gmail: Login
+
+FR001 : Login
+        The gmail login page opens with the url in the browser: www.gmail.com. The username, password textbox and sign in button appears
+		
+FR001-a : Login valid
+        Enter valid username and password. Click on sign in button. The account opens with inbox
+		
+FR001-b : Login invalid
+        Enter invalid username & password. Click on sign in button. The account does not open and error message is displayed
+
+FR001-c : Login blank
+        Username & password blank. Click on sign in button. The account does not open and error message is displayed
+
+input fields: 
+		Username: Alpha-numeric in lower case between 4 to 8 characters
+		Password: Alphabet in lower case between 4 to 8 characters
+		
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+		
+Project: Verizon Wireless: Telecom project
+
+Description: 
+
+FR001 : Store locator
+        The “Store locator” functionality appears on the top menu of home page of Verizon wireless.com
+        Store locator locates the various Verizon wireless stores across US, based on the city/state chosen. Search is based on the two fields below:
+        1. Enter zip-code: accepts 5 digit zip-code
+        2. Choose a state: gives the list of states
+
+		
+FR001-a : zipecode invalid
+        Enter invalid zip code, the store details are not displayed and the all the fields are reset
+		
+FR001-b : Zipecode valid or choose state
+        Enter zipcode or select a state . Click on FIND STORES to display the results in below format:
+        Address, Work Hours, Featured Services, workshop link
+
+
+FR001-c : Zipecode & choose state blank
+        the store details are not displayed and the all the fields are reset
+
+input fields: 
+		 1.Enter zip-code: accepts 5 digit zip-code
+		 2.Choose a state: gives the list of states
+		 
+		 
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+		
+Project: Bombino Express
+
+Description: 
+
+FR002 : Currency converter
+        http://www.bombinoexp.com/CurrencyConverter.aspx
+		The currency convertor appears under Quick User Tools tab of Bombino Express home page. Click on currency convertor. 
+
+
+		
+FR002-a : Amount valid
+        Enter the numerical value in “Enter Amount”, select currency from “Choose currency” & “Convert to” list box with list of different currencies,
+		the converted amount appears in “Answer here” textbox.
+		
+FR002-b : Amount invalid
+        Enter the non-numerical value in “Enter Amount”, select currency from “Choose currency” & “Convert to” list box with list of different currencies,
+		the error message: NaN
+
+
+FR002-c : Amount blank
+        Do not enter any value in “Enter Amount”, select currency from “Choose currency” & “Convert to” list box with list of different currencies, 
+		the error message: “Amount???” appears in “Answer here” textbox.
+
+input fields: 
+		 Amount: accepts numerical value
+		 choose currency & convert to : list box
+		 
+		 
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+		
+Project: Wells Fargo Internet Banking system
+
+Description: 
+
+FR002 : Online bill payment
+        user should have a active checking account with Wells Fargo and should be logged into the account. Online bill payment appears under Bill pay overview tab.
+		Bill payment has two options: 1. Pay new payee & 2. Pay Saved Payee
+
+		
+FR001.1 : pay saved payee
+        Bill pay  Pay saved payee  click Show Now button from top right corner to see payments due
+		 select the payee from list  click on show payment summary: payment
+		
+input fields: Payee list
+              due amount 
+			  date
+		
+FR001.2 : pay new Payee
+        Bill pay --> Pay new payee
+
+
+FR001.2a : Select Company option
+        Select the company, enter account number (12 digits). Click on Make payment.
+
+input fields: 
+		 account number ( 12 digits )
+		 Payment Account
+		 enter amount
+		 Select Send on & Delivery By
+     
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+		
+Project: Wells Fargo
+
+Description: 
+
+FR001 : The Mortgage Rate & Payment Calculator 
+        The Mortgage Rate & Payment Calculator opens with URL: https://www.wellsfargo.com/mortgage/tools/rate_calc/input_page
+
+		
+FR001-a : valid
+        The user selects the loan purpose either: Purchase or Refinance. The user enters valid home value, loan amount & Selects a state & county.
+		Click on “Calculate Rates & payments”. The mortgage rates are displayed.
+		 
+FR001-b : invalid/blank
+        If invalid entries/ blank entries are made, the error message is displayed. 
+
+
+FR001-c : loan amt > 85% of home value
+        error is displayed
+
+input fields: 
+		 loan purpose: listbox
+		 home value, loan amount : min 5 digits
+		 Selects a state & county

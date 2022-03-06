@@ -1,0 +1,306 @@
+Testcase Documents:
+********************
+
+Project:Gmail Application
+
+Version: VERSION4
+
+Environment: WIN7, GOOGLE cHROME, IE8
+ 
+Scenario: Gmail Login
+
+			Testcase ID: G_L_Pg
+
+
+			Precondition:
+
+			Test case name: Gmail Login Page
+
+			Description: test gamil page
+
+			Test steps:
+				   1. Open the gmail login page with url in browser
+
+			Test Data: url: www.gmail.com
+
+			Expected:
+			  The gmail login page opens with username, password textbox and sign in button
+
+			Actual:
+
+			Results:
+
+			Comments:
+			
+			-------------------------------
+			Testcase ID: G_L_V
+
+
+			Precondition:
+				G_L_Pg
+				user account should be active
+
+			Test case name: Gmail Login valid
+
+			Description: test login valid
+
+			Test steps:
+				   1. Enter valid username
+					2. Enter valid password
+					3. Click on sign in button
+
+			Test Data: 
+			       username: priyah2k
+                   password: priya
+
+			Expected:
+			  The account opens with Inbox
+
+			Actual:
+
+			Results:
+
+			Comments:
+			
+			
+			------------------------------
+			Testcase ID: G_L_I
+
+
+			Precondition:
+			    G_L_Pg
+				user account should be active
+
+			Test case name: Gmail Login invalid
+
+			Description: test login valid
+
+			Test steps:
+				   1. Enter invalid username
+					2. Enter invalid password
+					3. Click on sign in button
+
+			Test Data: 
+			       username: PRIYA12%
+                   password: P)*
+
+			Expected:
+			  The account should not open and error message is displayed
+
+			Actual:
+
+			Results:
+
+			Comments:
+			
+            ------------------------------------------
+            Testcase ID: G_L_B
+
+
+			Precondition: G_L_Pg
+
+			Test case name: Gmail Login blank
+
+			Description: test login blank
+
+			Test steps:
+				   1. username is blank
+					2. password is blank
+					3. Click on sign in button
+
+			Test Data: 
+			       username:
+                   password: 
+
+			Expected:
+			  The account should not open and error message is displayed
+
+			Actual:
+
+			Results:
+
+			Comments:
+			
+			
+
+			
+			
+Project:verizon wireless
+
+Version: VERSION4
+
+Environment: WIN7, GOOGLE cHROME, IE8
+ 
+Scenario: VW Main Page
+
+			Testcase ID: VW_M_Pg
+
+
+			Precondition:
+
+			Test case name: VW Main Pagr
+
+			Description: test VW main page
+
+			Test steps:
+				   1. Open the VW Main page with url in the browser
+
+			Test Data: url: www.verizonwireless.com
+
+			Expected:
+			  The VW main page opens with store locator link on top menu
+
+			Actual:
+
+			Results:
+
+			Comments:
+			
+Scenario: Store locator
+
+			Testcase ID: VW_SL_L
+
+
+			Precondition:
+				VW_M_Pg
+
+			Test case name: VW Store locator link
+			
+			Description: test Store locator link
+
+			Test steps:
+				   1. Click on store locator link
+
+			Test Data: 
+			       
+
+			Expected:
+			  The store locator page opens with zipcode textbox and choose state list box
+
+			Actual:
+
+			Results:
+
+			Comments:
+			
+			
+			------------------------------
+			
+			Testcase ID: VW_SL_ZV
+
+
+			Precondition:
+				VW_SL_L
+
+			Test case name: zipecode valid
+			
+			Description: test zipecode valid
+
+			Test steps:
+				   1. Enter valid zipcode
+                   2. Click on Find stores button
+
+			Test Data: 
+			       zipcode: 07306
+
+			Expected:
+			  display the results in below format:
+              Address, Work Hours, Featured Services, workshop link
+
+
+			Actual:
+
+			Results:
+
+			Comments:
+			
+			
+			----------------------------------------
+			
+			Testcase ID: VW_SL_ZIV
+
+
+			Precondition:
+				VW_SL_L
+
+			Test case name: zipecode invalid
+			
+			Description: test zipecode invalid
+
+			Test steps:
+				   1. Enter invalid zipcode
+                   2. Click on Find stores button
+
+			Test Data: 
+			       zipcode: xyz
+
+			Expected:
+			  the store details are not displayed and the all the fields are reset
+
+			Actual:
+
+			Results:
+
+			Comments:
+			
+			
+			-------------------------------
+			
+			Testcase ID: VW_SL_CS
+
+
+			Precondition:
+				VW_SL_L
+
+			Test case name: choose state
+			
+			Description: test test choose state
+
+			Test steps:
+				   1. Select state from choose state
+                   2. Click on Find stores button
+
+			Test Data: 
+			       zipcode:
+                   choose state: 
+
+			Expected:
+			  display the results in below format:
+              Address, Work Hours, Featured Services, workshop link
+
+
+			Actual:
+
+			Results:
+
+			Comments:
+			
+			------------------------------
+			Testcase ID: VW_SL_B
+
+
+			Precondition:
+				VW_SL_L
+
+			Test case name: zipcode & choose state
+			
+			Description: test zipcode & choose state blank
+			
+			
+			Test steps:
+				   1. zipcode & choose state blank
+                   2. Click on Find stores button
+
+			Test Data: 
+			       zipcode:
+                   choose state: 
+
+			Expected:
+			  the store details are not displayed and the all the fields are reset
+
+
+			Actual:
+
+			Results:
+
+			Comments:

@@ -1,0 +1,1 @@
+for i in `cat /home/aullah/tmp/appdev_list.txt`; do echo $i; ssh $i 'cd /var/log/scsm; df -hP /var/log/scsm; ls -ltr; cat /dev/null > scsm.log; systemctl restart scsm; systemctl status scsm; df -hP /var/log/scsm; df -hP'; echo; done | tee -a /home/aullah/tmp/dfhp_appdev_var_log

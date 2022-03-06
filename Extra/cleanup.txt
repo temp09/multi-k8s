@@ -1,0 +1,56 @@
+#- name: Get the current Kernel
+    #  raw: /bin/uname -r
+    #  register: currentkernel
+
+    #- name: Get the latest installed kernel
+    #  raw: /bin/rpm -qa kernel | sort | tail -n 1 | cut -d \- -f2-
+    #  register: latestkernel
+
+    #- name: Check for the running Kernel (Will fail if the running kernel doesn't match the latest installed kernel)
+    #  fail: msg="Current kernel does not match the latest installed kernel.. please investigate.. both installed and running kernel must be the same.."
+    #  when: currentkernel.stdout != latestkernel.stdout
+
+    - name: Install yum-utils
+      raw: yum -y install yum-utils
+
+    - name: Clean up old kernels
+      raw: /usr/bin/package-cleanup --oldkernels --count=1 -y
+
+    - name: Clean up unfinished or pending transaction from yum
+      raw: /usr/sbin/yum-complete-transaction --cleanup-only
+
+    - name: Update the maximum kernel number of version
+      raw: grep ^'installonly_limit = 3' /etc/yum.conf && sed -i 's/installonly_limit \= 3/installonly_limit \= 2/g' /etc/yum.conf || grep ^'# installonly_limit = 3' /etc/yum.conf && sed -i 's/\# installonly_limit \= 3/installonly_limit \= 2/g' /etc/yum.conf
+      ignore_errors: yes
+
+    - name: Get available disk space for root partition
+      raw: df -kP / | awk '{print $4}' | grep '[0-9]'
+      register: rootspaceavail
+
+    - name: Check for root parition total space available (Will fail if doesnt meet require 500mb)
+      fail: msg="Disk space available did not meet the requirment of 500mb free"
+      when: rootspaceavail.stdout <= 499000
+
+    - name: Get available disk space for boot partition
+      raw: df -kP /boot | awk '{print $4}' | grep '[0-9]'
+      register: bootspaceavail
+
+    - name: Check for boot parition total space available (Will fail if doesnt meet require 500mb)
+      fail: msg="Disk space available did not meet the requirment of 50mb free"
+      when: bootspaceavail.stdout <= 49999
+
+#    - name: Get the actual size of var parition under rootvg
+#      raw: df -kP /var | awk '{print $2}' | grep '[0-9]'
+#      register: totvarspace
+
+#    - name: Get the actual free space on var parition under rootvg
+#      raw: df -kP /var | awk '{print $4}' | grep '[0-9]'
+#      register: varspaceavail
+
+    - name: "Run BigFix Remedy Script for Low var size partitions"
+      script: files/scripts/bigfix_lowvar.sh
+      register: bigfixout
+
+    - name: Check if the bigfix remedy works as expected (Will fail if script exit status > 0)
+      fail: msg="bigfix Remedy failed, please check the affected server"
+      failed_when: bigfixout.stdout|int > 0
