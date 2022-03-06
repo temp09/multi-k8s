@@ -1,7 +1,0 @@
-#0 20 * * * /opt/apigee/heapdumpcron.sh
-#* * * * * /opt/apigee/apigee-service/bin/apigee-all backup
-#* * * * * /usr/bin/find /opt/apigee/backup/zookeeper -name "*.tar.gz" -type f -mtime +7 -exec rm -f {} \;
-0 0 * * 6 /opt/apigee/backup.sh >> /home/aullah/backup.log 2>&1
-#0 1 * * 6 /usr/bin/find /opt/apigee/backup/router -name "*.tar.gz" -type f -mtime +6 -exec rm -f {} \;
-#0 0 * * 6 /home/aullah/temp/clean_var.sh
-#* * * * * /opt/scripts/job_run.sh
