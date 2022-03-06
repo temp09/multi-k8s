@@ -1,0 +1,1262 @@
+Drupal 8 Developer portal:
+**************************
+
+Prerequisites:
+--------------
+
+DB server : MYSQL-5.5.3 , MariaDB - 5.5.20
+            MySQL 8 is supporetd only Drupal 8.6 and higher
+            Drupal 8 dropped support for PHP 5.5 and 5.6 in May 2019
+			
+			systemctl restart mariadb.service
+			
+			systemctl start mariadb.service
+			
+			systemctl status mariadb.service
+			
+			systemctl disable mariadb.service
+			
+			/usr/lib/systemd/system/systemctl status mysqld -- mysql db
+			
+			http://10.71.178.34:8080/v1
+			
+			/usr/lib/systemd/system/systemctl status nginx.service -- nginx web server 
+			
+	 rpm -Uvh https://repo.mysql.com/mysql80-community-release-el7-3.noarch.rpm
+	 cat /etc/yum.repos.d/mysql-community.repo
+	 sed -i 's/enabled=1/enabled=0/' /etc/yum.repos.d/mysql-community.repo
+	 cat /etc/yum.repos.d/mysql-community.repo
+
+	yum --enablerepo=mysql57-community install mysql-community-server
+	service mysqld start
+	grep "A temporary password" /var/log/mysqld.log
+	cd /var/log
+	ls -alrt
+	cat mysqld.log
+	more mysqld.log
+	cd /
+	mysql_secure_installation
+	systemctl restart mysqld.service
+	mysql -h localhost -u root -p
+
+
+Web Server: PHP 7.2 with Drupal-8.5.0
+            PHP 7.3 with Drupal-8.6.4
+
+
+sysdev is "special" ldap.  Root password is Fl0mntR! Fl0mn8tR!
+			
+Installation link : https://www.drupal.org/docs/8/modules/apigee-developer-portal-kickstart/use-kickstart-with-apigee-edge-for-private-cloud
+
+Before getting started, you will need to make sure you have these tools installed:
+
+Git
+Composer
+PHP
+Web server
+Database server
+
+  1. yum install git
+  2. yum install zip
+  3. yum install unzip
+  
+  
+ 
+  561  yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+  562  yum install php72
+  563  php --version
+  564  yum-config-manager --enable remi-php72
+  565  yum update
+  566  yum search php72 | more
+  567  yum install php72 php72-php-fpm php72-php-gd php72-php-json php72-php-mbstring php72-php-mysqlnd php72-php-xml php72-php-xmlrpc php72-php-opcache
+  568  php --version
+  569  yum install nginx
+  570  systemctl start nginx.service
+  571  systemctl enable nginx.service
+  572  systemctl start nginx.service
+  573  history|grep nginx
+  574  journalctl -xe
+  575  service nginx start
+  576  ps aux | grep nginx
+  577  vi /etc/php-fpm.d/www.conf
+  578  systemctl start php-fpm.service
+  579  yum install httpd -y
+  580  service httpd start
+  581  service httpd status
+  582  systemctl restart nginx.service
+  583  ls -lart /var/log
+  584  ls -lart /var/log/nginx/
+  585  ls -lart
+  586  cat /var/log/nginx/error.log
+  587  service httpd stop
+  588  service httpd status
+  589  systemctl start nginx.service
+  590  systemctl status nginx.service
+  591  systemctl enable nginx.service
+  592  cd /etc/php-fpm.d/
+  593  yum install php php-bcmath php-common php-cli php-fpm php-gd php-json php-mbstring php-mysql php-mysqlnd php-opcache php-pdo php-process php-xml php-xmlrpc
+  594  php --version
+  595  systemctl start php-fpm.service
+  596  systemctl status php-fpm.service
+  597  systemctl enable php-fpm.service
+  598  firewall-cmd --permanent --zone=public --add-service=http
+  599  firewall-cmd --permanent --zone=public --add-service=https
+  600  firewall-cmd --reload
+  601  cd /etc/nginx/conf.d/
+  602  ls lart
+  603  ls -lart
+  604  cd /etc/php-fpm.d
+  605  ls -lart
+  606  vi www.conf
+  607  systemctl start php-fpm.service
+  608  systemctl enable php-fpm.service
+  609  cd /etc/nginx/conf.d/
+  610  ls -lart
+  611  vi drupal8.conf
+  612  clear
+  613  cd /etc/nginx/conf.d/
+  614  ls -lart
+  615  rm -rf .drupal8.conf.swp
+  616  ls -lart
+  617  touch drupal8.conf
+  618  vi drupal8.conf
+  619  cat drupal8.conf
+  620  vi drupal8.conf
+  621  cat drupal8.conf
+  622  vi drupal8.conf
+  623  cat drupal8.conf
+  624  vi drupal8.conf
+  625  cat /etc/php-fpm.d/www.conf
+  626  cd /etc/php-fpm.d
+  627  ls -lart
+  628  cat www.conf
+  629  cd /etc/nginx/conf.d/
+  630  vi drupal8.conf
+  631  systemctl restart nginx.service
+  632  cd /var/log/nginx/
+  633  ls -lart
+  634  cat error.log
+  635  tail /var/log/nginx/*
+  636  tail /var/log/nginx/access.log
+  637  ls -lart
+  638  tail -10 access.log
+  639  tail -f access.log
+  640  clear
+  641  cd /var/
+  642  ls -lart
+  643  cd www/
+  644  ls -lart
+  645  pwd
+  646  adduser devportal
+  647  chown -R devportal:devportal /var/www
+  648  ls -lart
+  649  su - devportal
+  650  ls -lart
+  651  cd /var/www/devportal/web/sites/default
+  652  ls -lart
+  653  chown -R devportal:nginx settings.php
+  654  ls -lart
+  655  chmod 660 settings.php
+  656  ls -lart
+  657  cd /var/www/devportal/web
+  658  ls -lart
+  659  chown -R devportal:nginx .
+  660  ls -lart
+  661  find . -type d -exec chmod u=rwx,g=rx,o= '{}' \;
+  662  find . -type f -exec chmod u=rw,g=r,o= '{}' \;
+  663  cd /var/www/devportal/web/sites/default
+  664  ls -lart
+  665  mkdir files
+  666  chown -R devportal:nginx .
+  667  pwd
+  668  find . -type d -exec chmod ug=rwx,o= '{}' \;
+  669  find . -type f -exec chmod ug=rw,o= '{}' \;
+  670  chcon -R -t httpd_sys_content_rw_t /var/www/devportal/web/sites/default
+  671  cd /etc/nginx/conf.d/
+  672  cat drupal8.conf
+  673  cd /var/www/devportal/
+  674  ls -lart
+  675  cd web/
+  676  ls -lart
+  677  cd /var/www/devportal/web../vendor/bin
+  678  cd /var/www/devportal/web..
+  679  cd ..
+  680  ls -lart
+  681  cd vendor/bin/
+  682  ls -lart
+  683  drush cr
+  684  /var/www/devportal/web../vendor/bin/drush cr
+  685  /var/www/devportal/vendor/bin/drush cr
+  686  cd /var/www/devportal
+  687  mkdir private
+  688  cd private
+  689  chown -R devportal:nginx .
+  690  find . -type d -exec chmod ug=rwx,o= '{}' \;
+  691  find . -type f -exec chmod ug=rw,o= '{}' \;
+  692  chcon -R -t httpd_sys_content_rw_t /var/www/devportal/private
+  693  vi /var/www/devportal/web/sites/default/settings.php
+  694  vi /var/www/devportal/web/sites/default/settings.php
+  695  systemctl status php-fpm.service
+  696  tail /var/log/nginx/error.log
+  697  systemctl restart php-fpm.service
+  698  systemctl status php-fpm.service
+  
+  
+  New history for lsl30714.sysdev.west.com
+  ----------------------------------------
+  
+    yum update
+	
+    yum install git
+    
+	git --version
+    
+	yum install zip
+    
+	zip --version
+    
+	cd /usr/local/bin
+    
+	ls -lart
+
+    yum install php-cli
+	
+    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+   
+    php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+   
+    php -r "unlink('composer-setup.php');"
+   
+    yum install php php-bcmath php-common php-cli php-fpm php-gd php-json php-mbstring php-mysql php-mysqlnd php-opcache php-pdo php-process php-xml php-xmlrpc
+    
+	php --version
+    
+	yum -y install epel-release
+
+    yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+   
+    yum install php72
+  
+    php --version
+	
+    yum-config-manager --enable remi-php72
+   
+    yum update
+    
+	yum search php72 | more
+    
+	yum install php72 php72-php-fpm php72-php-gd php72-php-json php72-php-mbstring php72-php-mysqlnd php72-php-xml php72-php-xmlrpc php72-php-opcache
+    
+	php --version
+    
+	rpm -Uvh https://repo.mysql.com/mysql80-community-release-el7-3.noarch.rpm
+    
+	yum --enablerepo=mysql57-community install mysql-community-server
+    
+	systemctl start mysqld.service
+   71  systemctl status mysqld.service
+   72  grep "A temporary password" /var/log/mysqld.log
+   73  mysql_secure_installation
+   74  systemctl restart mysqld.service
+   75  systemctl status mysqld.service
+   76  systemctl enable mysqld.service
+   77  mysql -h localhost -u root -p
+   78  clear
+   79  yum install nginx
+   80  systemctl start nginx.service
+   81  systemctl status nginx.service
+   82  systemctl enable nginx.service
+   83  vi /etc/php-fpm.d/www.conf
+   84  cd /etc/php-fpm.d/
+   85  ls -lart
+   86  cd /etc/
+   87  ls -lart
+   88  cd php.d
+   89  ls -lart
+   90  cd /
+   91  systemctl start php-fpm.service
+   92  yum install php php-bcmath php-common php-cli php-fpm php-gd php-json php-mbstring php-mysql php-mysqlnd php-opcache php-pdo php-process php-xml php-xmlrpc
+   93  vi /etc/php-fpm.d/www.conf
+   94  systemctl enable php-fpm.service
+   95  systemctl start php-fpm.service
+   96  systemctl status php-fpm.service
+   97  firewall-cmd --permanent --zone=public --add-service=http
+   98  firewall-cmd --reload
+   99  cd /etc/nginx/conf.d/
+  100  ls -lart
+  101  touch drupal8.conf
+  102  vi drupal8.conf
+  103  vi /etc/php-fpm.d/www.conf
+  104  vi drupal8.conf
+  105  systemctl restart nginx.service
+  106  tail /var/log/nginx/*
+  107  cd /var/www/
+  108  ls -alrt
+  109  pwd
+  110  adduser devportal
+  111  ls -lart
+  112  chown -R devportal:devportal /var/www
+  113  ls -lart
+  114  su - devportal
+  115  cd /var/www/devportal/web
+  116  chown -R devportal:nginx .
+  117  find . -type d -exec chmod u=rwx,g=rx,o= '{}' \;
+  118  find . -type f -exec chmod u=rw,g=r,o= '{}' \;
+  119  cd /var/www/devportal/web/sites/default
+  120  ls -lart
+  121  mkdir files
+  122  ls -lart
+  123  chown -R devportal:nginx .
+  124  find . -type d -exec chmod ug=rwx,o= '{}' \;
+  125  find . -type f -exec chmod ug=rw,o= '{}' \;
+  126  chcon -R -t httpd_sys_content_rw_t /var/www/devportal/web/sites/default
+  127  find . -type d -exec chmod ug=rwx,o= '{}' \;
+  128  exit
+  129  pwd
+  130  ls -lart
+  131  cd /home/
+  132  ls -lart
+  133  cd /etc/redhat-release
+  134  cat /etc/redhat-release
+  135  cat /etc/resolv.conf
+  136  ps aux
+  137  ls -lart /etc/
+  138  service httpd status
+  139  la -l /etc/
+  140  ls -l /etc/
+  141  ls -alrt /etc/yum.repos.d/
+  142  cat /etc/yum.repos.d/redhat.repo
+  143  sudo su
+  144  mysql -h localhost -u root -p Apigee@1
+  145  mysql -h localhost -u root -p
+  146  mysql -h localhost -u apigee -p
+  147  mysql -h 10.27.165.55 -u apigee -p
+  148  systemctl status mysqld.service
+  149  systemctl stop mysqld.service
+  150  systemctl status mysqld.service
+  151  systemctl status nginx.service
+  152  systemctl stop nginx.service
+  153  systemctl status nginx.service
+  154  systemctl status php-fpm.service
+  155  systemctl stop php-fpm.service
+  156  systemctl status php-fpm.service
+  157  systemctl start mysqld.service
+  158  systemctl status mysqld.service
+  159  mysql -h localhost -u root -p
+  160  systemctl start nginx.service
+  161  systemctl status nginx.service
+  162  systemctl start php-fpm.service
+  163  systemctl status php-fpm.service
+  164  systemctl stop mysqld.service
+  165  cd /var/lib/mysql
+  166  ls -lart
+  167  cd /
+  168  yum remove mysql mysql-server
+  169  mv /var/lib/mysql /var/lib/mysql_old_backup
+  170  mv /etc/mysql /etc/mysql_old_backup
+  171  yum install mysql-server
+  172  systemctl start mysqld.service
+  173  systemctl status mysqld.service
+  174  mysql_secure_installation
+  175  cd /etc/
+  176  ls -lart
+  177  cd php.d
+  178  ls -lart
+  179  cd ..
+  180  vi php.ini
+  181  cd /var/www
+  182  ls -alrt
+  183  composer create-project apigee/devportal-kickstart-project:8.x-dev devportal --no-interaction
+  184  su - devportal
+  185  grep "A temporary password" /var/log/mysqld.log
+  186  mysql_secure_installation
+  187  mysql -u root -p
+  188  systemctl status mysqld.service
+  189  systemctl status php-fpm.service
+  190  systemctl status nginx.service
+  191  systemctl restart nginx.service
+  192  systemctl restart mysqld.service
+  193  systemctl restart php-fpm.service
+  194  systemctl status php-fpm.service
+  195  systemctl status mysqld.service
+  196  systemctl status nginx.service
+  197  netstat -p -l -n | grep mysql
+  198  ps -aux | grep mysql
+  199  mysql --version
+  200  mysql -u root -p
+  201  clear
+  202  systemctl status mysqld.service
+  203  systemctl stop mysqld.service
+  204  cd /
+  205  yum remove mysql mysql-server
+  206  mv /var/lib/mysql /var/lib/mysql_old_backup
+  207  mv /var/lib/mysql /var/lib/mysql_old_backup_1
+  208  yum install mysql-server
+  209  mysql -u root -p
+  210  systemctl start mysqld.service
+  211  grep "A temporary password" /var/log/mysqld.log
+  212  mysql_secure_installation
+  213  mysql -u root -p
+  214  systemctl restart nginx.service
+  215  mysql -u test -p -e "CREATE DATABASE test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
+  216  mysql -u devportal -p -e "CREATE DATABASE test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
+  217  mysql -u root -p
+  218  mysql -h localhost -u root -p
+  219  systemctl restart nginx.service
+  220  systemctl restart mysqld.service
+  221  systemctl restart php-fpm.service
+-----------------------------------------------------------------------------------------------------------
+  
+  
+  
+  
+  
+  
+  
+  
+  lsl30714 install: 
+  *******************
+  
+  yum update 
+  
+  yum install git
+  
+  git --version
+  
+  yum install zip
+  
+  zip --version
+  
+  Install composer:
+  ------------------
+  yum install php-cli
+  
+  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  
+  php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+  
+  php -r "unlink('composer-setup.php');"
+  
+  
+  PHP-7.2 Uninstall
+  --------------------
+  
+  systemctl status php72-php-fpm.service
+  
+  systemctl stop php72-php-fpm.service
+  
+  systemctl status php72-php-fpm.service
+  
+  yum remove php.*
+  
+  yum remove php*
+  
+  yum list installed | grep -i php
+  
+  PHP - 7.2.8 install:
+  --------------------
+  
+	yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+	
+	yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+	
+	yum install yum-utils
+	
+	subscription-manager repos --enable=rhel-7-server-optional-rpms
+	
+	yum-config-manager --enable remi-php72
+	
+	yum update
+	
+	yum search php72 | more
+	
+	
+	yum install php
+	
+	php --version
+	
+	php72 --modules 
+  
+  PHP -7.2 install:
+  -----------------
+  
+  yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+  
+  yum install php72
+
+  yum-config-manager --enable remi-php72
+  
+  yum update
+  
+  yum search php72 | more
+  
+  yum install php72 php72-php-fpm php72-php-gd php72-php-json php72-php-mbstring php72-php-mysqlnd php72-php-xml php72-php-xmlrpc php72-php-opcache
+  
+  php --version
+  
+  yum install php php-bcmath php-common php-cli php-fpm php-gd php-json php-mbstring php-mysql php-mysqlnd php-opcache php-pdo php-process php-xml php-xmlrpc
+
+  
+  Install Mysql DB:
+  ------------------
+  
+  Uninstall Mysql 
+  ------------------
+  
+  cd /
+  
+  yum remove mysql mysql-server
+  
+  mv /var/lib/mysql /var/lib/mysql_old_backup_1
+
+Configure Yum repo:
+********************
+  
+  rpm -Uvh https://repo.mysql.com/mysql80-community-release-el7-3.noarch.rpm
+  
+Install Mysql server and client:
+********************************
+  
+  yum install mysql-server
+   
+  yum --enablerepo=mysql57-community install mysql-community-server
+  
+Start th Mysql service:
+***********************
+  
+  systemctl start mysqld.service
+  
+  grep "A temporary password" /var/log/mysqld.log
+  
+  Output: [2020-03-05T18:30:58.222945Z 5 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: e18l&pwE/wAp]
+  
+  Output: 2020-03-05T22:22:39.218313Z 5 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: !dwy6aqm(sjE
+  
+  Output: [2020-03-05T23:01:10.755501Z 5 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: oi(roadv8cRq]
+  
+  output: 2020-03-09T15:23:29.464082Z 5 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: tX_eGG!ki3l1
+  
+  mysql_secure_installation
+
+  password: Apigee@1  / Drupal@8  --- Tempportal@1
+  
+  mysql_secure_installation
+
+Securing the MySQL server deployment.
+
+Enter password for user root:
+
+The existing password for the user account root has expired. Please set a new password.
+
+New password:
+
+Re-enter new password:
+ ... Failed! Error: Your password does not satisfy the current policy requirements
+
+New password:
+
+Re-enter new password:
+ ... Failed! Error: Your password does not satisfy the current policy requirements
+
+New password:
+
+Re-enter new password:
+The 'validate_password' component is installed on the server.
+The subsequent steps will run with the existing configuration
+of the component.
+Using existing password for root.
+
+Estimated strength of the password: 100
+Change the password for root ? ((Press y|Y for Yes, any other key for No) : n
+
+ ... skipping.
+By default, a MySQL installation has an anonymous user,
+allowing anyone to log into MySQL without having to have
+a user account created for them. This is intended only for
+testing, and to make the installation go a bit smoother.
+You should remove them before moving into a production
+environment.
+
+Remove anonymous users? (Press y|Y for Yes, any other key for No) : y
+Success.
+
+
+Normally, root should only be allowed to connect from
+'localhost'. This ensures that someone cannot guess at
+the root password from the network.
+
+Disallow root login remotely? (Press y|Y for Yes, any other key for No) : y
+Success.
+
+By default, MySQL comes with a database named 'test' that
+anyone can access. This is also intended only for testing,
+and should be removed before moving into a production
+environment.
+
+
+Remove test database and access to it? (Press y|Y for Yes, any other key for No) : y
+ - Dropping test database...
+Success.
+
+ - Removing privileges on test database...
+Success.
+
+Reloading the privilege tables will ensure that all changes
+made so far will take effect immediately.
+
+Reload privilege tables now? (Press y|Y for Yes, any other key for No) : y
+Success.
+
+All done!
+
+
+systemctl restart mysqld.service
+
+systemctl status mysqld.service
+
+systemctl enable mysqld.service [ auto resatrt enable server reboot ]
+
+
+mysql -h localhost -u root -p Apigee@1
+
+
+### CREATE DATABASE
+mysql> CREATE DATABASE devportal;
+ 
+### CREATE USER ACCOUNT
+mysql> CREATE USER 'apigee'@'10.27.165.55' IDENTIFIED BY 'Apigee@1';
+       CREATE USER 'root'@'localhost' IDENTIFIED BY 'Apigee@1';
+ 
+### GRANT PERMISSIONS ON DATABASE
+mysql> GRANT ALL ON devportal1.* TO 'root'@'localhost';
+       GRANT ALL ON devportal.* TO 'devportal'@'localhost';
+ 
+###  RELOAD PRIVILEGES
+mysql> FLUSH PRIVILEGES;
+
+
+Uninstall nginx:
+----------------
+ systemctl stop nginx.service
+ 
+ systemctl disable nginx.service
+ 
+ userdel -r nginx
+ 
+ rm -R /etc/nginx
+
+rm -R /var/log/nginx
+
+rm -rf /var/cache/nginx/
+
+rm -rf /usr/lib/systemd/system/nginx.service
+
+yum remove nginx
+
+rm -R /etc/nginx
+
+rm -R /var/log/nginx
+
+rm -rf /var/cache/nginx/
+
+rm -rf /usr/lib/systemd/system/nginx.service
+
+Install Nginx web server:
+----------------------------
+
+Create nginx repo : vi /etc/yum.repos.d/nginx.repo and edit file as 
+
+[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/mainline/rhel/7/$basearch/
+gpgcheck=0
+enabled=1
+
+yum install nginx
+
+systemctl start nginx.service
+
+systemctl enable nginx.service
+
+
+vi /etc/php-fpm.d/www.conf
+
+change the user anf group as nginx.
+
+; Start a new pool named 'www'.
+[www]
+; Unix user/group of processes
+; Note: The user is mandatory. If the group is not set, the default user$
+;       will be used.
+; RPM: apache Choose to be able to access some dir as httpd
+user = nginx
+; RPM: Keep a group allowed to write in log dir.
+group = nginx
+
+
+systemctl start php-fpm.service
+systemctl enable php-fpm.service
+
+firewall-cmd --permanent --zone=public --add-service=http
+firewall-cmd --permanent --zone=public --add-service=https
+firewall-cmd --reload
+
+
+ cd /etc/nginx/conf.d/
+ 
+ vi /etc/php-fpm.d/www.conf
+ 
+ systemctl restart nginx.service
+ 
+ 
+ http://lsl30714.sysdev.west.com/en-US/index.html  page not found
+ 
+ 
+ log check : tail /var/log/nginx/*
+ 
+ Download the Apigee Developer Portal Kickstart distribution:
+ -------------------------------------------------------------
+ 
+ 
+ 
+ 
+ echo "export COMPOSER_MEMORY_LIMIT=2G" >> ~devportal/.bash_profile source ~/.bash_profile
+ 
+ composer create-project apigee/devportal-kickstart-project:8.x-dev devportal --no-interaction
+ 
+ php -r "echo ini_get('memory_limit').PHP_EOL;"
+ 
+ vi /etc/php.ini  set memory limit = -1
+ 
+ cd /var/www/devportal/web/sites/default
+ 
+ cp default.settings.php settings.php
+chown -R devportal:nginx settings.php
+chmod 660 settings.php
+
+su - root 
+
+cd /var/www/devportal/web
+chown -R devportal:nginx .
+find . -type d -exec chmod u=rwx,g=rx,o= '{}' \;
+find . -type f -exec chmod u=rw,g=r,o= '{}' \;
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+*************************************************************************************
+                       Install software on lsl37919.wic.west.com
+*************************************************************************************
+Check Redhat version:
+---------------------
+
+    cat /etc/redhat-release
+	
+Validate the resolve config file:
+---------------------------------
+    
+	cat /etc/resolv.conf
+	
+Check the partitions:
+------------------------
+    df -h
+	
+    uptime
+	
+Check any process running:
+--------------------------
+   ps -efl
+   
+   ps -efl|grep httpd
+   
+   ps -efl|grep nginx
+   
+   ps -efl|grep php
+   
+   ps -efl|grep mysql
+
+Check the cpu informations:
+----------------------------
+   cat /proc/cpuinfo
+   
+   lscpu
+
+   lscpu | egrep 'Model name|Socket|Thread|NUMA|CPU\(s\)'
+   
+   lscpu -p
+   
+   echo "CPU threads: $(grep -c processor /proc/cpuinfo)"
+   
+   grep 'cpu cores' /proc/cpuinfo | uniq
+   
+   nproc --all
+   
+   less /proc/cpuinfo
+   
+   grep -i --color "model name" /proc/cpuinfo
+   
+   
+   
+Install the prerequisites:
+***************************
+
+
+Installation link: https://www.drupal.org/docs/8/modules/apigee-developer-portal-kickstart/use-kickstart-with-apigee-edge-for-private-cloud
+
+ls -lart /etc/yum.repos.d/
+
+cat /etc/yum.repos.d/redhat.repo
+
+yum update
+
+yum install git -- 1.8.3.1
+
+yum install zip  -- 3.0
+
+yum install unzip  -- 6.0
+
+yum install php-cli -- 5.4.16
+
+ php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+ 
+ php composer-setup.php --install-dir=/usr/local/bin --filename=composer --1.10.0
+ 
+ php -r "unlink('composer-setup.php');"
+ 
+ 
+ 
+PHP Istallations:
+********************
+Go to link:
+https://rpms.remirepo.net/wizard/
+
+Operating system and version selection
+Operating system: 
+
+Wanted PHP version: 
+
+Type of installation: 
+
+Wizard answer
+RHEL 7 provides PHP version 5.4 in its official repository
+
+Command to install the EPEL repository configuration package:
+    yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+Command to install the Remi repository configuration package:
+    yum install https://rpms.remirepo.net/enterprise/remi-release-7.rpm
+
+Command to install the yum-utils package (for the yum-config-manager command):
+    yum install yum-utils
+
+On RHEL you (probably) need to enable the optional channel for some dependencies.
+
+Command to enable:
+    subscription-manager repos --enable=rhel-7-server-optional-rpms
+
+You want a single version which means replacing base packages from the distribution
+
+Packages have the same name than the base repository, ie php-*
+
+Some common dependencies are available in remi-safe repository, which is enabled by default
+
+PHP version 7.3 packages are available for RHEL 7 in remi-php73 repository
+
+Command to enable the repository:
+    yum-config-manager --enable remi-php73
+
+If the priorities plugin is enabled, ensure remi-php73 have higher priority (a lower value) than base and updates
+
+Command to upgrade (the repository only provides PHP):
+    yum update
+
+Command to install additional packages:
+    yum install php-xxx
+
+Command to install testing packages:
+    yum --enablerepo=remi-php73-test install php-xxx
+	
+yum install php php-bcmath php-common php-cli php-fpm php-gd php-json php-mbstring php-mysql php-mysqlnd php-opcache php-pdo php-process php-xml php-xmlrpc
+
+Command to check the installed version and available extensions:
+    php --version  -- 7.3.15 
+    php --modules
+
+
+Install MYsqlDB:
+************************
+
+Configure yum repo:
+-------------------
+rpm -Uvh https://repo.mysql.com/mysql80-community-release-el7-3.noarch.rpm
+
+Install My sql community server:
+--------------------------------
+sed -i 's/enabled=1/enabled=0/' /etc/yum.repos.d/mysql-community.repo
+
+yum --enablerepo=mysql57-community install mysql-community-server   -- 5.7.29
+
+Start Mysql server:
+-------------------
+
+systemctl start mysqld.service
+
+systemctl status mysqld.service
+
+Find MySQL root Password:
+--------------------------
+grep "A temporary password" /var/log/mysqld.log
+
+output: 2020-03-11T18:31:09.904059Z 1 [Note] A temporary password is generated for root@localhost: W:iDy(Gbl8i!
+
+MySQL Post Install Setup: ( Myportal@1)
+--------------------------
+
+mysql_secure_installation
+
+Securing the MySQL server deployment.
+
+Enter password for user root:
+
+The existing password for the user account root has expired. Please set a new password.
+
+New password:
+
+Re-enter new password:
+The 'validate_password' plugin is installed on the server.
+The subsequent steps will run with the existing configuration
+of the plugin.
+Using existing password for root.
+
+Estimated strength of the password: 100
+Change the password for root ? ((Press y|Y for Yes, any other key for No) : n
+
+ ... skipping.
+By default, a MySQL installation has an anonymous user,
+allowing anyone to log into MySQL without having to have
+a user account created for them. This is intended only for
+testing, and to make the installation go a bit smoother.
+You should remove them before moving into a production
+environment.
+
+Remove anonymous users? (Press y|Y for Yes, any other key for No) : y
+Success.
+
+
+Normally, root should only be allowed to connect from
+'localhost'. This ensures that someone cannot guess at
+the root password from the network.
+
+Disallow root login remotely? (Press y|Y for Yes, any other key for No) : y
+Success.
+
+By default, MySQL comes with a database named 'test' that
+anyone can access. This is also intended only for testing,
+and should be removed before moving into a production
+environment.
+
+
+Remove test database and access to it? (Press y|Y for Yes, any other key for No) : y
+ - Dropping test database...
+Success.
+
+ - Removing privileges on test database...
+Success.
+
+Reloading the privilege tables will ensure that all changes
+made so far will take effect immediately.
+
+Reload privilege tables now? (Press y|Y for Yes, any other key for No) : y
+Success.
+
+All done!
+
+Restart and Enable MySQL Service:
+----------------------------------
+
+systemctl restart mysqld.service
+
+systemctl status mysqld.service
+
+enable service to auto start on system reboot: (skipped it )
+------------------------------------------------
+
+systemctl enable mysqld.service
+
+
+Working with MySQL:
+--------------------
+
+mysql -h localhost -u root -p  -- Myportal@1
+
+### CREATE DATABASE
+mysql> CREATE DATABASE portaldb;
+ 
+### CREATE USER ACCOUNT
+mysql> CREATE USER 'portaluser'@'localhost' IDENTIFIED BY 'Myportal@1';
+ 
+### GRANT PERMISSIONS ON DATABASE
+mysql> GRANT ALL ON portaldb.* TO 'portaluser'@'localhost';
+ 
+###  RELOAD PRIVILEGES
+mysql> FLUSH PRIVILEGES;
+
+
+
+
+Install nginx web server;
+**************************
+
+
+yum install nginx  --1.16
+
+systemctl start nginx.service
+
+systemctl status nginx.service
+
+systemctl enable nginx.service
+
+Created symlink from /etc/systemd/system/multi-user.target.wants/nginx.service to /usr/lib/systemd/system/nginx.service.
+
+
+Configure PHP-FPM:
+-------------------
+
+cd /etc/php-fpm.d/
+
+vi www.conf  change user and group as "nginx" instaed of "apache"
+
+Start php-fpm service:
+------------------------
+
+systemctl start php-fpm.service
+
+systemctl status php-fpm.service
+
+
+Check the browser:
+-------------------
+
+http://led37919.wic.west.com/
+
+If not come test page then open ports for HTTP / HTTPS by using following:
+
+firewall-cmd --permanent --zone=public --add-service=http
+firewall-cmd --permanent --zone=public --add-service=https
+firewall-cmd --reload
+
+
+
+create an nginx virtual host configuration file:
+-------------------------------------------------
+
+cd /etc/nginx/conf.d/
+
+touch drupal8.conf   chnge 
+
+and past the receipi from link 
+
+and change few thins follow the docs/8/modules/apigee-developer-portal-kickstart/use-kickstart-with-apigee-edge-for-private-cloud
+
+
+
+Download the Apigee Developer Portal Kickstart distribution:
+************************************************************
+
+Create the directory:
+---------------------
+
+mkdir -p /var/www
+
+Create devportal user:
+----------------------
+
+adduser devportal
+
+Instead of root owning the application, set the devportal user as the application owner. This will enable the devportal user to update files:
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+chown -R devportal:devportal /var/www
+
+Switch to the devportal user and cd to the project directory:
+-------------------------------------------------------------
+
+su - devportal
+
+cd /var/www
+
+echo "export COMPOSER_MEMORY_LIMIT=2G" >> ~devportal/.bash_profile
+
+source ~/.bash_profile
+
+Possibly needed:
+-----------------
+
+php -r "echo ini_get('memory_limit').PHP_EOL;"
+ 
+ vi /etc/php.ini  set memory limit = -1
+
+composer create-project apigee/devportal-kickstart-project:8.x-dev devportal --no-interaction
+
+Copy the contents of default.settings.php to settings.php :
+-------------------------------------------------------------
+
+as a devportal user
+
+cd /var/www/devportal/web/sites/default
+
+cp default.settings.php settings.php
+
+chown -R devportal:nginx settings.php
+
+chmod 660 settings.php
+
+
+Run the following commands as sudo or root to set file permissions as writable by the devportal user and only readable by the webserver:
+---------------------------------------------------------------------------------------------------------------------------------------
+
+cd /var/www/devportal/web
+
+chown -R devportal:nginx .
+
+find . -type d -exec chmod u=rwx,g=rx,o= '{}' \;
+
+find . -type f -exec chmod u=rw,g=r,o= '{}' \;
+
+
+Create a directory to use as Drupal’s filesystem for storing uploaded images:
+------------------------------------------------------------------------------
+
+cd /var/www/devportal/web/sites/default
+
+mkdir files
+
+Make the sites/default directory writable by the web server:
+------------------------------------------------------------
+
+chown -R devportal:nginx .
+
+find . -type d -exec chmod ug=rwx,o= '{}' \;
+
+find . -type f -exec chmod ug=rw,o= '{}' \;
+
+
+
+
+Secure Edge Connection Settings:
+*********************************
+
+cd /var/www/devportal
+
+mkdir private
+
+cd private
+
+chown -R devportal:nginx .
+
+find . -type d -exec chmod ug=rwx,o= '{}' \;
+
+find . -type f -exec chmod ug=rw,o= '{}' \;
+
+chcon -R -t httpd_sys_content_rw_t /var/www/devportal/private
+
+
+
+
+Migration form Drupal 7 to Drupal *:
+*****************************************
+
+* go to /opt/apigee/apigee-drupal/wwwroot directory
+	* Make a full backup of all files, directories, and databases. Save the backup in a location outside of the Drupal installation.
+	Note that: If you made modifications to files such as .htaccess, robots.txt, or defaults.settings.php (in the sites directory),
+	you will have to reapply the changes after the update. You will also need to reapply any customizations made in the sites/all directory.
+	Backup procedures:
+	------------------
+	    * Before you can back up the portal, you must know the name of the portal's database.
+		* Use command 'psql -h 10.71.178.29 -d apigee -U apigee -l'  --- secretSauce
+		Password for user drupaladmin:
+                                List of databases
+   Name    | Owner  | Encoding |   Collate   |    Ctype    |  Access privileges
+-----------+--------+----------+-------------+-------------+---------------------
+ apigee    | apigee | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =Tc/apigee         +
+           |        |          |             |             | apigee=CTc/apigee  +
+           |        |          |             |             | postgres=CTc/apigee
+ devportal | apigee | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
+ postgres  | apigee | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
+ template0 | apigee | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/apigee          +
+           |        |          |             |             | apigee=CTc/apigee
+ template1 | apigee | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/apigee          +
+           |        |          |             |             | apigee=CTc/apigee
+(5 rows)
+   * Now start backup:
+   *******************
+	   * Change to the Drupal directory, /opt/apigee/apigee-drupal by default:
+	    cd /opt/apigee/apigee-drupal
+	   * Use pg_dump command 
+	      pg_dump --dbname=devportal --host=10.71.178.29 --username=apigee --password --format=c > /tmp/portal.bak
+	   * Make a backup of your entire Drupal web root directory.
+    	   The default webroot location is /opt/apigee/apigee-drupal/wwwroot
+		     tar cvf ~/wwwroot.tar wwwroot/*
+       * Make a backup of the public files.
+     	   By default, these files are located in /opt/apigee/apigee-drupal/wwwroot/sites/default/files
+		      cd /opt/apigee/apigee-drupal/wwwroot/sites/default
+		      tar cvf ~/files.tar files/*
+	   * Make a backup of the private files in /opt/apigee/data/apigee-drupal-devportal/private
+	          cd /opt/apigee/data/apigee-drupal-devportal
+	          tar cvf ~/private.tar private/*
+			  
+    * Put your site on maintenance mode:
+	************************************
+	     * drush vset --exact maintenance_mode 1
+		 * drush cache-clear all
+		 
+	* Install the desired version of Drupal by using the following command:
+	***********************************************************************
+	     * drush pm-update drupal-7.67
+		 
+	* Take your site out of maintenance mode:
+	----------------------------------------
+	     * drush vset --exact maintenance_mode 0
+		 * drush cache-clear all
+			  
+
+Restore the portal:
+*******************
+
+from backup to an existing---
+pg_restore --clean --dbname=devportal --host=localhost  --username=apigee < /tmp/portal.bak
+
+
+from backup to a new database---
+pg_restore --clean --create --dbname=devportal --host=localhost  --username=apigee < /tmp/portal.bak
+
+
+
+
+
+
+
+yum install mariadb-server
+
+systemctl start mariadb.service
+
+systemctl enable mariadb.service
+
+
+
+jansson.x86_64                      2.10-1.el7               @anaconda/7.4
+libsss_nss_idmap.x86_64             1.16.4-21.el7_7.1        @rhel-7-server-rpms
+nss.x86_64                          3.44.0-7.el7_7           @rhel-7-server-rpms
+nss-pem.x86_64                      1.0.3-7.el7              @rhel-7-server-rpms
+nss-softokn.x86_64                  3.44.0-8.el7_7           @rhel-7-server-rpms
+nss-softokn-freebl.x86_64           3.44.0-8.el7_7           @rhel-7-server-rpms
+nss-sysinit.x86_64                  3.44.0-7.el7_7           @rhel-7-server-rpms
+nss-tools.x86_64                    3.44.0-7.el7_7           @rhel-7-server-rpms
+nss-util.x86_64                     3.44.0-4.el7_7           @rhel-7-server-rpms
+openssh.x86_64                      7.4p1-21.el7             @rhel-7-server-rpms
+openssh-clients.x86_64              7.4p1-21.el7             @rhel-7-server-rpms
+openssh-server.x86_64               7.4p1-21.el7             @rhel-7-server-rpms
+openssl.x86_64                      1:1.0.2k-19.el7          @rhel-7-server-rpms
+openssl-libs.x86_64                 1:1.0.2k-19.el7          @rhel-7-server-rpms
+xmlsec1-openssl.x86_64              1.2.20-7.el7_4           @rhel-7-server-rpms
+
+
+

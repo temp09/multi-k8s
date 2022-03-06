@@ -1,0 +1,83 @@
+CHG0130951
+
+CHG0130789
+
+A.Short description:
+Turn down GCP Apigee Router/Message processor and Qpid servers and Cassandra servers in Production.
+
+B. Description:
+PLATFORM: GCP Apigee Router/Message processor and Qpid servers and Cassandra in appdev
+
+DUE DATE: 2021-05-19 17:00:00 Central
+
+Platform Engineering (Bikram Ghosh) will disable GCP Apigee Router/Message processor and Qpid servers and turndown Cassandra servers in APPDEV.
+API onboarding team will test all API proxy services per post change plan.
+
+The API onboarding team and internal stakeholders have been notified.  
+
+Apigee on-prem in appdev planet might have impact while turning down GCP cassandra servers as they are in a ring.
+There is no GCP traffic currently.
+
+BRIEF DESCRIPTION:
+
+Turn down GCP Apigee Router/Message processor and Qpid servers and Cassandra in appdev.
+API onboarding team and Bikram/Amdad (Platform) will be testing all APIs on the appdev planet.
+
+C. Client at risks:
+API Producers have been notified about this work.
+
+Apigee on-prem in appdev planet might have impact while turning down GCP cassandra servers as they are in a ring.
+There is no GCP traffic currently.
+
+D. Justification:
+There is no GCP traffic and reducing OPEX costs.
+
+E. Implementation plan:
+Reconfigure Management servers settings for CS/ZK servers
+Remove all CS/ZK servers in GCP from pool and reconfigure CS/ZK servers on prem
+Remove all references to the CS/ZK servers in GCP from apigee metadata
+Remove all references to the orgs, envs and pods in GCP from apigee metadata
+Remove all references to the Routers and Message processors servers in GCP from apigee metadata
+Remove all references to the Qpid servers in GCP from analytics groups
+Remove all references to the Qpid servers in GCP from apigee metadata
+
+Disable SWN WIPs for apigee to route traffic to DEN 
+Restart all the components on SWN01
+Verify on prem APIs have not been impacted by testing APIs
+Verify APIs have not been impacted with regression tests performed by Platform Operations and API Market Place team
+
+
+Platform Engineering (Bikram Ghosh) will disable GCP Apigee Router/Message processor and Qpid servers and turndown Cassandra servers in APPDEV.
+
+Remove GCP components from analytics
+Remove GCP components from the cassandra ring
+Remove GCP components from the internal Apigee configurations including orgs and envs.
+
+F. Expected Impact:
+Platform Engineering (Bikram Ghosh) will disable GCP Apigee Router/Message processor and Qpid servers and turndown Cassandra servers in APPDEV.  
+
+Apigee on-prem in appdev planet might have impact while turning down GCP cassandra servers as they are in a ring.
+There is no GCP traffic currently.
+
+G.Wrost case scenario:
+
+The API services on-prem do not function successfully, as they did before the turndown.
+
+
+H. Remediation plan:
+
+Add GCP cassandra servers back into the ring.
+
+I. Coordination plan:
+
+The change is requested by the API MarketPlace team. The team has also notified all internal stakeholders.
+There will be a bridge to perform the work and for testing APIs.
+
+J. Pre change test plan:
+All configurations have been setup
+All steps have been documented.
+Some testing has been performed in sysdev.
+
+
+
+Regression test all API:

@@ -1,0 +1,471 @@
+
+Update will be done on following order:
+***************************************
+
+Upgrades will be performed to the apigee components in the following order:
+Cassandra,
+Qpid, 
+Ldap, 
+Routers/Message processors, 
+Edge UI, and DB.
+Mytemp@01234567890
+For each Router/ MP server:
+Disable Router on F5
+Disassociate  external_prod and internal_prod environment for that Message Processor instance.
+Shutdown the Router/MP instance
+Upgrade Router/MP instance
+Startup the Router/MP instance
+Test APIs on external_staging and internal_staging for that Message Processor instance.
+Re-associate external_prod and internal_prod environment to that Message Processor instance. 
+Enable Router on F5
+
+Test APIs
+
+
+
+For led35488
+Disable Router on F5 - Done
+For led35488
+Enable Router on F5 - Done
+
+
+For led35489
+Associate  external_prod and internal_prod environment for that Message Processor instance. - Done
+Enable Router on F5 - Done
+
+Next Starting with led35488 ( last MP )
+
+*********************************************
+*********************************************
+10.70.*.* -DEN06
+10.65.*.* -SWN01
+-----------------
+Info about the servers: ( curl 0:8083/v1/servers/self/uuid )
+**********************
+
+Postgres: ( curl led35485:8084/v1/servers/self/uuid )
+**********
+SWN01:
+	00f50488-5b11-494a-9037-7656bb2022a1[led35485]- slave_analytic
+	7ec82f50-f00d-4339-838a-80489351653f[led35512]- slave_portal
+DEN06:
+	3c729e3b-66f7-483c-b11f-935137990a4a[led35484]- master_analytic
+	6989f2c4-c229-49f8-942d-a90355cec41b[led35510]- master_portal
+	
+
+ External MPs: ( MP: curl led35646:8082/v1/servers/self/uuid ) ( MR: curl led35646:8081/v1/servers/self/uuid )
+**************
+  DEN06:
+	 59140389-4b47-419a-8a2a-99e728f5b9cb---led35646
+	 d162fb8a-fc03-47c7-966e-e2edf0b4bec2---led35645
+  SWN01:
+	 925a7a89-9d0c-42be-81b0-09fb99cb8acb---led35648
+	 871d38ef-00ee-48b9-9bfb-e906b3ee48ab---led35651
+ 
+ Internal MPs:
+*************
+DEN06:	
+	59140389-4b47-419a-8a2a-99e728f5b9cb---led35646(ex)
+	d162fb8a-fc03-47c7-966e-e2edf0b4bec2---led35645(ex)
+	ba894c6b-89e5-4f76-a3d3-ee7f0a697589---led35492
+	f0a0bbd2-0c47-4e24-b0b6-07b1992872d3---led35491
+	8b1ea058-ad24-4137-98ed-1113536cf9ef---led35487
+	
+	
+SWN01:
+	925a7a89-9d0c-42be-81b0-09fb99cb8acb---led35648(ex)
+	871d38ef-00ee-48b9-9bfb-e906b3ee48ab---led35651(ex)	
+	b8ab8944-5ba4-406b-a1f5-385c0c6bd226---led35521
+	ba5b0560-c71e-4655-ac66-0288285d30ab---led35489
+	
+
+    0cbff82f-76a3-4924-bd46-de4e01118ced---led35488
+	
+Mgt servers:
+*************
+SWN01:
+    216772c1-184d-44f1-8faa-3c43f758b6f0---led35509
+DEN06:
+	d81e82a4-bdd9-4cb4-846d-dded3236904b---led35490
+	
+Qpid servers:
+*************
+DEN06:
+	26b03e14-83df-4204-bf5f-6f6a850f3a25 --- led35518
+	07cc31fd-4a05-48b6-b749-7830b2db2fe7 --- led35519
+SWN01:	
+	42ad0094-a348-49b5-8d46-79205b42f6da --- led35517
+	acfbcbe1-8e1b-4985-8651-e2dcc14b4487  -- led35516
+	
+
+Dissassocate:
+--------------	
+external_prod:
+--------------	
+curl -v -H "Content-Type:application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST http://10.70.114.166:8080/v1/organizations/west/environments/external_prod/servers -d "action=remove&uuid=925a7a89-9d0c-42be-81b0-09fb99cb8acb"
+
+curl -v -H "Content-Type:application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST http://10.65.149.53:8080/v1/organizations/west/environments/external_prod/servers -d "action=remove&uuid=ba5b0560-c71e-4655-ac66-0288285d30ab"
+
+
+
+internal_prod:
+--------------	
+curl -v -H "Content-Type:application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST http://10.70.114.166:8080/v1/organizations/west/environments/internal_prod/servers -d "action=remove&uuid=925a7a89-9d0c-42be-81b0-09fb99cb8acb"
+
+curl -v -H "Content-Type:application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST http://10.65.149.53:8080/v1/organizations/west/environments/internal_prod/servers -d "action=remove&uuid=ba5b0560-c71e-4655-ac66-0288285d30ab"
+
+
+
+
+
+
+curl -H "Content-Type:application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST http://10.70.114.166:8080/v1/organizations/west/environments/external_staging/servers -d "action=remove&uuid=d162fb8a-fc03-47c7-966e-e2edf0b4bec2"
+
+curl -H "Content-Type:application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST http://10.70.114.166:8080/v1/organizations/west/environments/external_staging/servers -d "action=remove&uuid=925a7a89-9d0c-42be-81b0-09fb99cb8acb"
+
+curl -H "Content-Type:application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST http://10.70.114.166:8080/v1/organizations/west/environments/external_staging/servers -d "action=remove&uuid=871d38ef-00ee-48b9-9bfb-e906b3ee48ab"
+
+
+
+curl -v -u ApigeeAdmin@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=59140389-4b47-419a-8a2a-99e728f5b9cb" "http://10.70.114.166:8080/v1/organizations/west/environments/external_staging/servers"
+
+curl -v -u ApigeeAdmin@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=d162fb8a-fc03-47c7-966e-e2edf0b4bec2" "http://10.70.114.166:8080/v1/organizations/west/environments/external_staging/servers"
+
+curl -v -u ApigeeAdmin@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=925a7a89-9d0c-42be-81b0-09fb99cb8acb" "http://10.70.114.166:8080/v1/organizations/west/environments/external_staging/servers"
+
+curl -v -u ApigeeAdmin@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=871d38ef-00ee-48b9-9bfb-e906b3ee48ab" "http://10.70.114.166:8080/v1/organizations/west/environments/external_staging/servers"
+
+curl -v -u ApigeeAdmin@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=ba894c6b-89e5-4f76-a3d3-ee7f0a697589" "http://10.70.114.166:8080/v1/organizations/west/environments/external_staging/servers"
+
+curl -v -u ApigeeAdmin@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=f0a0bbd2-0c47-4e24-b0b6-07b1992872d3" "http://10.70.114.166:8080/v1/organizations/west/environments/external_staging/servers"
+
+curl -v -u ApigeeAdmin@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=8b1ea058-ad24-4137-98ed-1113536cf9ef" "http://10.70.114.166:8080/v1/organizations/west/environments/external_staging/servers"
+
+curl -v -u ApigeeAdmin@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=b8ab8944-5ba4-406b-a1f5-385c0c6bd226" "http://10.70.114.166:8080/v1/organizations/west/environments/external_staging/servers"
+
+curl -v -u ApigeeAdmin@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=ba5b0560-c71e-4655-ac66-0288285d30ab" "http://10.70.114.166:8080/v1/organizations/west/environments/external_staging/servers"
+	
+	
+STEP1:
+*******
+
+Take the router from f5 
+
+
+STEP2:
+******
+Disassociate the MPS
+
+STEP3:
+*******
+While updating check the update logs for any error
+
+STEP4:
+*******
+Associate back MPS
+
+STEP5:
+******
+Enable f5
+
+
+	
+	
+Get the servers info for each environments:
+*******************************************
+
+curl -u ApigeeAdmin@west.com -X GET "http://10.70.114.166:8080/v1/organizations/west/environments/internal_staging/servers"
+
+[ D "59140389-4b47-419a-8a2a-99e728f5b9cb",
+  "d162fb8a-fc03-47c7-966e-e2edf0b4bec2",
+  
+  S "925a7a89-9d0c-42be-81b0-09fb99cb8acb",
+  "871d38ef-00ee-48b9-9bfb-e906b3ee48ab",
+  
+  D "ba894c6b-89e5-4f76-a3d3-ee7f0a697589", 
+  "f0a0bbd2-0c47-4e24-b0b6-07b1992872d3",
+  "8b1ea058-ad24-4137-98ed-1113536cf9ef",
+  
+  S "b8ab8944-5ba4-406b-a1f5-385c0c6bd226", 
+  "ba5b0560-c71e-4655-ac66-0288285d30ab",
+  "0cbff82f-76a3-4924-bd46-de4e01118ced"  
+   ]
+
+curl -u ApigeeAdmin@west.com -X GET "http://10.70.114.166:8080/v1/organizations/west/environments/internal_prod/servers"
+
+[ D "59140389-4b47-419a-8a2a-99e728f5b9cb",
+  "d162fb8a-fc03-47c7-966e-e2edf0b4bec2",
+  
+  S "925a7a89-9d0c-42be-81b0-09fb99cb8acb",
+  "871d38ef-00ee-48b9-9bfb-e906b3ee48ab",
+  
+  D "ba894c6b-89e5-4f76-a3d3-ee7f0a697589", 
+  "f0a0bbd2-0c47-4e24-b0b6-07b1992872d3",
+  "8b1ea058-ad24-4137-98ed-1113536cf9ef",
+  
+  S "b8ab8944-5ba4-406b-a1f5-385c0c6bd226", 
+  "ba5b0560-c71e-4655-ac66-0288285d30ab",
+  "0cbff82f-76a3-4924-bd46-de4e01118ced"  
+   ]
+
+curl -u ApigeeAdmin@west.com -X GET "http://10.70.114.166:8080/v1/organizations/west/environments/external_staging/servers"
+
+[ D "59140389-4b47-419a-8a2a-99e728f5b9cb",
+  "d162fb8a-fc03-47c7-966e-e2edf0b4bec2",
+  
+  S "925a7a89-9d0c-42be-81b0-09fb99cb8acb",
+  "871d38ef-00ee-48b9-9bfb-e906b3ee48ab",
+  
+  D "ba894c6b-89e5-4f76-a3d3-ee7f0a697589", 
+  "f0a0bbd2-0c47-4e24-b0b6-07b1992872d3",
+  "8b1ea058-ad24-4137-98ed-1113536cf9ef",
+  
+  S "b8ab8944-5ba4-406b-a1f5-385c0c6bd226", 
+  "ba5b0560-c71e-4655-ac66-0288285d30ab",
+  "0cbff82f-76a3-4924-bd46-de4e01118ced"  
+   ]
+
+curl -u ApigeeAdmin@west.com -X GET "http://10.70.114.166:8080/v1/organizations/west/environments/external_prod/servers"
+
+[ D "59140389-4b47-419a-8a2a-99e728f5b9cb",
+  "d162fb8a-fc03-47c7-966e-e2edf0b4bec2",
+  
+  S "925a7a89-9d0c-42be-81b0-09fb99cb8acb",
+  "871d38ef-00ee-48b9-9bfb-e906b3ee48ab",
+  
+  D "ba894c6b-89e5-4f76-a3d3-ee7f0a697589", 
+  "f0a0bbd2-0c47-4e24-b0b6-07b1992872d3",
+  "8b1ea058-ad24-4137-98ed-1113536cf9ef",
+  
+  S "b8ab8944-5ba4-406b-a1f5-385c0c6bd226", 
+  "ba5b0560-c71e-4655-ac66-0288285d30ab",
+  "0cbff82f-76a3-4924-bd46-de4e01118ced"  
+   ]
+
+curl -u ApigeeAdmin@west.com -X GET "http://10.65.149.53:8080/v1/organizations/west/environments/external_staging/servers"
+
+curl -u ApigeeAdmin@west.com -X GET "http://10.65.149.53:8080/v1/organizations/west/environments/external_prod/servers"
+
+curl -u ApigeeAdmin@west.com -X GET "http://10.65.149.53:8080/v1/organizations/west/environments/internal_staging/servers"
+
+curl -u ApigeeAdmin@west.com -X GET "http://10.65.149.53:8080/v1/organizations/west/environments/internal_prod/servers"
+	
+	
+DELETE servers:
+***************
+
+curl -i -u ApigeeAdmin@west.com -X GET "http://10.70.114.166:8080/v1/servers/7ec82f50-f00d-4339-838a-80489351653f"
+curl -i -u ApigeeAdmin@west.com -X GET "http://10.65.149.53:8080/v1/servers/7ec82f50-f00d-4339-838a-80489351653f"
+curl -i -u ApigeeAdmin@west.com -X DELETE "http://10.65.149.53:8080/v1/servers/7ec82f50-f00d-4339-838a-80489351653f"
+curl -i -u ApigeeAdmin@west.com -X GET "http://10.65.149.53:8080/v1/servers/7ec82f50-f00d-4339-838a-80489351653f"
+
+Disassociate an environment with a MP:
+****************************************
+led35646:
+---------
+      curl -H "Content-Type:application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST http://10.70.114.166:8080/v1/organizations/west/environments/external_staging/servers -d "action=remove&uuid=ba5b0560-c71e-4655-ac66-0288285d30ab"
+	  
+	  curl -H "Content-Type:application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST http://10.70.114.166:8080/v1/organizations/west/environments/external_prod/servers -d "action=remove&uuid=925a7a89-9d0c-42be-81b0-09fb99cb8acb"
+	  
+	  curl -H "Content-Type:application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST http://10.70.114.166:8080/v1/organizations/west/environments/internal_staging/servers -d "action=remove&uuid=ba894c6b-89e5-4f76-a3d3-ee7f0a697589"
+	  
+	  curl -H "Content-Type:application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST http://10.70.114.166:8080/v1/organizations/west/environments/internal_prod/servers -d "action=remove&uuid=925a7a89-9d0c-42be-81b0-09fb99cb8acb"
+	  
+	  
+	  
+	  curl -H "Content-Type:application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST http://10.70.114.166:8080/v1/organizations/west/environments/external_prod/servers -d "action=remove&uuid=0cbff82f-76a3-4924-bd46-de4e01118ced"
+	  
+	  
+	  
+	  curl -H "Content-Type:application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST http://10.70.114.166:8080/v1/organizations/west/environments/internal_prod/servers -d "action=remove&uuid=0cbff82f-76a3-4924-bd46-de4e01118ced"
+	  
+	  
+
+
+Get the installation and update logs:
+**************************************
+tail -f /opt/apigee/var/log/apigee-setup/update.log 
+
+
+	  
+
+GET system logs:
+****************
+
+Get the system log:
+******************************************
+      cat /opt/apigee/var/log/edge-postgres-server/logs/system.log
+	  
+	  tail -f /opt/apigee/var/log/edge-message-processor/logs/system.log
+	  
+	  tail -f /opt/apigee/var/log/edge-management-server/logs/system.log
+	  
+	  tail -f /opt/apigee/var/log/edge-router/logs/system.log
+	  
+	  tail -f /opt/apigee/var/log/edge-qpid-server/logs/system.log
+
+	
+*************************************************************8
+*****************************************************************
+
+
+
+
+
+
+
+* Checking health check to router:
+-----------------------------------
+
+External:
+---------
+curl -v http://led35646:15999/v1/servers/self/reachable
+curl -v http://led35645:15999/v1/servers/self/reachable
+
+curl -v http://led35648:15999/v1/servers/self/reachable
+curl -v http://led35651:15999/v1/servers/self/reachable
+
+Internal:
+---------
+curl -v http://led35521:15999/v1/servers/self/reachable
+curl -v http://led35487:15999/v1/servers/self/reachable
+curl -v http://led35489:15999/v1/servers/self/reachable
+
+
+curl -v http://led35491:15999/v1/servers/self/reachable
+curl -v http://led35492:15999/v1/servers/self/reachable
+
+curl -v http://led35488:15999/v1/servers/self/reachable  ***
+
+
+
+* To make router unreachable :
+------------------------------
+
+iptables -A INPUT -i eth0 -p tcp --dport 15999 -j REJECT
+
+* To make reachable again router :
+---------------------------------
+
+iptables -F
+
+
+
+* Validate the update logs anything missing or error:
+-----------------------------------------------------
+
+   " /opt/apigee/var/log/apigee-setup/update.log "
+   
+   
+* To check MPs MR up:
+--------------------
+
+curl -v http://led35645:8082/v1/servers/self/up
+curl -v http://led35646:8082/v1/servers/self/up
+
+curl -v http://led35648:8082/v1/servers/self/up
+curl -v http://led35651:8082/v1/servers/self/up
+
+
+curl -v http://led35521:8082/v1/servers/self/up
+curl -v http://led35487:8082/v1/servers/self/up
+curl -v http://led35489:8082/v1/servers/self/up
+
+curl -v http://led35491:8082/v1/servers/self/up
+curl -v http://led35492:8082/v1/servers/self/up
+
+curl -v http://led35488:8082/v1/servers/self/up
+
+
+Associate back:
+---------------
+
+external_prod:
+--------------
+curl -v -u ApigeeAdmin@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=8b1ea058-ad24-4137-98ed-1113536cf9ef" "http://10.70.114.166:8080/v1/organizations/west/environments/external_prod/servers"
+
+curl -v -u ApigeeAdmin@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=ba5b0560-c71e-4655-ac66-0288285d30ab" "http://10.65.149.53:8080/v1/organizations/west/environments/external_prod/servers"
+
+internal_prod:
+--------------
+curl -v -u ApigeeAdmin@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=8b1ea058-ad24-4137-98ed-1113536cf9ef" "http://10.70.114.166:8080/v1/organizations/west/environments/internal_prod/servers"
+
+curl -v -u ApigeeAdmin@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=ba5b0560-c71e-4655-ac66-0288285d30ab" "http://10.65.149.53:8080/v1/organizations/west/environments/internal_prod/servers"
+	 
+	 
+
+
+
+Associate env with the MPs:
+***************************
+led35646:
+---------
+     curl -v -u ApigeeAdmin@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=59140389-4b47-419a-8a2a-99e728f5b9cb" "http://10.70.114.166:8080/v1/organizations/west/environments/external_staging/servers"
+	 
+	 curl -v -u ApigeeAdmin@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=8b1ea058-ad24-4137-98ed-1113536cf9ef" "http://10.70.114.166:8080/v1/organizations/west/environments/external_prod/servers"
+	 
+	 curl -v -u ApigeeAdmin@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=59140389-4b47-419a-8a2a-99e728f5b9cb" "http://10.70.114.166:8080/v1/organizations/west/environments/internal_staging/servers"
+	 
+	 curl -v -u ApigeeAdmin@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=8b1ea058-ad24-4137-98ed-1113536cf9ef" "http://10.70.114.166:8080/v1/organizations/west/environments/internal_prod/servers"
+	 
+	 curl -H "Content-Type:application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST http://10.70.114.166:8080/v1/organizations/west/environments/external_staging/servers -d "action=remove&uuid=59140389-4b47-419a-8a2a-99e728f5b9cb"
+	 
+
+Posttest:
+**********
+
+[2019-12-13 03:11.27]  ~
+[aullah.OMISLABL4] ➤ curl -u ApigeeAdmin@west.com -X GET "http://10.65.149.53:8080/v1/organizations/west/environments/internal_prod/servers"                                                                                    Enter host password for user 'ApigeeAdmin@west.com':
+[ "ba894c6b-89e5-4f76-a3d3-ee7f0a697589", 
+  "f0a0bbd2-0c47-4e24-b0b6-07b1992872d3", 
+  "ba5b0560-c71e-4655-ac66-0288285d30ab", 
+  "d162fb8a-fc03-47c7-966e-e2edf0b4bec2", 
+  "8b1ea058-ad24-4137-98ed-1113536cf9ef", 
+  "925a7a89-9d0c-42be-81b0-09fb99cb8acb", 
+  "59140389-4b47-419a-8a2a-99e728f5b9cb", 
+  "b8ab8944-5ba4-406b-a1f5-385c0c6bd226", 
+  "871d38ef-00ee-48b9-9bfb-e906b3ee48ab" ]                                                                                     ✔
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+[2019-12-13 03:21.35]  ~
+[aullah.OMISLABL4] ➤ curl -u ApigeeAdmin@west.com -X GET "http://10.65.149.53:8080/v1/organizations/west/environments/external_prod/servers"
+Enter host password for user 'ApigeeAdmin@west.com':
+[ "ba894c6b-89e5-4f76-a3d3-ee7f0a697589", 
+"f0a0bbd2-0c47-4e24-b0b6-07b1992872d3", 
+"ba5b0560-c71e-4655-ac66-0288285d30ab", 
+"d162fb8a-fc03-47c7-966e-e2edf0b4bec2", 
+"8b1ea058-ad24-4137-98ed-1113536cf9ef", 
+"925a7a89-9d0c-42be-81b0-09fb99cb8acb", 
+"59140389-4b47-419a-8a2a-99e728f5b9cb", 
+"b8ab8944-5ba4-406b-a1f5-385c0c6bd226", 
+"871d38ef-00ee-48b9-9bfb-e906b3ee48ab" ]                                                                                     ✔
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+[2019-12-13 03:21.52]  ~
+[aullah.OMISLABL4] ➤ curl -u ApigeeAdmin@west.com -X GET "http://10.65.149.53:8080/v1/organizations/west/environments/external_staging/servers"
+Enter host password for user 'ApigeeAdmin@west.com':
+[ "ba894c6b-89e5-4f76-a3d3-ee7f0a697589", 
+"f0a0bbd2-0c47-4e24-b0b6-07b1992872d3", 
+"ba5b0560-c71e-4655-ac66-0288285d30ab", 
+"d162fb8a-fc03-47c7-966e-e2edf0b4bec2", 
+"925a7a89-9d0c-42be-81b0-09fb99cb8acb", 
+"8b1ea058-ad24-4137-98ed-1113536cf9ef", 
+"59140389-4b47-419a-8a2a-99e728f5b9cb", 
+"b8ab8944-5ba4-406b-a1f5-385c0c6bd226", 
+"871d38ef-00ee-48b9-9bfb-e906b3ee48ab" ]                                                                                     ✔
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+[2019-12-13 03:22.17]  ~
+[aullah.OMISLABL4] ➤ curl -u ApigeeAdmin@west.com -X GET "http://10.65.149.53:8080/v1/organizations/west/environments/internal_staging/servers"
+Enter host password for user 'ApigeeAdmin@west.com':
+[ "ba894c6b-89e5-4f76-a3d3-ee7f0a697589", 
+"ba5b0560-c71e-4655-ac66-0288285d30ab", 
+"f0a0bbd2-0c47-4e24-b0b6-07b1992872d3", 
+"8b1ea058-ad24-4137-98ed-1113536cf9ef", 
+"d162fb8a-fc03-47c7-966e-e2edf0b4bec2", 
+"925a7a89-9d0c-42be-81b0-09fb99cb8acb", 
+"59140389-4b47-419a-8a2a-99e728f5b9cb", 
+"b8ab8944-5ba4-406b-a1f5-385c0c6bd226", 
+"871d38ef-00ee-48b9-9bfb-e906b3ee48ab" ]                                                                                     ✔
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+	 
+	 
+	 
+Need to dissassociate internal MPs external_prod  

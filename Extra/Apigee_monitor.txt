@@ -1,0 +1,133 @@
+What to monitor:
+****************
+
+  A. System level check:
+                       1. Total CPU used by the system
+                       2. Physical memory used by the system
+					   3. Hard disk space used by the system
+					   4. Specifies the number of processes waiting to run
+					   5. Network statistics
+					   
+	need to check for the components:
+	                   mgt server
+                       MP
+					   QPID Server
+					   Postgres server
+					   
+	
+
+
+  B. Process/Application level checks: 2 and 3 can be done by using JMX
+                       1. Apigee server java processes
+					   2. Heap memory used
+					   3. Non-heap memory used
+					   
+	need to check for the components:
+	                   mgt server
+                       MP
+					   QPID Server
+					   Postgres server
+					   Nginx Router
+					   
+   C. Api-level Check: ( by using curl commands)
+                       1.Server is up and running
+					   
+					   
+	  need to check for the components:
+	                   mgt server
+                       MP
+					   MR
+					   QPID Server
+					   Postgres server
+					   
+  D. Message flow check:
+                       1. Check the response status
+					   2. Connect failure
+					   
+					   
+	  need to check for the components:
+	                   MP
+					   MR
+					   
+  E. Router health check of the message processor:
+                       1. "Mark down" on router log file
+					   2. "Mark up" on router log file
+					   
+	
+	
+	
+New Relic :
+*************
+
+Health check for each router and each message processor
+
+Alert notifications
+
+
+db1a889fc3924a62a2112cf6a00e55e1bd0ed3b4
+
+
+
+//Define your authentication credentials
+var myUser = 'ApigeeAdmin@west.com';
+var myPassword = 'Westpl@teng2306';
+var options = {
+    //Define endpoint URI
+    uri: 'http://10.65.188.21:8081/v1/servers/self/up',
+    //Define query key and expected data type.
+    headers: {
+    'Accept': 'application/json'
+}
+};
+
+//Define expected results using callback function.
+function callback (err, response, body){
+//Log JSON results from endpoint to Synthetics console.
+ console.log(JSON.parse(body)); 
+ console.log('done with script');
+}
+
+//Make GET request, passing in options and callback.
+$http.get(options,callback);
+					   
+					   
+					   6492594f-08f2-4345-89c4-51cd659dcd48"
+					   
+					   
+					   
+					   
+Validate the postgresql database:
+**********************************
+check you are in master node:
+ 
+						cd /opt/apigee/apigee-service/bin/
+
+						apigee-service apigee-postgresql postgres-check-master
+						
+output: 
+ pg_current_xlog_location
+--------------------------
+ 0/35ACC70
+(1 row)
+
+OK
+postgres-server is master
+
+
+login to postgres:
+              	psql -h /opt/apigee/var/run/apigee-postgresql -U apigee apigee
+
+check the table is exists: 
+                		analytics."west.test/dev.fact"
+						
+Check the latest data in postgresql by using query:
+                             select max(client_received_start_timestamp) from analytics."west.test.fact";
+							 
+							 
+curl -u ApigeeAdmin@west.com:Westpl@teng2306 "http://10.65.188.21:8080/v1/organizations/west/environments/dev/stats/apiproxy?limit=14400&select=sum(message_count),sum(is_error),avg(total_response_time),avg(target_response_time)&sort=DESC&sortby=sum(message_count),sum(is_error),avg(total_response_time),avg(target_response_time)&timeRange=08%2F9%2F2017+18:00:00~08%2F10%2F2017+18:00:00&timeUnit=hour&tsAscending=true
+		
+
+
+
+
+   

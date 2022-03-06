@@ -1,0 +1,190 @@
+
+
+	
+We will be separating out the environments in Appdev planet with following:
+
+
+     
+F5: https://swn01-aci-lb03.net.west.com/xui/
+
+TEST:
+-----
+VIP:10.28.101.132
+Pool members:
+led36922   10.65.188.30
+led36923   10.65.188.31
+
+
+
+DEV:
+----
+VIP:10.28.101.135
+Pool members:
+led36924   10.65.188.32
+led36925   10.65.188.33
+
+
+
+F5: https://den06-aci-lb03.net.west.com/xui/
+
+TEST:
+-----
+VIP:10.71.106.174 
+Pool members:
+led36937   10.71.178.30
+led36938   10.71.178.31
+
+
+DEV:
+----
+VIP:10.71.106.177
+Pool members:
+led36939   10.71.178.32
+led36940   10.71.178.33
+
+
+Note that in current F5 configuration old api.sysdev.west.com for TEST and DEV environment is pointing to VIP: 10.71.106.174 ( DEN06 )
+                                                                                                          VIP: 10.28.101.132 ( SWN01 )
+
+																										  
+																										  
+																										  We can do the following layout for separating out the environments in Appdev planet.
+We are doing the following layout for separating out the environments in Appdev planet.
+
+TEST environment will handle the traffic by led36922,led36923 and led36937,led36938
+DEV  environment will handle the traffic by led36924,led36925 and led36939,led36940
+
+curl 0:8082/v1/servers/self/uuid
+
+SWN01:     
+******
+
+TEST: ( test-apimarketplace.west.com )
+-----
+VIP:10.28.101.132
+Pool members:
+led36922   10.65.188.30        23365439-0fe4-4a6e-87ab-0a869837723f
+led36923   10.65.188.31        f8a439d8-56ae-4145-ab75-e1fc1b934008
+
+
+
+DEV: ( dev-apimarketplace.west.com )
+----
+VIP:10.28.101.135
+Pool members:
+led36924   10.65.188.32       bece0ce9-d297-4dcf-8000-6dae530e95ba
+led36925   10.65.188.33       1bbb17c7-0048-41fd-86af-80bd95621ed1
+
+
+DEN06:
+******
+
+TEST: ( test-apimarketplace.west.com )
+-----
+VIP:10.71.106.174 
+Pool members:
+led36937   10.71.178.30      143894f1-a820-490d-8fbd-c303e26d93ed
+led36938   10.71.178.31      a5289c0c-7d8c-4b6d-81f5-cae14523dfb6
+
+
+DEV: ( dev-apimarketplace.west.com )
+----
+VIP:10.71.106.177
+Pool members:
+led36939   10.71.178.32      91908764-7dde-4334-aa52-5c143bd95a0c
+led36940   10.71.178.33      f086be5a-ca74-4b09-9060-8d8a2243ff93
+
+
+Getting Server Info: TEST
+********************
+
+
+curl -u ApigeeAdmin@west.com -X GET http://10.65.188.34:8080/v1/organizations/west/environments/test/servers
+
+curl -u ApigeeAdmin@west.com -X GET http://10.71.178.34:8080/v1/organizations/west/environments/test/servers
+
+
+Dissassociate MP: TEST
+******************
+
+curl -H "Content-Type: application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST "http://10.71.178.34:8080/v1/organizations/west/environments/test/servers" -d "action=remove&uuid=91908764-7dde-4334-aa52-5c143bd95a0c"
+
+
+curl -H "Content-Type: application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST "http://10.65.188.34:8080/v1/organizations/west/environments/test/servers" -d "action=remove&uuid=bece0ce9-d297-4dcf-8000-6dae530e95ba"
+
+
+Checking logs:
+**************
+
+	tail -f /opt/apigee/var/log/edge-message-processor/logs/system.log
+	tail -f /opt/apigee/var/log/edge-router/logs/system.log
+	tail -f /opt/apigee/var/log/edge-management-server/logs/system.log
+	
+	
+	ls -lart /opt/nginx/conf.d/
+	
+	cat /opt/nginx/conf.d/west_test_main_vhost.conf
+	cat /opt/nginx/conf.d/west_test_newTLS.conf
+	cat /opt/nginx/conf.d/west_test_default.conf
+	cat /opt/nginx/conf.d/west_test_default_vhost.conf
+	
+	cat /opt/nginx/conf.d/west_dev_main_vhost.conf
+	cat /opt/nginx/conf.d/west_dev_newTLS.conf
+	cat /opt/nginx/conf.d/west_dev_default.conf
+	cat /opt/nginx/conf.d/west_dev_default_vhost.conf
+	
+
+
+Getting Server Info: DEV
+********************
+
+curl -u ApigeeAdmin@west.com -X GET http://10.65.188.34:8080/v1/organizations/west/environments/dev/servers
+
+curl -u ApigeeAdmin@west.com -X GET http://10.71.178.34:8080/v1/organizations/west/environments/dev/servers
+
+Dissassociate MP: DEV
+******************
+
+curl -H "Content-Type: application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST "http://10.71.178.34:8080/v1/organizations/west/environments/dev/servers" -d "action=remove&uuid=143894f1-a820-490d-8fbd-c303e26d93ed"
+
+curl -H "Content-Type: application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST "http://10.71.178.34:8080/v1/organizations/west/environments/dev/servers" -d "action=remove&uuid=a5289c0c-7d8c-4b6d-81f5-cae14523dfb6"
+
+
+curl -H "Content-Type: application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST "http://10.65.188.34:8080/v1/organizations/west/environments/dev/servers" -d "action=remove&uuid=23365439-0fe4-4a6e-87ab-0a869837723f"
+
+curl -H "Content-Type: application/x-www-form-urlencoded" -u ApigeeAdmin@west.com -X POST "http://10.65.188.34:8080/v1/organizations/west/environments/dev/servers" -d "action=remove&uuid=f8a439d8-56ae-4145-ab75-e1fc1b934008"
+
+
+Associate back  MP: DEV
+********************
+
+curl -v -u ApigeeAdmin@west.com -H "Content-Type: application/x-www-form-urlencoded" -X POST "http://10.71.178.34:8080/v1/o/west/e/dev/servers" -d "action=add&uuid=f086be5a-ca74-4b09-9060-8d8a2243ff93"
+
+
+curl -v -u ApigeeAdmin@west.com -H "Content-Type: application/x-www-form-urlencoded" -X POST "http://10.65.188.34:8080/v1/o/west/e/dev/servers" -d "action=add&uuid=1bbb17c7-0048-41fd-86af-80bd95621ed1"
+
+
+
+Testing:
+**********
+
+DEV:
+	-----
+	curl -k -vs -X GET  'https://10.65.188.33:9004/v1/failover' -H 'host: dev-apimarketplace.west.com'
+	
+	curl -k -vs -X GET  'http://10.65.188.30:9003/v1/failover' -H 'host: dev-apimarketplace.west.com'
+	
+	TEST:
+	-----
+	curl -k -vs -X GET  'https://10.65.188.33:9002/v1/failover' -H 'host: test-apimarketplace.west.com'
+	
+	curl -k -vs -X GET  'http://10.65.188.30:9001/v1/failover' -H 'host: test-apimarketplace.west.com'
+	
+	Through MP:
+	************
+
+	
+	curl -v http://10.65.188.33:8998/v1/failover -H 'X-Apigee.Host: dev-apimarketplace.west.com:9004'
+	
+	curl -v http://10.71.178.33:8998/v1/failover -H 'X-Apigee.Host: test-apimarketplace.west.com:9002'
+	

@@ -1,0 +1,48 @@
+Install transcoder library
+***************************
+
+yum install epel-release
+yum localinstall --nogpgcheck https://download1.rpmfusion.org/free/el/rpmfusion-free-release-7.noarch.rpm https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-7.noarch.rpm
+yum install ffmpeg ffmpeg-devel
+ffmpeg -version
+/opt/apigee/apigee-service/bin/apigee-all restart
+
+Need to update drupal modules:
+*******************************
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl swagger_ui_formatter-7.x-1.2
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl bootstrap_modal_forms-7.x-3.26
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl link-7.x-1.6
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl views-7.x-3.23
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl uuid-7.x-1.3
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl module_filter-7.x-2.2
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl media-7.x-2.23
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl me-7.x-1.5
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl entity-7.x-1.9
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl context-7.x-3.10
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl advanced_forum-7.x-2.8
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl backup_migrate-7.x-3.6
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl node_export-7.x-3.1
+
+
+
+
+ Edit drupal.properties file
+ *****************************
+conf_php_upload_max_filesize = 200M
+conf_php_max_execution_time = 2000
+conf_php_post_max_size = 200M
+conf_php_max_input_time = 300
+conf_php_memory_limit = 2048M
+conf_php_max_input_vars = 10000
+
+
+
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl backup_migrate-7.x-3.5
+/opt/apigee/apigee-service/bin/apigee-all restart
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl media-7.x-2.21
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl views-7.x-3.20
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl uuid-7.x-1.2
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl link-7.x-1.5
+drush --root=/opt/apigee/apigee-drupal/wwwroot dl module_filter-7.x-2.1
+/opt/apigee/apigee-service/bin/apigee-all restart
+

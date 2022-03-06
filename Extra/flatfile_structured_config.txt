@@ -1,0 +1,23 @@
+Default log location for proxy MP:
+**********************************
+
+/opt/apigee/var/log/edge-message-processor/messagelogging/org_name/environment/api_proxy_name/revision/logging_policy_name/
+ex: /opt/apigee/var/log/edge-message-processor/messagelogging/west/dev/SharedFlow1/2/Message-Logging-1
+
+To set these properties:
+**************************
+
+1.Open the message-processor.properties file in an editor. If the file does not exist, create it:
+  vi /opt/apigee/customer/application/message-processor.properties
+  
+2.Set the properties as desired:
+  conf/message-logging.properties+log.root.dir=/opt/apigee/var/log/messages
+  
+3.Save your changes.
+
+4.Make sure the properties file is owned by the 'apigee' user:
+   chown apigee:apigee /opt/apigee/customer/application/message-processor.properties
+   
+5.Restart the Edge component:
+  /opt/apigee/apigee-service/bin/apigee-service edge-message-processor restart
+

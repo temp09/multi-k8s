@@ -1,0 +1,34 @@
+1. Ensure Edge is running:
+   /opt/apigee/apigee-service/bin/apigee-all status
+   
+2. Install apigee-service on all nodes
+           -- Install apigee-setup update on all
+		   -- Install apigee-validate update on all Management servers
+		   -- Install apigee-provision update on all Management servers
+		   
+3. Order of update sequence
+ need to run on root directory
+  cd /opt/apigee 
+           -- Cassandra and Zookeeper
+		   -- Qpid
+		   -- LDAP
+		   -- edge ( everything except PG)
+		   -- ui
+		   
+4. On PG
+           -- edge-postgres-server stop on master node
+		   -- edge-postgres-server stop on standby node
+		   -- apigee-postgresql stop on standby node
+		   -- edge-qpid-server stop on qpid node
+		   -- Run update for postgres on master node
+		   -- Run update for postgres on standby node
+		   -- Start edge-postgres-server on master node
+		   -- Start edge-postgres-server on standby node
+		   -- Start edge-qpid-server start on qpid node
+		   -- cd t /opt/apigee/data/apigee-postgresql/pgdata  in standby postgres node and run remove command rm -rf *
+		   -- Setup replication for apigee-postgresql on standby
+		   -- Check the postgres for master
+		   -- Check the postgres for standby
+		   -- Run update for edge for postgres in master
+		   -- Run update for edge for postgres in standby
+		   -- Restart the edge-ui on ui nodesl

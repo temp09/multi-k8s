@@ -1,0 +1,50 @@
+Test the install: ( 10.27.165.146)-dc1 (10.27.165.138) - dc2
+*****************
+
+1.Install apigee-validate on a Management Server node
+
+       /opt/apigee/apigee-service/bin/apigee-service apigee-validate install
+	   
+2. Run the setup command on a Management Server node to invoke the test scripts
+
+        /opt/apigee/apigee-service/bin/apigee-service apigee-validate setup -f configFile   (APIGEE_ADMINPW=SYS_ADMIN_PASSWORD) in configFile 
+		
+The script then does the following:
+      
+	  Creates an organization and associates it with the pod.
+	  
+      Creates an environment and associates the Message Processor with the environment.
+	  
+      Creates a virtual host.
+	  
+      Imports a simple health check proxy and deploys the application to the "test" environment.
+	  
+      Imports the SmartDocs proxy.
+	  
+      Executes the test to make sure everything is working as expected.
+	  
+3. Validate the SmartDocs is install properly
+
+     ls -l /opt/apigee/apigee-validate/bundles/ it should exists smartdocs.zip file
+	 
+	 or API call : curl -v -u jrstockstill@west.com http://10.27.165.146:8080/v1/o/VALIDATE/apis
+	 
+	               curl -v -u ApigeeAdmin@west.com http://10.70.114.166:8080/v1/o/VALIDATE/apis(prod)
+	  
+	  
+To remove the organization, environment and other artifacts created by the test scripts
+***************************************************************************************
+
+      /opt/apigee/apigee-service/bin/apigee-service apigee-validate clean -f configFile
+	  
+Verify pod installation:
+************************	  
+  
+   1.Verify mgt server in central pod:
+                 curl -u jrstockstill@west.com http://10.27.165.146:8080/v1/servers?pod=central
+				 
+   1.Verify router and message processors server in gateway pod:
+                 curl -u jrstockstill@west.com http://10.27.165.146:8080/v1/servers?pod=gateway-1
+				 
+   1.Verify postgres is in Analytic pod:
+                 curl -u jrstockstill@west.com http://10.27.165.146:8080/v1/servers?pod=analytics

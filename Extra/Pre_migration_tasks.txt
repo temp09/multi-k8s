@@ -1,0 +1,68 @@
+
+
+TEST:
+*****
+curl -k -X GET 'http://10.27.180.12:9001/v1/test22' -H 'host: api.sysdev.west.com:9001'
+
+curl -k -X GET 'http://10.27.180.13:9001/v1/test22' -H 'host: api.sysdev.west.com:9001'
+
+checklog:
+*********
+tail -f /opt/apigee/var/log/edge-router/nginx/west~test.9001_access_log
+
+DEV
+****
+curl -k -X GET 'http://10.27.180.12:9003/v1/test22' -H 'host: api.sysdev.west.com:9003'
+
+curl -k -X GET 'http://10.27.180.13:9003/v1/test22' -H 'host: api.sysdev.west.com:9003'
+
+check log:
+**********
+tail -f /opt/apigee/var/log/edge-router/nginx/west~dev.9003_access_log
+
+Testsample:
+***********
+curl -k -X GET 'http://10.27.180.12:9001/v1/test22' -H 'host: api.sysdev.west.com:9005'
+
+curl -k -X GET 'http://10.27.180.13:9001/v1/test22' -H 'host: api.sysdev.west.com:9005'
+
+
+Checklog for unreachable All MPs in Same DC:
+*********************************************
+
+tail -f /opt/apigee/var/log/edge-router/nginx/west~dev.9003_error_log
+
+tail -f /opt/apigee/var/log/edge-router/nginx/west~test.9001_error_log
+
+
+
+  2019-12-03T17:30:25-05:00     lsl30436        10.27.180.4:1090        10.27.165.147:8998      0.232   -       -       200     200     97      13      GET /v1/test22 HTTP/1.1 lsl30436-29196-4239607-1    curl/7.50.3     api.sysdev.west.com     lsl30436-29196-4239607-1        10.27.180.4     -       -       -       -       -       -       green   230     /organizations/west/environments/test/apiproxies/test22/revisions/1 /v1/test22      dc-1    gateway-1       green   -       gateway-1       dc-1    west    test    http    -
+2019-12-03T17:30:28-05:00       lsl30436        10.27.180.4:11459       10.27.165.147:8998      0.072   -       -       200     200     97      13      GET /v1/test22 HTTP/1.1 lsl30436-29196-4239616-1        curl/7.50.3 api.sysdev.west.com     lsl30436-29196-4239616-1        10.27.180.4     -       -       -       -       -       -       green   71      /organizations/west/environments/test/apiproxies/test22/revisions/1/v1/test22       dc-1    gateway-1       green   -       gateway-1       dc-1    west    test    http    -
+2019-12-03T17:30:30-05:00       lsl30436        10.27.180.4:54111       10.27.165.147:8998      0.070   -       -       200     200     97      13      GET /v1/test22 HTTP/1.1 lsl30436-29196-4239627-1        curl/7.50.3 api.sysdev.west.com     lsl30436-29196-4239627-1        10.27.180.4     -       -       -       -       -       -       green   68      /organizations/west/environments/test/apiproxies/test22/revisions/1/v1/test22       dc-1    gateway-1       green   -       gateway-1       dc-1    west    test    http    -
+
+
+curl -v http://10.27.165.146:8080/v1/runtime/organizations/west/environments/test/apis/test22/revisions/1/debugsessions -u jrstockstill@west.com
+
+
+
+curl -v http://10.27.165.148:8998/v1/test22 -H 'host: api.sysdev.west.com:9001'
+
+
+2019-12-05T16:40:40-05:00       lsl30436        10.27.180.4:37555       10.27.165.147_8998_10.27.165.148_8998   0.000   -       -       502     502     92      344     GET /v1/test22 HTTP/1.1 -   curl/7.50.3      api.sysdev.west.com     lsl30436-29196-4819534-1        10.27.180.4     -       -       -       -       -       -       -       -1      -       -       dc-1    gateway-1       green-       gateway-1       dc-1    west    dev     http    -
+2019-12-05T16:42:41-05:00       lsl30436        10.27.180.4:16435       10.27.165.147_8998_10.27.165.148_8998   0.000   -       -       502     502     92      344     GET /v1/test22 HTTP/1.1 -   curl/7.50.3      api.sysdev.west.com     lsl30436-29196-4819919-1        10.27.180.4     -       -       -       -       -       -       -       -1      -       -       dc-1    gateway-1       green-       gateway-1       dc-1    west    dev     http    -
+2019-12-05T16:42:55-05:00       lsl30436        10.27.180.4:6519        10.27.165.147_8998_10.27.165.148_8998   0.000   -       -       502     502     92      344     GET /v1/test22 HTTP/1.1 -   curl/7.50.3      api.sysdev.west.com     lsl30436-29195-4819967-1        10.27.180.4     -       -       -       -       -       -       -       -1      -       -       dc-1    gateway-1       green-       gateway-1       dc-1    west    dev     http    -
+
+
+
+TEST-02
+--------------
+F5 router: 10.27.180.12
+lsl30437  MP  & MR  are down
+lsl30436  MP  down  & MR  Up
+
+F5 router: 10.27.180.13
+lsl30428  MP & MR Up
+lsl30427  MP  & MR Up
+
+Test to 10.27.180.12  --> 502Bad Gateway
+Test to 10.27.180.13  --> traffic handled by lsl30428 & lsl30427 

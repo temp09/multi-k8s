@@ -1,0 +1,93 @@
+Hello,
+I saw the documentation it mentioned we need to follow the following steps to upgrade 4.50.00 to 4.50.00.13 
+
+Step 1 : check the RPM versions currently installed
+
+   "apigee-all version "
+   
+Step 2: Update the installation  
+  
+  a. Clean the Yum repos :  "sudo yum clean all "  
+  
+  b. Download the latest Edge 4.50.00 bootstrap_4.50.00.sh file to /tmp/bootstrap_4.50.00.sh: " curl https://software.apigee.com/bootstrap_4.50.00.sh -o /tmp/bootstrap_4.50.00.sh" 
+  
+  c. Install the Edge 4.50.00 apigee-service utility and dependencies: " sudo bash /tmp/bootstrap_4.50.00.sh apigeeuser=uName apigeepassword=pWord "  
+  
+  d. Use the source command to execute the apigee-service.sh script : " source /etc/profile.d/apigee-service.sh " 
+  
+Step 3: Update the apigee-machinekey utility: "  /opt/apigee/apigee-service/bin/apigee-service apigee-machinekey update " 
+
+Step 4: On all Edge nodes, execute the update.sh script for the edge process: " /opt/apigee/apigee-setup/bin/update.sh -c edge -f configFile " 
+
+Question 1: If we upgarde to latest patch release ( v4.50.00.13 ) , we will be good till 01/13/2023 , is that right ?
+
+Question 2: Is there any downtime ( traffic intereption ) for upgrading the all edge , apigee-service and other utilities in the steps?
+
+Question 3: Do we need to route out traffic for the routers when we will run upgrade command for routers amd message processors ( we have router and message processors install on same node ) ?
+
+Question 4: Do we need to follow any specefic order for the components to run the commands when we will run upgrade command ?
+
+Question 5: I beleive I don't need to run any upgarde for cassandra and zookeeper nodes , is that right ?
+
+Question 6 : Do we need to run for all VMs except cassnadra and zookeeper nodes  where apigee components installed in step 2a, 2b, 2c & 2d ?
+
+Question 7 : Do we need to run for all VMs where apigee components ( Analytic DB postgreSQL, Qpid, management server, message-processor & message-router ) are installed in step 3 & 4 ?
+
+Question 8 : Will one of you engineer available during our upgrade time window ?
+
+Please provide us the information about all of our query , so that we can smoothly do the upgrade process.
+
+Thank you,
+Amdad
+
+
+
+3 artifactory servers has each has 10 TB each and back up use around 7 TB
+3 Xray server each has around 700GB
+3 SoanrQube each has around 250GB
+3 Jenkins each has around 10 TB and backup use around 6 TB
+
+We need to check how we can reduce
+
+
+[- cat createnewrepo.sh
+#!/bin/sh
+
+# update yum version first
+
+if [ $# -ne 1 ]; then
+  echo "Missing VERSION"
+  exit
+fi
+
+yum clean metadata
+
+VER=$1
+mkdir /opt/rpm_repo/$VER
+reposync -l --repoid=apigee-{release,thirdparty} --download_path=/opt/rpm_repo/$VER --downloadcomps --download-metadata
+rm -rf /opt/rpm_repo/$VER/apigee-release/sap/
+
+createrepo --update /opt/rpm_repo/$VER/apigee-thirdparty
+createrepo --update /opt/rpm_repo/$VER/apigee-release
+
+
+Create apigee local repo:
+*************************
+
+Create repo release version with name :
+" cd /opt/rpm_repo "
+
+" mkdir 4.5x.xx "
+
+" cd 4.5x.xx "
+
+Remove all older ( if needed 0 : " rm -rf * "
+
+Reposync: " reposync -l --repoid=apigee-{release,thirdparty} --download_path=/opt/rpm_repo/4.5x.xx --downloadcomps --download-metadata "
+
+Validate all updated under apigee-release & apigee-thirdparty
+
+Update repodata: " createrepo --update /opt/rpm_repo/4.50.00/apigee-release " & " createrepo --update /opt/rpm_repo/4.50.00/apigee-thirdparty "
+
+
+
