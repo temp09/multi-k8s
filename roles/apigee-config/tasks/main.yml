@@ -1,9 +1,0 @@
----
-   - name: Stage this server's config file
-     template:
-       src: apigee-configuration/response/{{ environ }}/{{ configFile }}
-       dest: /opt/apigee/configFile
-       owner: "{{ service_account }}"
-       group: "{{ service_group }}"
-       mode: 0644
-       

@@ -1,7 +1,0 @@
----
-   # requires stop Message processors and Message Routers components.
-   - name: "Stop  edge-message-processor"
-     shell: /opt/apigee/apigee-service/bin/apigee-service edge-message-processor stop
-  
-   - name: "Stop  edge-router"
-     shell: /opt/apigee/apigee-service/bin/apigee-service edge-router stop

@@ -1,8 +1,0 @@
-#!/usr/bin/bash
-
-ENVIRON="$1"
-# == {dev,production}
-
-ansible-playbook -v -i inventories/${ENVIRON}.ini playbooks/install/management.yml
-ansible-playbook -v -i inventories/${ENVIRON}.ini playbooks/install/management-cmds.yml
-

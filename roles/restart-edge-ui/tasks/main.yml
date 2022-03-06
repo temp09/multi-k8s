@@ -1,5 +1,0 @@
----
-   # Requires restart all the edge ui servers
-   
-   - name: "Restart  edge-ui"
-     shell: /opt/apigee/apigee-service/bin/apigee-service edge-ui restart

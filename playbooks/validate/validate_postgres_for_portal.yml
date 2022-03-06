@@ -1,8 +1,0 @@
----
-- name: "Prepare for PGSQL_PORTAL Validation"
-  hosts: postgres-portal-pri, postgres-portal-sec
-  become: yes
-  become_user: "root" 
-  roles:
-  #    - apigee-base
-      - validate-postgres_for_portal

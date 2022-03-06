@@ -1,4 +1,0 @@
----
-
-- name: Copy a file on the remote machine for editing
-  command: cp -r /opt/nginx/conf.d /opt

@@ -1,7 +1,0 @@
-#!/usr/bin/bash
-
-ENVIRON="$1"
-# == {dev,production}
-
-ansible-playbook -v -i inventories/${ENVIRON}.ini playbooks/install/postgres-portal.yml
-

@@ -1,5 +1,0 @@
----
-   # requires stop all the processes on qpid servers
-   
-   - name: "Stop  apigee-postgresql"
-     shell: /opt/apigee/apigee-service/bin/apigee-service apigee-postgresql stop

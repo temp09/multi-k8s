@@ -1,5 +1,0 @@
----
-   # requires stop zookeeper processes
-   
-   - name: "Stop  apigee-zookeeper"
-     shell: /opt/apigee/apigee-service/bin/apigee-service apigee-zookeeper stop 

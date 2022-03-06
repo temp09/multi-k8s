@@ -1,5 +1,0 @@
----
-   # Requires stop all the postgres servers
-   
-   - name: "Stop  edge-postgres-server"
-     shell: /opt/apigee/apigee-service/bin/apigee-service edge-postgres-server stop

@@ -1,5 +1,0 @@
----
-   # Requires start all the qpid servers
-   
-   - name: "Start  edge-qpid-server"
-     shell: /opt/apigee/apigee-service/bin/apigee-service edge-qpid-server start
