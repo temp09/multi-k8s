@@ -1,0 +1,103 @@
+Accessing the cloud Shell and do some work:
+********************************************
+
+Create Bucket:
+--------------
+  MY_BUCKET_NAME_1=qwiklabs-gcp-02-a6128c1c1a40
+  MY_BUCKET_NAME_2=qwiklabs-gcp-02-a6128c1c1a40_2
+  MY_REGION=us-central1
+  ls
+
+Get the private key from your local machine to Cloud shell:
+-----------------------------------------------------------
+Uplaod the credentials.json from local directory
+
+Create Second Bucket:
+----------------------
+
+  gsutil mb gs://$MY_BUCKET_NAME_2
+  
+Create Second VM instance:
+---------------------------
+  gcloud compute zones list | grep $MY_REGION
+  MY_ZONE=us-central1-c
+  gcloud config set compute/zone $MY_ZONE  
+  MY_VMNAME=second-vm
+  gcloud compute instances create $MY_VMNAME --machine-type "n1-standard-1" --image-project "debian-cloud" --image-family "debian-9" --subnet "default"
+  gcloud compute instances list
+  
+Create Second service account:
+------------------------------
+  gcloud iam service-accounts create test-service-account2 --display-name "test-service-account2"
+  
+Give the second service acount as a viewer role:
+-----------------------------------------------
+  gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member serviceAccount:test-service-account2@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com --role roles/viewer
+  
+Get the cat image from publicly available google bucket:
+--------------------------------------------------------
+  gsutil cp gs://cloud-training/ak8s/cat.jpg cat.jpg
+  gsutil cp cat.jpg gs://$MY_BUCKET_NAME_1
+  gsutil cp gs://$MY_BUCKET_NAME_1/cat.jpg gs://$MY_BUCKET_NAME_2/cat.jpg
+  
+Check which account is presently authenticate :
+-----------------------------------------------
+   gcloud config list
+  
+Set the role for the first bucket which will be private owner:
+--------------------------------------------------------------
+   gsutil acl get gs://$MY_BUCKET_NAME_1/cat.jpg  > acl.txt
+   cat acl.txt
+   gsutil acl set private gs://$MY_BUCKET_NAME_1/cat.jpg
+   gsutil acl get gs://$MY_BUCKET_NAME_1/cat.jpg  > acl-2.txt
+   cat acl-2.txt
+   gcloud config list
+   
+Change the user :
+------------------
+   gcloud auth activate-service-account --key-file credentials.json
+   gcloud config list
+   
+Try to copy the cat picture to first bucket which will show AccesDenied since we are on service account:
+---------------------------------------------------------------------------------------------------------
+   gsutil cp gs://$MY_BUCKET_NAME_1/cat.jpg ./cat-copy.jpg
+   
+Try to copy the cat picture to second bucket which will show fine able to copy:
+---------------------------------------------------------------------------------------------------------
+   gsutil cp gs://$MY_BUCKET_NAME_2/cat.jpg ./cat-copy.jpg
+   
+Go back to the Bucket owner account for first bucket:
+------------------------------------------------------
+
+   gcloud config set account student-02-8f187305b49e@qwiklabs.net
+   gsutil cp gs://$MY_BUCKET_NAME_1/cat.jpg ./copy2-of-cat.jpg
+   
+Configure the bucket for the contents are public:
+--------------------------------------------------
+   gsutil iam ch allUsers:objectViewer gs://$MY_BUCKET_NAME_1
+   
+
+Get the code for run web server :
+----------------------------------
+   git clone https://github.com/googlecodelabs/orchestrate-with-kubernetes.git
+   mkdir test
+   cd orchestrate-with-kubernetes/
+   
+   add one line on cleanup.sh file 
+   cat cleanup.sh
+   
+   gcloud compute scp index.html first-vm:index.nginx-debian.html --zone=us-central1-c
+   
+Go to VM and cp:
+------------------
+   sudo cp index.nginx-debian.html /var/www/html
+
+gcloud compute instances create $MY_VMNAME --machine-type "n1-standard-1" --image-project "debian-cloud" --image-family "debian-9" --subnet "default"
+
+
+Install nginx webserver on forst-vm:
+------------------------------------
+ssh to VM:
+use commands
+  sudo apt-get update
+  sudo apt-get install nginx

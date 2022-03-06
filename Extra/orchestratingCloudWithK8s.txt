@@ -1,0 +1,235 @@
+Orchestrating the cloud with K8s:
+*********************************
+
+Pre requsite:
+-------------
+
+1.List the active account name:
+
+   gcloud auth list
+   
+2. List the project ID:
+
+   gcloud config list project
+   
+3. Setup the Zone for the Project:
+
+   gcloud config set compute/zone us-central1-b
+   
+   
+Start up a cluster / or create K8s cluster:
+--------------------------------------------
+
+   gcloud container clusters create io
+   
+Get the code from git:
+-----------------------
+
+   git clone https://github.com/googlecodelabs/orchestrate-with-kubernetes.git
+   
+   
+1. Launch a single instance of the nginx container:
+
+    kubectl create deployment nginx --image=nginx:1.10.0 ( nginx conatiner is running on the pod )
+	
+	kubectl get pods
+	
+2.Expose pod outside of Kubernetes:
+
+    kubectl expose deployment nginx --port 80 --type LoadBalancer  ( Behind the scenes Kubernetes created an external Load Balancer with a public IP address attached to it )
+	
+	kubectl get services
+	
+3.Test:
+
+    curl http://<External IP>:80
+	
+	
+	
+Creating Pod:
+--------------
+
+
+1. Look at the pod configuration file:
+
+   cd orchestrate-with-kubernetes/kubernetes/pods/
+   
+   cat monolith.yaml  ( which will create one container and open port 80 for the http traffic )
+   
+   
+2. Create the monolith pod using .yaml file:
+
+   kubectl create -f monolith.yaml
+   
+   kubectl get pods
+   
+   kubectl describe pods monolith ( get the information about pod)
+   
+ 
+Interacting with Pods: ( By default, pods are allocated a private IP address and cannot be reached outside of the cluster.)
+------------------------
+
+1. Map a local port(10080) to a port( 80 ) inside the monolith pod:
+
+   2nd terminal -- > kubectl port-forward monolith 10080:80
+   1st terminal -- > curl http://127.0.0.1:10080
+                -- > curl http://127.0.0.1:10080/secure ( to check secure end point ) -- Failed
+				
+	Try logging in to get an auth token back from the monolith:
+	
+	            -- > curl -u user http://127.0.0.1:10080/login
+                    {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE1ODc5MjAzMjAsImlhdCI6MTU4NzY2MTEyMCwiaXNzIjoiYXV0aC5zZXJ2aWNlIiwic3ViIjoidXNlciJ9.OicOK5ID9dI7yjTIaiMWoSF-f5NvH7_62EHnIhI5Nvk"}
+					
+	create an environment variable for the token:
+                -- > TOKEN=$(curl http://127.0.0.1:10080/login -u user|jq -r '.token')	
+				-- > curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:10080/secure
+				
+2. Check log for the monolith pod:
+
+
+                -- > kubectl logs monolith
+       3rd terminal -- > kubectl logs -f monolith
+	   1st terminal -- > curl http://127.0.0.1:10080
+   
+3.Ttroubleshoot from within a container:
+
+       1st terminal -- > kubectl exec monolith --stdin --tty -c monolith /bin/sh
+	                -- > ping -c 3 google.com
+					-- > exit
+     
+
+Services/Creating Services:
+----------------------------
+Pods aren't meant to be persistent. They can be stopped or started for many reasons - like failed liveness or readiness checks - and this leads to a problem:
+
+What happens if you want to communicate with a set of Pods? When they get restarted they might have a different IP address.
+Services provide stable endpoints for Pods.
+
+1. Create a secure pod that can handle https traffic:
+
+   cd ~/orchestrate-with-kubernetes/kubernetes
+   
+   cat pods/secure-monolith.yaml
+
+   Create the secure-monolith pods and their configuration data:
+      kubectl create secret generic tls-certs --from-file tls/
+	  kubectl create configmap nginx-proxy-conf --from-file nginx/proxy.conf
+	  kubectl create -f pods/secure-monolith.yaml
+	  
+2.Expose the secure-monolith Pod externally:
+
+   cat services/monolith.yaml
+   
+      Things to note:
+
+           There's a selector which is used to automatically find and expose any pods with the labels "app=monolith" and "secure=enabled"
+           Now you have to expose the nodeport here because this is how we'll forward external traffic from port 31000 to nginx (on port 443).
+   
+3. Create the monolith service:
+
+     kubectl create -f services/monolith.yaml
+	 
+4. Create firewalled rules allow traffic to the monolith service on the exposed nodeport:
+  
+     gcloud compute firewall-rules create allow-monolith-nodeport --allow=tcp:31000
+     
+	 
+5. Get an external IP address for one of the nodes:
+
+    gcloud compute instances list
+	
+	
+6. Test:
+
+    curl -k https://<EXTERNAL_IP>:31000
+	
+	kubectl get services monolith
+
+    kubectl describe services monolith
+
+Questions:
+
+	Why are you unable to get a response from the monolith service? label is not define
+	How many endpoints does the monolith service have? none
+	What labels must a Pod have to be picked up by the monolith service? label
+	
+	
+Adding labels to pod:
+---------------------
+
+Verify Labels:
+    
+	kubectl get pods -l "app=monolith"
+	
+	kubectl get pods -l "app=monolith,secure=enabled"
+
+	
+Add the missing secure=enabled label to the secure-monolith Pod:
+
+    kubectl label pods secure-monolith 'secure=enabled'
+	
+    kubectl get pods secure-monolith --show-labels
+	
+	kubectl describe services monolith
+	
+view the list of endpoints on the monolith service:
+
+    kubectl describe services monolith | grep Endpoints
+	
+Test:
+
+   gcloud compute instances list
+   
+   curl -k https://<EXTERNAL_IP>:31000
+   
+   
+Deploying Applications with Kubernetes:
+----------------------------------------
+We're going to break the monolith app into three separate pieces:
+
+auth - Generates JWT tokens for authenticated users.
+hello - Greet authenticated users.
+frontend - Routes traffic to the auth and hello services.
+
+1. View the config file:
+
+
+     cat deployments/auth.yaml
+
+
+2. Create deployment:
+
+    auth:
+	------
+     kubectl create -f deployments/auth.yaml
+	 
+	 create a service for your auth deployment:
+	     
+		 kubectl create -f services/auth.yaml
+		 
+		 
+	hello:
+	------
+     kubectl create -f deployments/hello.yaml
+	 
+	 create a service for your hello deployment:
+	     
+		 kubectl create -f services/hello.yaml
+
+		 
+3.Create and expose the frontend Deployment:
+
+	
+     kubectl create configmap nginx-frontend-conf --from-file=nginx/frontend.conf
+     
+	 kubectl create -f deployments/frontend.yaml
+     
+	 kubectl create -f services/frontend.yaml
+	 
+4. Get External IP and Test:
+
+     kubectl get services frontend
+	 
+     curl -k https://<EXTERNAL-IP>
+
+

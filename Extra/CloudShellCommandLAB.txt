@@ -1,0 +1,122 @@
+Now, we'll start off
+in the GCP console. Let's go to the home screen
+and select our project name. We'll use this later. Now, let's go to
+the storage browser and create a new bucket. We're going to name this bucket
+after our GCP project. We'll accept all the defaults. Now, let's create
+a Virtual Machine Instance. We'll click the Create
+Instance button, and we're going to change
+the name of the VM to first-vm. Let's run it in
+the us-central1-c zone. Let's compare some of
+the prices of machine types. The micro type is
+very inexpensive. We'll take almost all the
+other defaults except, we're going to configure
+the firewall to allow HTTP traffic through. Now we click Create. It takes a few minutes to create
+the virtual machine. Once the virtual machine
+has been created, let's perform a different task. We're going to make
+a service account. We click create service account and give the account name. When we click Create, we get the opportunity to
+define a role for the account. We'll give this one
+the editor role. A key allows actors to authenticate as
+the service account. It's downloaded to
+our local computer. We'll upload it later in the lab. Now that the account
+has been created, it shows up in the list. Next, let's explore Cloud Shell. Cloud Shell gives us
+an environment where we can use the G-Cloud command and other cloud commands
+from the G-Cloud SDK. We're already authenticated. Our first task is to define some environment variables
+for convenience. It's not required, but
+it helps us avoid error. We're defining my bucket name
+one to be the same as our GCS bucket that we created earlier which is
+named after our project. We'll create another name
+for a bucket by using that name with
+a dash two appended to it. We'll echo the contents of that environment variable
+to make sure it works. I'm going to full-screen
+the Cloud Shell window and upload the JSON credentials file. It's underneath
+the three-dot menu. Let's check to make
+sure it worked. There it is, the file's
+been successfully uploaded. We'll use it later in the lab. Let's use the gsutil command to make a second cloud
+storage bucket. Gsutil mb does the job. It's created. When we go
+back to the storage browser, we will see both the new bucket and the old one in the list. The older one first
+and then the new one. Let's return to
+Cloud Shell and make a second virtual
+machine instance, this time using the command line. Again, to save ourselves
+the risk of error, we're going to use
+environment variables. We'll define
+an environment variable to contain our chosen region. Now let's search for
+the zones in that region. Looks like the us-central1
+region has four zones. With this VM, we're going
+to choose the a zone. We'll use the G-Cloud command to define our preferred zone, and we'll put our preferred name for our virtual machine into another environment
+variable for tidiness. Here's the G-Cloud command to create a virtual machine
+from the command line. As always, it takes
+a moment to complete. Now that it's done,
+we can see it in the output of the G-Cloud
+compute instances list command as well as
+in the GCP Console. In the Compute Engine
+VM instances list, we see first VM and second VM. There's also VM here that is an artifact of
+the Quick Labs environment, that you won't see in
+your own projects. Let's see how to create a service account from
+the command line. Let's go to the GCP console now, and see our newly created
+service account in the list. Under IAM & admin, you go to service accounts
+and scroll down. There it is. Now
+we're going to use the command line
+to give the second service account
+the project viewer role. Done. We can go into the GCP Console and confirm
+the effective or action. You click on "IAM" and scroll down in the list of members to find the newly created
+service account. Its last in alphabetical order. We click the pencil icon and that reveals that
+it has the viewer role. Now let's work with Cloud Shell. This command copies
+a picture of a cat out of the publicly available
+Cloud storage bucket into our Cloud Shell folder. Now we're going to copy that file into our first storage bucket. Now we're going to copy it from one storage bucket to another. All of these were done using
+the gsutil cp command. Now each of our two bucket has a copy of
+this picture of a cat. Using the gsutil acl command, we're going to configure
+the first bucket so that it is private
+to only its owner. We can see the effect
+of this change by changing who we
+are authenticated as. The gcloud config list command shows us that presently
+the account we're authenticated as is
+gcpstaging57838_studentqwiklabs.net. Let's change that. Now we're going to assume the role
+of a service account. The first one we created. Notice that we use the credentials file that
+we previously uploaded. The gcloud config list command confirms the change is effect. Notice the account now is
+shown as our service account. Now when we try to copy the cat picture into
+the first storage bucket, we get an access denied
+exception because it is private to the owner and we are in the service account
+now instead of the owner. We can copy the image into the second bucket because we didn't change its permissions. Let's change who
+we're authenticated as back to our GCP account. We will use the gcloud config
+command just like before. Now let's repeat our attempt to copy the cat picture
+into the bucket. It succeeds because
+we own the bucket. Now let's configure
+that bucket so that its contents are public. Now when we look at
+the bucket using the storage browser
+of the GCP console, we'll notice something new. We'll drill into
+that bucket and there we will see that there's a public link for
+the cat picture. We'll open in new tab and
+we see a picture of a cat. We will use this in a web page. Remember, we configured
+a virtual machine earlier and opened
+its firewall port for HTTP. We'll create the web page using the Cloud Shell code
+editor which you can launch by clicking
+the pencil icon. Let's explore the Cloud
+Shell editor first. First, let's experiment
+with what happens when we change the contents of
+our Cloud Shell home directory. We're going to clone
+a Git repository. Notice that the change
+is immediately reflected in the file display. When I create a directory
+from the command line, that change is reflected
+immediately too. Let's open up one of these
+directories and open a file. Here's the file, cleanup.sh. I'm going to add a new line
+at the very end of this file. The change is immediately
+visible from the command line. I'm going to cap the file and
+there's the line I added. Now let's go make that HTML page. I'm going to return to
+the home directory and my HL prompt and I'm going to go to the File menu of the editor and create a file called index.html. I'm going to paste in
+some web page text and I'm going to
+replace the URL with the actual URL of the copy of the cat picture that I put into my public Cloud storage bucket. Now I'm going to copy
+that file out of Cloud Shell into
+my virtual machine. We need to install web server software into
+our virtual machine. So we're going to SSH to
+it using the link that's provided for us in
+the VM instances display. We'll use the
+standard Debian Linux commands to install
+the Engine X web server. Now that that's done let's
+return to Cloud Shell and move our HTML
+file in using SCP. I know why that didn't work. I put the file into
+the wrong directory. I'm going to use
+Cloud Shell's editor to drag it into the right place, into my home directory. Now the command will work. The file is copied to
+my virtual machine. To return to my SSH window
+on the VM and move that HTML file from the home directory to Engine X's document root. Now I can go to
+the VM Instances screen and click the link and I get
+the web page that I created.
