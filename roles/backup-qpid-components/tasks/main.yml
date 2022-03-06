@@ -1,0 +1,16 @@
+---
+   # Requires backup all the processes on qpid servers
+   
+   - name: "Backup  edge-qpid-server"
+     shell: /opt/apigee/apigee-service/bin/apigee-service edge-qpid-server backup
+
+   - name: Ensures /opt/apigee/backup/qpid-server Exists
+     file: path=/opt/apigee/backup/qpid-server state=directory
+     
+   - name: "Backup  apigee-qpidd"
+     shell: /opt/apigee/apigee-service/bin/apigee-service apigee-qpidd backup
+
+   - name: Ensures /opt/apigee/backup/qpid Exists
+     file: path=/opt/apigee/backup/qpid state=directory
+     
+     

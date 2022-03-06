@@ -1,0 +1,30 @@
+---
+# Validate qpid-server processes is not running on the nodes
+
+    - name: Check qpid server Process status
+      shell: /opt/apigee/apigee-service/bin/apigee-service edge-qpid-server status
+      ignore_errors: true
+      register: qpidServer_status
+
+    - name: Debug
+      debug:
+          msg: "{{ qpidServer_status.stderr }}"
+
+    - name: Notify failure
+      fail:
+        msg: "APIGEE QPID-SERVER HAS STOPPED ON {{ inventory_hostname }} SERVER"
+      when: '"apigee-service: edge-qpid-server: Not running" not in qpidServer_status.stderr'
+
+    - name: Check apigee-qpidd service status
+      shell: /opt/apigee/apigee-service/bin/apigee-service apigee-qpidd status
+      ignore_errors: true
+      register: status
+
+    - name: Debug
+      debug:
+          msg: "{{ status.stderr }}"
+
+    - name: Notify failure
+      fail:
+        msg: "APIGEE QPID-SERVICE HAS STOPPED ON {{ inventory_hostname }} SERVER"
+      when: '"apigee-service: apigee-qpidd: Not running" not in status.stderr'

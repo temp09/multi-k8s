@@ -1,0 +1,16 @@
+---
+- name: "Prepare for Install new relic java-agent"
+  hosts: rmp
+  become: yes
+  become_user: "root"
+  
+  pre_tasks:
+
+  - name: Set New Relic Default Values
+    include_vars:
+      file: newrelic-properties.yml 
+  roles:
+  #    - apigee-base
+      - setup-newrelic-java-agent
+      
+

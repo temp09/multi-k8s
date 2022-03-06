@@ -1,0 +1,116 @@
+---
+# Check servers response status
+
+    - name: Check apigee servers response status
+      raw: "curl -vs http://{{ inventory_hostname }}:8080/v1/servers/self/up"
+      register: apigee_resp
+
+    - name: Debug
+      debug:
+          msg: "{{ apigee_resp.stdout }}"
+          
+    - name: Notify failure
+      fail:
+        msg: "APIGEE EDGE-UI SERVER {{ inventory_hostname }} IS REACHABLE"
+      when: '"HTTP/1.1 200 OK" not in apigee_resp.stdout'
+
+# Check User existence status      
+
+    - name: Check User existance status
+      raw: " curl -u ApigeeAdmin@west.com:Westpl@teng2306 http://{{ inventory_hostname }}:8080/v1/users/ApigeeAdmin@west.com"
+      register: apigee_resp
+      
+    - name: Notify failure
+      fail:
+        msg: "APIGEE EDGE-UI SERVER {{ inventory_hostname }} USER ApigeeAdmin@west.com exists"
+      when: '"ApigeeAdmin@west.com" not in apigee_resp.stdout'
+
+# Check Analytic status      
+
+    - name: Check Analytics status
+      raw: " curl -u ApigeeAdmin@west.com:Westpl@teng2306 http://{{ inventory_hostname }}:8080/v1/organizations/west/environments/test/provisioning/axstatus"
+      register: apigee_resp
+
+#    - name: Debug
+#      debug:
+#          msg: "{{ apigee_resp.stdout }}"
+          
+    - name: Notify failure
+      fail:
+        msg: "APIGEE EDGE-UI SERVER {{ inventory_hostname }} OK"
+      when: '"SUCCESS" not in apigee_resp.stdout'
+
+# Check Proxy deployment status      
+
+    - name: Check testing proxy deployment status
+      raw: " curl -u ApigeeAdmin@west.com:Westpl@teng2306 -X GET http://{{ inventory_hostname }}:8080/v1/o/west/e/test/apis/testing/revisions/1/deployments"
+      register: apigee_resp_deploy
+
+#    - name: Debug
+#      debug:
+#          msg: "{{ apigee_resp.stdout }}"
+          
+    - name: Notify failure
+      fail:
+        msg: "Proxy deployed on server {{ inventory_hostname }} OK"
+      when: '"deployed" not in apigee_resp_deploy.stdout'
+
+# Check Proxy https response for dev environment status      
+
+#    - name: Check proxy with https in dev is working
+#      raw: " curl -vs https://apigate-appdev.west.com:9004/testing"
+#      register: proxy_resp
+      
+#    - name: Notify failure
+#      fail:
+#        msg: "Test Proxy is not responding "
+#      when: '"John" not in proxy_resp.stdout'
+
+# Check Proxy http response for dev environment status      
+
+#    - name: Check proxy with http in dev is working
+#      raw: " curl -vs http://apigate-appdev.west.com:9003/testing"
+#      register: proxy_resp_http
+      
+#    - name: Notify failure
+#      fail:
+#        msg: "Test Proxy is responding "
+#      when: '"John" not in proxy_resp_http.stdout'
+
+# Check Proxy https response for test environment status      
+
+#    - name: Check proxy with https in test is working
+#      raw: " curl -vs https://apigate-appdev.west.com:9002/testing"
+#      register: proxy_resp
+      
+#    - name: Notify failure
+#      fail:
+#        msg: "Test Proxy is responding "
+#      when: '"John" not in proxy_resp.stdout'
+
+# Check Proxy http response for test environment status      
+
+#    - name: Check proxy with http in test is working
+#      raw: " curl -vs http://apigate-appdev.west.com:9001/testing"
+#      register: proxy_resp_http
+      
+#    - name: Notify failure
+#      fail:
+#        msg: "Test Proxy is responding "
+#      when: '"John" not in proxy_resp_http.stdout'
+
+# Check login console status of Edge UI by using F5       
+
+    - name: Check login console status of Edge UI by using F5
+      raw: " curl -I https://devtest-edge-ui-apimarketplace.west.com/login"
+      register: Edge_UI_response
+
+    - name: Debug
+      debug:
+          msg: "{{ Edge_UI_response.stdout }}"
+          
+    - name: Notify failure
+      fail:
+        msg: "Edge UI console is  OK"
+      when: '"HTTP/1.1 200 OK" not in Edge_UI_response.stdout'
+

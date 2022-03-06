@@ -1,0 +1,94 @@
+---
+# Components Installation validation in DEVPORTAL nodes
+    - name: Check Devportal process status
+      shell: /opt/apigee/apigee-service/bin/apigee-service apigee-drupal-devportal status 
+      ignore_errors: true
+      register: devportal_status
+
+    - name: Debug
+      debug:
+        msg: "{{ devportal_status.stdout }}"
+
+    - name: Notify failure
+      fail:
+          msg: "APIGEE DEVPORTAL HAS NOT STARTED ON {{ inventory_hostname }} SERVER"
+      when: '"apigee-drupal-devportal is up and running" not in devportal_status.stdout'
+
+    - name: Check Apigee load balancer process status
+      shell: /opt/apigee/apigee-service/bin/apigee-service apigee-lb status
+      ignore_errors: true
+      register: apigee_lb_status
+
+    - name: Debug
+      debug:
+        msg: "{{ apigee_lb_status.stderr }}"
+
+    - name: Notify failure
+      fail:
+          msg: "APIGEE LOADBALANCER SERVER HAS NOT STARTED ON {{ inventory_hostname }} SERVER"
+      when: '"apigee-service: apigee-lb: OK" not in apigee_lb_status.stderr'
+
+# Port 8080 validation for communication from Devportal server to management server
+
+    - name: Check open port 8080 on devportal server on SWN01 for communication from Devportal server to management server
+      shell: nc -vz 10.65.188.21 8080
+      register: devportal_port_8080
+    - name: Notify failure
+      fail:
+        msg: "LISTENNING PORT 8080 ON {{ inventory_hostname }} SERVER"
+      when: '"Connected to 10.65.188.21:8080" not in devportal_port_8080.stderr'
+
+    - name: Check open port 8080 on devportal server on SWN01 for communication from Devportal server to management server
+      shell: nc -vz 10.65.188.34 8080
+      register: devportal_port_8080
+    - name: Notify failure
+      fail:
+        msg: "LISTENNING PORT 8080 ON {{ inventory_hostname }} SERVER"
+      when: '"Connected to 10.65.188.34:8080" not in devportal_port_8080.stderr'
+
+    - name: Check open port 8080 on devportal server on DN06 for communication from Devportal server to management server
+      shell: nc -vz 10.71.178.21 8080
+      register: devportal_port_8080
+
+    - name: Notify failure
+      fail:
+        msg: "LISTENNING PORT 8080 ON {{ inventory_hostname }} SERVER"
+      when: '"Connected to 10.71.178.21:8080" not in devportal_port_8080.stderr'
+
+    - name: Check open port 8080 on devportal server on DN06 for communication from Devportal server to management server
+      shell: nc -vz 10.71.178.34 8080
+      register: devportal_port_8080
+
+    - name: Notify failure
+      fail:
+        msg: "LISTENNING PORT 8080 ON {{ inventory_hostname }} SERVER"
+      when: '"Connected to 10.71.178.34:8080" not in devportal_port_8080.stderr'
+
+# Check Proxy request and response status for the created product      
+
+    - name: Check test environment proxy  status
+      raw: " curl -I https://test-apimarketplace.west.com/testing?apikey=Y0rjWXxykcPaJdcWPtdpNT4aRf1ohEsU"
+      register: apigee_resp_test
+
+    - name: Debug
+      debug:
+          msg: "{{ apigee_resp_test.stdout }}"
+          
+    - name: Notify failure
+      fail:
+        msg: "Proxy response on test environment OK"
+      when: '"HTTP/1.1 200 OK" not in apigee_resp_test.stdout'
+
+    - name: Check test environment proxy  status
+      raw: " curl -I https://dev-apimarketplace.west.com/testing?apikey=Y0rjWXxykcPaJdcWPtdpNT4aRf1ohEsU"
+      register: apigee_resp_dev
+
+    - name: Debug
+      debug:
+          msg: "{{ apigee_resp_dev.stdout }}"
+          
+    - name: Notify failure
+      fail:
+        msg: "Proxy response on dev environment OK"
+      when: '"HTTP/1.1 200 OK" not in apigee_resp_dev.stdout'
+

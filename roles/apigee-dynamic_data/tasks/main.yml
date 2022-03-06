@@ -1,0 +1,8 @@
+---
+   # requires staging of a config file
+   - name: "Install Zookeeper/Cassandra"
+     shell: /opt/apigee/apigee-setup/bin/setup.sh -p ds -f /opt/apigee/configFile
+     
+   - name: "Enable autostart"
+     command:  '/opt/apigee/apigee-service/bin/apigee-all enable_autostart'
+     

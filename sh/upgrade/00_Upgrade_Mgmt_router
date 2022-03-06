@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+
+ENVIRON="$1"
+# == {dev,production}
+
+ansible-playbook -v -i "inventories/${ENVIRON}.ini" playbooks/upgrade/management.yml
+ansible-playbook -v -i "inventories/${ENVIRON}.ini" playbooks/upgrade/router_processor.yml
+

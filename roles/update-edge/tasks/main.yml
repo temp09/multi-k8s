@@ -1,0 +1,46 @@
+---
+# Update edge for all the components except postgres
+   - name: Ensures configFile file Exists
+     file: 
+      path: /usr/local/configFile
+      state: file   
+   
+#   - name: "update edge for all except postgres"
+#     command: '/opt/apigee/apigee-setup/bin/update.sh -c edge -f /usr/local/configFile'
+
+   - name: Change the working directory to /opt/apigee/ and run the update command.
+     command: '/opt/apigee/apigee-setup/bin/update.sh -c edge -f /usr/local/configFile'
+     become: yes
+     become_user: root
+     args:
+       chdir: /opt/apigee/
+
+# Validate edge-management-server updated to 4.19.01
+   - name: Ensures edge-management-server updated to 4.19.01
+     file: 
+      path: /opt/apigee/edge-management-server-4.19.01-0.0.20024
+      state: directory
+
+# Validate edge-gateway updated to 4.19.01
+   - name: Ensures edge-gateway updated to 4.19.01
+     file: 
+      path: /opt/apigee/edge-gateway-4.19.01-0.0.20024
+      state: directory
+
+# Validate edge-qpid-server updated to 4.19.01
+   - name: Ensures edge-qpid-server updated to 4.19.01
+     file: 
+      path: /opt/apigee/edge-qpid-server-4.19.01-0.0.20024
+      state: directory
+
+# Validate edge-message-processor updated to 4.19.01
+   - name: Ensures edge-message-processor updated to 4.19.01
+     file: 
+      path: /opt/apigee/edge-message-processor-4.19.01-0.0.20024
+      state: directory
+
+# Validate edge-router updated to 4.19.01
+   - name: Ensures edge-router updated to 4.19.01
+     file: 
+      path: /opt/apigee/edge-router-4.19.01-0.0.20024
+      state: directory

@@ -1,0 +1,29 @@
+---
+# Validate messsag-processors and message-routers processes is not running on the nodes
+    - name: Check Router process status
+      shell: /opt/apigee/apigee-service/bin/apigee-service edge-router status 
+      ignore_errors: true
+      register: router_status
+
+    - name: Debug
+      debug:
+        msg: "{{ router_status.stderr }}"
+
+    - name: Notify failure
+      fail:
+          msg: "APIGEE MR HAS STOPPED ON {{ inventory_hostname }} SERVER"
+      when: '"apigee-service: edge-router: Not running" not in router_status.stderr'
+
+    - name: Check Message-Processor process status
+      shell: /opt/apigee/apigee-service/bin/apigee-service edge-message-processor status
+      ignore_errors: true
+      register: message_processor_status
+
+    - name: Debug
+      debug:
+        msg: "{{ message_processor_status.stderr }}"
+
+    - name: Notify failure
+      fail:
+          msg: "APIGEE MPR HAS STOPPED ON {{ inventory_hostname }} SERVER"
+      when: '"apigee-service: edge-message-processor: Not running" not in message_processor_status.stderr'

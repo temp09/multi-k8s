@@ -1,0 +1,10 @@
+---
+- name: 'Prepare for Apigee Install - First batch'
+  hosts: test_server
+  serial: 1
+  become: no
+  become_user: "root"
+  roles:
+      - ../../roles/apigee-base
+      # - ../../roles/apigee-config
+      # - ../../roles/apigee-management_server 

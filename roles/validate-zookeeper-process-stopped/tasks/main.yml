@@ -1,0 +1,29 @@
+---
+# Validate zookeeper processes is not running on the nodes
+
+    - name: Check Zookeeper Process status
+      shell: /opt/apigee/apigee-service/bin/apigee-service apigee-zookeeper status
+      ignore_errors: true
+      register: zookeeper_status
+
+    - name: Debug
+      debug:
+          msg: "{{ zookeeper_status.stderr }}"
+
+    - name: Notify failure
+      fail:
+        msg: "APIGEE ZOOKEEPER HAS STOPPED ON {{ inventory_hostname }} SERVER"
+      when: '"apigee-service: apigee-zookeepe: Not running" not in zookeeper_status.stderr'
+
+    - name: Check Cassandra process status
+      shell: /opt/apigee/apigee-service/bin/apigee-service apigee-cassandra status
+      register: cassandra_status
+
+    - name: Debug
+      debug:
+          msg: "{{ cassandra_status.stderr }}"
+
+    - name: Notify failure
+      fail:
+        msg: "APIGEE CASSANDRA HAS NOT STARTED ON {{ inventory_hostname }} SERVER"
+      when: '"apigee-service: apigee-cassandra: OK" not in cassandra_status.stderr'

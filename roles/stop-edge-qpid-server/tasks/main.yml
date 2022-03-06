@@ -1,0 +1,5 @@
+---
+   # requires stop all the processes on qpid servers
+   
+   - name: "Stop  edge-qpid-server"
+     shell: /opt/apigee/apigee-service/bin/apigee-service edge-qpid-server stop

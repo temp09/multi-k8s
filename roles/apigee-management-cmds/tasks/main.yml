@@ -1,0 +1,39 @@
+---
+  - name: Copy setuporg.config
+    copy:
+       src: config/setuporg.config
+       dest: /opt/apigee/setuporg.config
+       owner: "{{ service_account }}"
+       group: "{{ service_group }}"
+       mode: 0644
+
+  - name: "Setup org"
+    command:  '/opt/apigee/apigee-service/bin/apigee-service apigee-provision setup-org -f /opt/apigee/setuporg.config'
+    
+  - name: Copy keystores
+    copy:
+       src: certs/tmpKeystore.jar
+       dest: /opt/apigee/tmpKeystore.jar
+       owner: "{{ service_account }}"
+       group: "{{ service_group }}"
+       mode: 0644
+       
+  - name: Copy keystores
+    copy:
+       src: certs/mainKeystore.jar
+       dest: /opt/apigee/mainKeystore.jar
+       owner: "{{ service_account }}"
+       group: "{{ service_group }}"
+       mode: 0644
+     
+  - name: Copy Vhosts script
+    copy:
+       src: sh/addvhosts.sh
+       dest: /opt/apigee/addvhosts.sh
+       owner: "{{ service_account }}"
+       group: "{{ service_group }}"
+       mode: 0755
+
+  - name: "Run Vhosts script"
+    command:  '/opt/apigee/addvhosts.sh'
+     

@@ -1,0 +1,22 @@
+---
+# Update apigee-openldap
+   - name: Ensures configFile file Exists
+    file: 
+     path: /usr/local/configFile
+     state: file   
+   
+#   - name: "update apigee-openldap"
+#     command: '/opt/apigee/apigee-setup/bin/update.sh -c ldap -f /usr/local/configFile'
+
+   - name: Change the working directory to /opt/apigee/ and run the update command.
+     command: '/opt/apigee/apigee-setup/bin/update.sh -c ldap -f /usr/local/configFile'
+     become: yes
+     become_user: root
+     args:
+       chdir: /opt/apigee/
+
+# Validate apigee-openldap updated
+   - name: Ensures apigee-openldap updated
+     file: 
+      path: /opt/apigee/apigee-openldap-2.4-0.0.2003
+      state: directory

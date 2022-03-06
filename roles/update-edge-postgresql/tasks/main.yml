@@ -1,0 +1,22 @@
+---
+# Update edge postgres for all the postgres nodes
+   - name: Ensures configFile file Exists
+     file: 
+      path: /usr/local/configFile
+      state: file   
+   
+#   - name: "update postgres for all nodes"
+#     command: '/opt/apigee/apigee-setup/bin/update.sh -c ps -f /usr/local/configFile'
+
+   - name: Change the working directory to /opt/apigee/ and run the update command.
+     command: '/opt/apigee/apigee-setup/bin/update.sh -c edge -f /usr/local/configFile'
+     become: yes
+     become_user: root
+     args:
+       chdir: /opt/apigee/
+
+# Validate edge-postgres-server updated to 4.19.01
+   - name: Ensures edge-postgres-server updated to 4.19.01
+     file: 
+      path: /opt/apigee/edge-postgres-server-4.19.01-0.0.20024
+      state: directory

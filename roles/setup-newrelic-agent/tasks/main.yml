@@ -1,0 +1,38 @@
+---
+# tasks file for setup-agent
+
+  - name: Copy Out Config
+    template:
+      src: etc/newrelic-java-agent.yml
+      dest: /etc/newrelic-infra.yml
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Add yum Infra Repository RHEL 6
+    command: curl -o /etc/yum.repos.d/newrelic-infra.repo https://download.newrelic.com/infrastructure_agent/linux/yum/el/6/x86_64/newrelic-infra.repo
+    args:
+      warn: False
+    when: 
+      - ansible_distribution == "RedHat"
+      - ansible_distribution_major_version == "6"
+
+  - name: Add yum Infra Repository RHEL 7
+    command: curl -o /etc/yum.repos.d/newrelic-infra.repo https://download.newrelic.com/infrastructure_agent/linux/yum/el/7/x86_64/newrelic-infra.repo
+    args: 
+      warn: False
+    when:
+      - ansible_distribution == "RedHat"
+      - ansible_distribution_major_version == "7"
+
+  - name: Update yum Cache
+    command: yum -q makecache -y --disablerepo='*' --enablerepo='newrelic-infra'
+    args: 
+      warn: False
+
+  - name: Install NewRelic Infra
+    command: yum install newrelic-infra -y
+    args: 
+      warn: False
+
+...

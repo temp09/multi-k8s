@@ -1,0 +1,8 @@
+---
+# Update apigee-validate and apigee-provision
+   - name: "update apigee-validate"
+     command: '/opt/apigee/apigee-service/bin/apigee-service apigee-validate update'
+
+   - name: "update apigee-provision"
+     command: '/opt/apigee/apigee-service/bin/apigee-service apigee-provision update'
+

@@ -1,0 +1,19 @@
+---
+- name: Prepare for upgrade apigee-{{ apigee_ver }}
+  hosts: management-pool-first, management-pool-second, message-bus, postgres-pri, postgres-sec
+  serial: 1
+  become: yes
+  become_user: "root"
+  
+  roles:
+      # - ../../roles/update-edge 
+      
+- name: Prepare for upgrade apigee-{{ apigee_ver }}
+  hosts: rmp-internal-pool-first, rmp-external-pool-first, rmp-internal-pool-second, rmp-external-pool-second
+  serial: 1
+  become: yes
+  become_user: "root"
+  
+  roles:
+      # - ../../roles/update-edge   
+  

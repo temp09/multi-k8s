@@ -1,0 +1,44 @@
+---
+# Setup postgres replication on stnadby postgres node
+   - name: Ensures configFile file Exists
+    file: 
+     path: /usr/local/configFile
+     state: file   
+   
+#   - name: "update postgres for all nodes"
+#     command: '/opt/apigee/apigee-setup/bin/update.sh -c ps -f /usr/local/configFile'
+
+   - name: Change the working directory to /opt/apigee/ and run the replication command.
+     command: '/opt/apigee/apigee-service/bin/apigee-service apigee-postgresql setup-replication-on-standby -f /usr/local/configFile'
+     become: yes
+     become_user: root
+     args:
+       chdir: /opt/apigee/
+
+    - name: validate Postgresql master
+      shell: /opt/apigee/apigee-service/bin/apigee-service apigee-postgresql postgres-check-master  
+      ignore_errors: true
+      register: postgresql_status
+
+    - name: Debug
+      debug:
+        msg: "{{ postgresql_status.stderr }}"
+
+    - name: Notify failure
+      fail:
+          msg: "APIGEE POSTGRESQL IS ON MASTER"
+      when: '"postgres-server is master" not in postgresql_status.stderr'
+
+    - name: validate Postgresql standby
+      shell: /opt/apigee/apigee-service/bin/apigee-service apigee-postgresql postgres-check-standby  
+      ignore_errors: true
+      register: postgresql_status
+
+    - name: Debug
+      debug:
+        msg: "{{ postgresql_status.stderr }}"
+
+    - name: Notify failure
+      fail:
+          msg: "APIGEE POSTGRESQL IS ON MASTER"
+      when: '"ERROR: postgres server is down or does not seem be 'master'" not in postgresql_status.stderr'

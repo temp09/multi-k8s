@@ -1,0 +1,8 @@
+---
+- name: 'Prepare for Apigee Cmds'
+  hosts: management-first[0]
+  become: yes
+  become_user: "root"
+  roles:
+      - ../../roles/apigee-management-cmds.yml
+

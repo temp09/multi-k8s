@@ -1,0 +1,20 @@
+---
+   # Requires backup devportal processes
+   
+   - name: "Backup  apigee-drupal"
+     shell: /opt/apigee/apigee-service/bin/apigee-service apigee-drupal backup
+
+   - name: Ensures /opt/apigee/backup/drupal Exists
+     file: path=/opt/apigee/backup/drupal state=directory
+
+   - name: "Backup apigee-drupal-devportal"
+     shell: /opt/apigee/apigee-service/bin/apigee-service apigee-drupal-devportal backup
+
+   - name: Ensures /opt/apigee/backup/drupal-devportal Exists
+     file: path=/opt/apigee/backup/drupal-devportal state=directory
+
+   - name: "Backup  apigee-lb"
+     shell: /opt/apigee/apigee-service/bin/apigee-service apigee-lb backup
+
+   - name: Ensures /opt/apigee/backup/lb Exists
+     file: path=/opt/apigee/backup/lb state=directory 

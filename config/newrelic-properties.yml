@@ -1,0 +1,7 @@
+---
+# properties file, update license key here or over ride it with extra_vars
+license_key: "db1a889fc3924a62a2112cf6a00e55e1bd0ed3b4"
+# license_key: "eb2c6f70bd575f8a8e6ab81ec1910d8ff7a52033"
+# license_key: "b7f9d9747aeff7c570bc1137e20914a1abdabe06"
+
+...

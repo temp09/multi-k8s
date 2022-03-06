@@ -1,0 +1,7 @@
+#!/usr/bin/bash
+
+ENVIRON="$1"
+# == {dev,production}
+
+ansible-playbook -i "inventories/${ENVIRON}.ini" playbooks/validate/validate_devportal.yml
+

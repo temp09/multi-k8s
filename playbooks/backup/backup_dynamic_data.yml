@@ -1,0 +1,10 @@
+---
+- name: "Prepare for Apigee Validation"
+  hosts: dynamic-data
+  become: yes
+  become_user: "root" 
+  roles:
+  #    - apigee-base
+      - backup-zookeeper-components
+      
+

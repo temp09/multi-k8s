@@ -1,0 +1,11 @@
+---
+- name: Prepare for upgrade apigee-{{ apigee_ver }}
+  hosts: rmp-internal-pool-first, rmp-external-pool-first, rmp-internal-pool-second, rmp-external-pool-second
+  serial: 1
+  become: yes
+  become_user: "root"
+  
+  roles:
+      # - ../../roles/backup-router_processor-components
+      - ../../roles/update-apigee-base  
+      - ../../roles/update-test

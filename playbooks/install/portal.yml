@@ -1,0 +1,21 @@
+---
+- name: 'Prepare for Apigee Install - Primary'
+  hosts: portal-pri
+  serial: 1
+  become: yes
+  become_user: "root"
+  roles:
+      - ../../roles/apigee-base
+      - ../../roles/apigee-config
+      - ../../roles/apigee-portal
+      
+- name: 'Prepare for Apigee Install - Secondary'
+  hosts: portal-sec
+  serial: 1
+  become: yes
+  become_user: "root"
+  roles:
+      - ../../roles/apigee-base
+      - ../../roles/apigee-config
+      - ../../roles/apigee-portal
+      

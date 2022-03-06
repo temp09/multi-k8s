@@ -1,0 +1,20 @@
+---
+   # requires backup all the process on management server nodes
+   
+   - name: "Backup  edge-ui"
+     shell: /opt/apigee/apigee-service/bin/apigee-service edge-ui backup
+
+   - name: Ensures /opt/apigee/backup/ui Exists
+     file: path=/opt/apigee/backup/ui state=directory
+
+   - name: "Backup  edge-management-server"
+     shell: /opt/apigee/apigee-service/bin/apigee-service edge-management-server backup
+
+   - name: Ensures /opt/apigee/backup/management-server Exists
+     file: path=/opt/apigee/backup/management-server state=directory
+
+ #  - name: "Backup  apigee-openldap"
+ #    shell: /opt/apigee/apigee-service/bin/apigee-service apigee-openldap backup
+
+ #  - name: Ensures /opt/apigee/backup/openldap Exists
+ #    file: path=/opt/apigee/backup/openldap state=directory

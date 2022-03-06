@@ -1,0 +1,11 @@
+---
+- name: Prepare for upgrade apigee-{{ apigee_ver }}
+  hosts: management-pool-first, management-pool-second
+  serial: 1
+  become: yes
+  become_user: "root"
+  
+  roles:
+      # - ../../roles/update-ui
+
+ 

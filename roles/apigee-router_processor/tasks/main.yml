@@ -1,0 +1,11 @@
+---
+   # requires staging of a config file
+   - name: "Install router_processor"
+     shell: /opt/apigee/apigee-setup/bin/setup.sh -p rmp -f /opt/apigee/configFile
+
+   - name: "Restart"
+     command:  '/opt/apigee/apigee-service/bin/apigee-all restart'
+     
+   - name: "Enable autostart"
+     command:  '/opt/apigee/apigee-service/bin/apigee-all enable_autostart'
+

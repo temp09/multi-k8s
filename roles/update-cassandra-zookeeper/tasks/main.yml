@@ -1,0 +1,34 @@
+---
+# Update apigee-cassandra and apigee-zookeeper
+   - name: Ensures configFile file Exists
+    file: 
+     path: /usr/local/configFile
+     state: file   
+   
+#   - name: "update apigee-cassandra and apigee-zookeeper"
+#     command: '/opt/apigee/apigee-setup/bin/update.sh -c cs,zk -f /usr/local/configFile'
+
+   - name: Change the working directory to /opt/apigee/ and run the update command.
+     command: '/opt/apigee/apigee-setup/bin/update.sh -c cs,zk -f /usr/local/configFile'
+     become: yes
+     become_user: root
+     args:
+       chdir: /opt/apigee/
+
+# Validate apigee-zookeeper updated
+   - name: Ensures apigee-zookeeper updated
+     file: 
+      path: /opt/apigee/apigee-zookeeper-3.4.5-0.0.2002
+      state: directory
+
+# Validate apigee-cassandra updated
+   - name: Ensures apigee-cassandra updated
+     file: 
+      path: /opt/apigee/apigee-cassandra-2.1.16-0.0.2046
+      state: directory
+
+# Validate apigee-cassandra-client updated
+   - name: Ensures apigee-cassandra-client updated
+     file: 
+      path: /opt/apigee/apigee-cassandra-client-2.1.16-0.0.969
+      state: directory

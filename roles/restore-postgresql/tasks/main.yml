@@ -1,0 +1,23 @@
+---
+  # Requires Restore postgres  processes
+  - stat:
+    path: /opt/apigee/backup
+    register: result
+  - debug:
+    msg: "Backup Directory exists"
+    when: result.stat.exists
+
+  - name: Clean up Directories and Files
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items:
+      - /opt/apigee/backup
+      - /opt/apigee/etc/postgresql.d
+      - /opt/apigee/etc/postgres-server.d
+
+  - name: "Restore apigee-postgresql"
+    shell: /opt/apigee/apigee-service/bin/apigee-service apigee-postgresql restore backup-2019.**.**,**.**.**.tar.gz
+
+  - name: "Restore  edge-postgres-server"
+    shell: /opt/apigee/apigee-service/bin/apigee-service edge-postgres-server restore backup-2019.**.**,**.**.**.tar.gz

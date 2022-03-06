@@ -1,0 +1,9 @@
+---
+- name: "Prepare for upgrade apigee-{{ apigee_ver }}"
+  hosts: rmp[9]
+  become: yes
+  become_user: "root"
+  
+  roles:
+      - ../../roles/update-test   
+  

@@ -1,0 +1,11 @@
+---
+- name: Prepare for upgrade apigee-{{ apigee_ver }}
+  hosts: dynamic-data
+  serial: 1
+  become: yes
+  become_user: "root"
+  
+  roles:
+      # - ../../roles/backup-zookeeper-components
+      - ../../roles/update-apigee-base
+

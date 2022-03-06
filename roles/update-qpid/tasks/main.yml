@@ -1,0 +1,27 @@
+---
+# Update apigee-qpidd
+   - name: Ensures configFile file Exists
+     file: 
+      path: /usr/local/configFile
+      state: file   
+   
+#   - name: "update apigee-qpidd"
+#     command: '/opt/apigee/apigee-setup/bin/update.sh -c qpid -f /usr/local/configFile'
+
+   - name: Change the working directory to /opt/apigee/ and run the update command.
+     command: '/opt/apigee/apigee-setup/bin/update.sh -c qpid -f /usr/local/configFile'
+     become: yes
+     become_user: root
+     args:
+       chdir: /opt/apigee/
+
+# Validate apigee-qpidd updated to 4.19.01
+   - name: Ensures apigee-qpidd updated
+     file: 
+      path: /opt/apigee/apigee-qpidd-4.19.01-0.0.2001
+      state: directory
+
+   - name: Ensures apigee-gateway updated
+     file: 
+      path: /opt/apigee/apigee-gateway-4.19.01-0.0.20024
+      state: directory

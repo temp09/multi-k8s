@@ -1,0 +1,5 @@
+---
+   # Requires start all the postgres servers
+   
+   - name: "Start  edge-postgres-server"
+     shell: /opt/apigee/apigee-service/bin/apigee-service edge-postgres-server start

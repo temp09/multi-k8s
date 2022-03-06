@@ -1,0 +1,46 @@
+---
+
+# local apigee repo install
+   - name: Add Apigee Release Repository
+     yum_repository:
+       name: apigee-release
+       description: Apigee Release Repo
+       file: apigee_internal
+       baseurl: "{{ rpm_repo }}/{{ apigee_ver }}/apigee-release/"
+       gpgcheck: no
+
+# local apigee repo install
+   - name: Add Apigee Third Party Components Repository
+     yum_repository:
+       name: apigee-thirdparty
+       description: Apigee Third Party Components Repository 
+       file: apigee_internal
+       baseurl: "{{ rpm_repo }}/{{ apigee_ver }}/apigee-thirdparty/"
+       gpgcheck: no
+
+# Remove any existing internal repo      
+   - name: Remove files
+     file:
+        path: /etc/yum.repos.d/{{ item }}
+        state: absent
+     with_items: 
+         - gts-apigee-repo.repo 
+         - local-apigee-release.repo 
+         - local-apigee-thirdparty.repo
+       
+   - name: yum-clean-metadata
+     command: yum clean metadata
+     args:
+       warn: no
+       
+# Install apigee-service 
+   - name: "Install apigee-service"
+     yum:
+       name: 'apigee-service'
+       state: latest
+
+# Update apigee-setup 
+   - name: "Update apigee-setup"
+     command: '/opt/apigee/apigee-service/bin/apigee-service apigee-setup update'
+
+

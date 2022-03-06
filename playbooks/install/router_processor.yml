@@ -1,0 +1,41 @@
+---
+- name: 'Prepare for Apigee Install'
+  hosts: rmp-internal-pool-first
+  serial: 1
+  become: yes
+  become_user: "root"
+  roles:
+      - ../../roles/apigee-base
+      - ../../roles/apigee-config
+      - ../../roles/apigee-router_processor
+      
+- name: 'Prepare for Apigee Install'
+  hosts: rmp-external-pool-first
+  serial: 1
+  become: yes
+  become_user: "root"
+  roles:
+      - ../../roles/apigee-base
+      - ../../roles/apigee-config
+      - ../../roles/apigee-router_processor
+            
+- name: 'Prepare for Apigee Install'
+  hosts: rmp-internal-pool-second
+  serial: 1
+  become: yes
+  become_user: "root"
+  roles:
+      - ../../roles/apigee-base
+      - ../../roles/apigee-config
+      - ../../roles/apigee-router_processor
+      
+- name: 'Prepare for Apigee Install'
+  hosts: rmp-external-pool-second
+  serial: 1
+  become: yes
+  become_user: "root"
+  roles:
+      - ../../roles/apigee-base
+      - ../../roles/apigee-config
+      - ../../roles/apigee-router_processor
+      

@@ -1,0 +1,49 @@
+---
+# Components Installation validation in POSTGRESQL nodes
+    - name: Check Postgresql process status
+      shell: /opt/apigee/apigee-service/bin/apigee-service apigee-postgresql status 
+      ignore_errors: true
+      register: postgresql_status
+
+    - name: Debug
+      debug:
+        msg: "{{ postgresql_status.stderr }}"
+
+    - name: Notify failure
+      fail:
+          msg: "APIGEE POSTGRESQL HAS NOT STARTED ON {{ inventory_hostname }} SERVER"
+      when: '"apigee-service: apigee-postgresql: OK" not in postgresql_status.stderr'
+
+#    - name: Check Postgresql server process status
+#     shell: /opt/apigee/apigee-service/bin/apigee-service edge-postgres-server status
+#     ignore_errors: true
+#     register: postgresql_server_status
+
+#   - name: Debug
+#     debug:
+#       msg: "{{ postgresql_server_status.stderr }}"
+
+#   - name: Notify failure
+#     fail:
+#         msg: "APIGEE POSTGRESQL SERVER HAS NOT STARTED ON {{ inventory_hostname }} SERVER"
+#     when: '"apigee-service: edge-postgres-server: OK" not in postgresql_server_status.stderr'
+
+# Port 5432 validation on Postgres for communication from Qpid server to postgres
+
+    - name: Check open port 4530 on Postgres server on SWN01 for communication from Qpid server to postgres
+      shell: nc -vz 10.65.188.29 5432
+      register: postgres_slave_port_5432
+
+    - name: Notify failure
+      fail:
+        msg: "LISTENNING PORT 5432 ON 10.65.188.29 SERVER"
+      when: '"Connected to 10.65.188.29:5432" not in postgres_slave_port_5432.stderr'
+
+    - name: Check open port 5432 on Postgres server on DEN06 for communication from Qpid server to postgres
+      shell: nc -vz 10.71.178.29 5432
+      register: postgres_master_port_5432
+
+    - name: Notify failure
+      fail:
+        msg: "LISTENNING PORT 5432 ON 10.71.178.29 SERVER"
+      when: '"Connected to 10.71.178.29:5432" not in postgres_master_port_5432.stderr'

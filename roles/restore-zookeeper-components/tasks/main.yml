@@ -1,0 +1,25 @@
+---
+  # Requires Restore zookeeper and cassandra processes
+  - stat:
+    path: /opt/apigee/backup
+    register: result
+  - debug:
+    msg: "Backup Directory exists"
+    when: result.stat.exists
+
+  - name: Clean up Directories and Files
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items:
+      - /opt/apigee/data/apigee-zookeeper
+      - /opt/apigee/data/apigee-cassandra
+      - /opt/apigee/etc/zookeeper.d
+      - /opt/apigee/etc/cassandra.d
+
+# Replace ** with value of current backup file
+  - name: "Restore apigee-zookeeper"
+    shell: /opt/apigee/apigee-service/bin/apigee-service apigee-zookeeper restore backup-2019.**.**,**.**.**.tar.gz
+
+  - name: "Restore  apigee-cassandra"
+    shell: /opt/apigee/apigee-service/bin/apigee-service apigee-cassandra restore backup-2019.**.**,**.**.**.tar.gz

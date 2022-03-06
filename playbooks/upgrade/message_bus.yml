@@ -1,0 +1,12 @@
+---
+- name: Prepare for upgrade apigee-{{ apigee_ver }}
+  hosts: message-bus
+  serial: 1
+  become: yes
+  become_user: "root"
+  
+  roles:
+      # - ../../roles/backup-qpid-components
+      - ../../roles/update-apigee-base  
+      # - ../../roles/update-qpid
+

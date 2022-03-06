@@ -1,0 +1,12 @@
+---
+   # requires staging of a config file
+   - name: "Install DevPortal's PGSQL Server"
+     shell: /opt/apigee/apigee-setup/bin/setup.sh -p pdb -f /opt/apigee/configFile
+
+   - name: "Restart"
+     command:  '/opt/apigee/apigee-service/bin/apigee-all restart'
+     
+   - name: "Enable autostart"
+     command:  '/opt/apigee/apigee-service/bin/apigee-all enable_autostart'
+     
+     
