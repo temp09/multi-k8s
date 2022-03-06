@@ -1,0 +1,51 @@
+A managed instance group is
+a collection of identical VM instances that you control as a single
+entity using an instance template. You can easily update all of
+the instances in the group by specifying a new template
+in a rolling update. Also, when new applications require
+additional compute resources, managed instance groups can automatically scale
+the number of instances in the group. Managed instance groups can work
+with load balancing services to distribute network traffic to
+all of the instances in the group. If an instance in the group stops,
+crashes, or is deleted by an action other than
+the instance group's commands. The managed instance group automatically
+recreates the instance, so it can resume its processing tasks. The recreated instance
+uses the same name and the same instance template
+as the previous instance. Managed instance groups can automatically
+identify and recreate unhealthy instances in a group, to ensure that all
+the instances are running optimally. Regional managed instance groups are
+generally recommended over zonal managed instance groups. Because they allow you to spread
+applications' load across multiple zones. Rather than confining your
+application to a single zone, or having to manage multiple instance
+groups across different zones. This replication protects against zonal
+failures and unforeseen scenarios, where an entire group of instances
+in a single zone malfunctions. If that happens, your application
+can continue serving traffic from instances running in
+another zone of the same region. In order to create
+a managed instance group, you first need to create
+an instance template. Next, you're going to create managed
+instance group of n specified instances. The instance group manager then
+automatically populates the instance group based on the instance template. You can easily create instance
+templates using the GCP console as shown on the screen. The instance template dialogue looks and
+works exactly like creating an instance, except that the choices are recorded so
+that they can be repeated. When you create an instance group,
+you define the specific rules for the instance group. First, you decide if the instance group
+is going to be single or multi-zoned, and where those locations will be. Second, you choose the ports they're
+going to allow and load balance across. Third, you select the instance
+template that you want to use. Fourth, you decide if you want to
+autoscale and under what circumstances. And, finally,
+you consider creating a health check to determine which instances
+should receive traffic. Essentially, you're still
+creating virtual machines, but you're applying more rules
+to that instance group. Managed instance groups offer
+autoscaling capabilities that allow you to automatically add or
+remove instances from a managed instance group based
+on increases or decreases in load. Autoscaling helps the applications
+gracefully handle increases in traffic, and reduces cost when the need for
+resources is lower. You just define the autoscaling policy and the autoscaler performs automatic
+scaling based on the measured load. Applicable autoscaling policies include
+scaling based on CPU utilization, load balancing capacity, or monitoring
+metrics, or by queue-based workload like. For example, let's assume you have
+two instances that are at 100% and 85% CPU utilization. If your target CPU utilization is 75%, the autoscaler will add another
+instance to stay below the target. For more information on autoscaling, please refer to the documentation
+linked below this video.

@@ -1,0 +1,1929 @@
+Getting Started with Google Kubernetes Engine
+**********************************************
+In Progress
+
+
+
+Lab1:
+
+username: student-01-253a63b3c5a8@qwiklabs.net
+
+password: Msb4v3KZHq7b
+
+GCP Project ID : qwiklabs-gcp-01-7ee3e75d838a
+
+
+1  ls /
+    2  cd /kickstart/
+    3  ls -lh
+    4  sudo apt-get install -y python3 python3-pip
+    5  pip3 install tornado
+    6  python3 web-server.py &
+    7  python3 web-server.py
+    8  curl http://localhost:8888
+    9  ps aux
+   10  kill %1
+   11  cat Dockerfile 
+   12  sudo docker build -t py-web-server:v1 .
+   13  sudo docker run -d -p 8888:8888 --name py-web-server -h my-web-server py-web-server:v1
+   14  curl http://localhost:8888
+   15  sudo docker rm -f py-web-server
+   16  sudo usermod -aG docker $USER
+   cd /kickstart/
+   20  export GCP_PROJECT=`gcloud config list core/project --format='value(core.project)'`
+   21  docker build -t "gcr.io/${GCP_PROJECT}/py-web-server:v1" .
+   22  PATH=/usr/lib/google-cloud-sdk/bin:$PATH
+   23  gcloud auth configure-docker
+   24  docker push gcr.io/${GCP_PROJECT}/py-web-server:v1
+   25  gsutil defacl ch -u AllUsers:R gs://artifacts.${GCP_PROJECT}.appspot.com
+   26  gsutil acl ch -r -u AllUsers:R gs://artifacts.${GCP_PROJECT}.appspot.com
+   27  gsutil acl ch -u AllUsers:R gs://artifacts.${GCP_PROJECT}.appspot.com
+   28  docker run -d -p 8888:8888 -h my-web-server gcr.io/${GCP_PROJECT}/py-web-server:v1
+   29  curl http://localhost:8888
+   
+   
+   
+Lab2:
+*********
+
+Kubernetes
+
+username :  student-00-7e2a970b2e8c@qwiklabs.net
+
+Password: kdf7TNRy5
+
+GCP Project Id: qwiklabs-gcp-00-177f669ee454
+
+Region: us-central1
+
+Zone: us-central1-a
+
+
+
+Copy the code from git :
+*************************
+git clone https://github.com/googlecodelabs/orchestrate-with-kubernetes.git
+
+Zone setup:
+***********
+gcloud config set compute/zone us-central1-a
+
+
+(Simple from Commandline tool)
+Create k8s cluster:
+*******************
+gcloud container clusters create bootcamp --num-nodes 5 --scopes "https://www.googleapis.com/auth/projecthosting,storage-rw"
+
+Run and deploy a container:
+***************************
+kubectl run nginx --image=nginx:1.10.0
+
+kubectl get pods
+
+kubectl expose deployment nginx --port 80 --type LoadBalancer
+
+kubectl get services
+
+kubectl scale deployment nginx --replicas 3
+
+kubectl get pods
+
+kubectl get services
+
+test:
+*****
+curl http://35.239.220.95:80
+
+
+Clean Up:
+*********
+kubectl delete deployment nginx
+kubectl delete service nginx
+
+
+
+
+Pods
+******
+
+Creating Pods:
+**************
+kubectl explain pods
+
+cat pods/monolith.yaml
+
+kubectl explain pods.spec.containers
+
+
+Create the monolith pod using kubectl create:
+*********************************************
+kubectl create -f pods/monolith.yaml
+
+kubectl get pods
+
+kubectl describe pods monolith
+
+
+Interacting with pods:
+**********************
+Run the following command to set up port-forwarding from a local port, 10080, to a pod port, 80 (where your container is listening):
+------------------------------------------------------------------------------------------------------------------------------------
+kubectl port-forward monolith 10080:80
+
+test:
+-----
+curl http://127.0.0.1:10080
+
+
+See what happens when you hit a secure endpoint:
+------------------------------------------------
+curl http://127.0.0.1:10080/secure
+
+Log in to get an auth token from monolith:
+------------------------------------------
+curl -u user http://127.0.0.1:10080/login 
+ password
+ 
+Cloud Shell doesn't handle copying long strings well, so copy the token into an environment variable:
+-----------------------------------------------------------------------------------------------------
+TOKEN=$(curl http://127.0.0.1:10080/login -u user|jq -r '.token')
+
+Access the secure endpoint again:
+---------------------------------
+curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:10080/secure
+
+view logs for the monolith pod:
+-------------------------------
+kubectl logs -f monolith
+
+kubectl logs monolith
+
+when you want to troubleshoot from within a container:
+------------------------------------------------------
+kubectl exec monolith --stdin --tty -c monolith /bin/sh
+
+kubectl exec monolith --stdin --tty -c monolith /bin/sh
+/ # ping -c 3 google.com
+PING google.com (74.125.124.100): 56 data bytes
+64 bytes from 74.125.124.100: seq=0 ttl=51 time=1.040 ms
+64 bytes from 74.125.124.100: seq=1 ttl=51 time=1.349 ms
+64 bytes from 74.125.124.100: seq=2 ttl=51 time=1.068 ms
+--- google.com ping statistics ---
+3 packets transmitted, 3 packets received, 0% packet loss
+round-trip min/avg/max = 1.040/1.152/1.349 ms
+
+Monitoring and Health Checks:
+*****************************
+
+Creating Pods with Liveness and Readiness Probes:
+--------------------------------------------------
+cat pods/healthy-monolith.yaml
+
+Create the healthy-monolith pod using kubectl:
+----------------------------------------------
+kubectl create -f pods/healthy-monolith.yaml
+
+
+command to view details for the healthy-monolith pod:
+-----------------------------------------------------
+kubectl describe pod healthy-monolith
+
+Readiness Probes:
+-----------------
+Use the kubectl port-forward command in terminal 2 to forward a local port to the health port of the healthy-monolith pod:
+--------------------------------------------------------------------------------------------------------------------------
+kubectl port-forward healthy-monolith 10081:81
+
+Use the curl command in terminal 1 to toggle the readiness probe status:
+------------------------------------------------------------------------
+curl http://127.0.0.1:10081/readiness/status
+
+Get the status of the healthy-monolith pod using the kubectl get pods -w command:
+---------------------------------------------------------------------------------
+kubectl get pods healthy-monolith -w
+
+kubectl describe pods healthy-monolith
+
+kubectl get pods healthy-monolith
+
+Liveness Probes:
+------------------
+Use the kubectl port-forward command to forward a local port to the health port of the healthy-monolith pod:
+------------------------------------------------------------------------------------------------------------
+curl http://127.0.0.1:10081/healthz/status
+
+kubectl get pods healthy-monolith -w
+
+kubectl describe pods healthy-monolith
+
+
+
+
+Create service:
+*****************
+
+Creating a Service:
+-------------------
+Create two volumes that the secure pod will use to bring in (or consume) data:
+-------------------------------------------------------------------------------
+
+Volume1:
+--------
+kubectl create secret generic tls-certs --from-file tls/
+
+Volume2:
+--------
+kubectl create configmap nginx-proxy-conf --from-file nginx/proxy.conf
+
+cat nginx/proxy.conf
+
+cat pods/secure-monolith.yaml
+
+create the secure-monolith pod with its configuration data:
+-----------------------------------------------------------
+kubectl create -f pods/secure-monolith.yaml
+
+cat services/monolith.yaml
+
+create the monolith service from the monolith service configuration file:
+-------------------------------------------------------------------------
+kubectl create -f services/monolith.yaml
+
+command to allow traffic to the monolith service on the exposed nodeport:
+-------------------------------------------------------------------------
+gcloud compute firewall-rules create allow-monolith-nodeport --allow=tcp:31000
+
+Get an IP address for one of your nodes:
+----------------------------------------
+gcloud compute instances list
+
+test:
+-----
+https://35.22.11.213:31000
+
+kubectl get services monolith
+
+kubectl describe services monolith
+
+Adding Labels to Pods:
+----------------------
+kubectl get pods -l "app=monolith"
+kubectl get pods -l "app=monolith,secure=enabled"
+
+add the missing secure=enabled label to the secure-monolith pod:
+----------------------------------------------------------------
+ kubectl label pods secure-monolith 'secure=enabled'
+ 
+Check to see that your labels are updated:
+------------------------------------------
+kubectl get pods secure-monolith --show-labels
+
+View the list of endpoints on the monolith service:
+----------------------------------------------------
+kubectl get endpoints monolith
+
+Test this by testing one of your nodes again:
+---------------------------------------------
+gcloud compute instances list | grep gke-
+
+
+test: 
+------
+https://35.222.11.213:31000/
+
+
+
+
+Canary and Blue - green deployment:
+************************************
+
+
+Lab3:
+
+username: student-00-0fc065a9765a@qwiklabs.net
+
+Password: DLs932yLKRK
+
+GCP Project ID: qwiklabs-gcp-00-3036588ea7ed
+
+Region: us-central1
+
+Zone: us-central1-a
+
+
+
+step to create deployments and replica:
+----------------------------------------
+
+
+  1  gcloud auth list
+    2  gcloud config list project
+    3  gcloud config set compute/zone us-central1-a
+    4  git clone https://github.com/googlecodelabs/orchestrate-with-kubernetes.git
+    5  cd orchestrate-with-kubernetes/
+    6  ls
+    7  cd kubernetes/
+    8  gcloud container clusters create bootcamp --num-nodes 5 --scopes "https://www.googleapis.com/auth/projecthosting,storage-rw"
+    9  kubectl explain deployment
+   10  kubectl explain deployment --recursive
+   11  kubectl explain deployment.metadata.name
+   12  cat deployments/auth.yaml
+   13  kubectl create -f deployments/auth.yaml
+   14  kubectl get deployments
+   15  kubectl get replicasets
+   16  kubectl get deployments
+   17  kubectl get replicasets
+   18  kubectl get pods
+   19  cat services/auth.yaml
+   20  kubectl create -f services/auth.yaml
+   21  kubectl create -f deployments/hello.yaml
+   22  kubectl create -f services/hello.yaml
+   23  kubectl create configmap nginx-frontend-conf --from-file=nginx/frontend.conf
+   24  kubectl create secret generic tls-certs --from-file tls/
+   25  kubectl create -f deployments/frontend.yaml
+   26  kubectl create -f services/frontend.yaml
+   27  kubectl get services frontend
+   28  kubectl explain deployment.spec.replicas
+   29  kubectl scale deployment hello --replicas=5
+   30  kubectl get pods | grep hello- | wc -l
+   31  kubectl scale deployment hello --replicas=3
+   32  kubectl get pods | grep hello- | wc -l
+
+
+Trigger a Rolling Update:
+-----------------------------
+
+kubectl edit deployment hello
+   36  kubectl get replicaset
+   37  kubectl rollout history deployment/hello
+   38  kubectl rollout status deployment/hello
+   39  kubectl get pods -o jsonpath --template='{range .items[*]}{.metadata.name}{"\t"}{"\t"}{.spec.containers[0].image}{"\n"}{end}'
+   40  kubectl rollout pause deployment/hello
+   41  kubectl rollout status deployment/hello
+   42  kubectl get pods -o jsonpath --template='{range .items[*]}{.metadata.name}{"\t"}{"\t"}{.spec.containers[0].image}{"\n"}{end}'
+   43  kubectl rollout resume deployment/hello
+   44  kubectl rollout status deployment/hello
+   
+Rollback update the deployment:
+-------------------------
+
+47  kubectl rollout undo deployment/hello
+   48  kubectl rollout history deployment/hello
+   49  kubectl get pods -o jsonpath --template='{range .items[*]}{.metadata.name}{"\t"}{"\t"}{.spec.containers[0].image}{"\n"}{end}'
+   
+Canary deployment:
+-----------------
+ 51  cat deployments/hello-canary.yaml
+   52  kubectl create -f deployments/hello-canary.yaml
+   53  kubectl get deployments
+   54  curl -ks https://`kubectl get svc frontend -o=jsonpath="{.status.loadBalancer.ingress[0].ip}"`/version
+   55  kubectl delete deployment hello-canary
+   
+Blue-green deployment:
+----------------------
+
+kubectl apply -f services/hello-blue.yaml
+   64  kubectl create -f deployments/hello-green.yaml
+   65  curl -ks https://`kubectl get svc frontend -o=jsonpath="{.status.loadBalancer.ingress[0].ip}"`/version
+   66  kubectl apply -f services/hello-green.yaml
+   67  curl -ks https://`kubectl get svc frontend -o=jsonpath="{.status.loadBalancer.ingress[0].ip}"`/version
+   68  kubectl apply -f services/hello-blue.yaml
+   69  curl -ks https://`kubectl get svc frontend -o=jsonpath="{.status.loadBalancer.ingress[0].ip}"`/version
+
+   
+Continuous deployment with Jenkins:
+************************************
+
+Lab4:
+-----
+
+
+Username: student-02-8c12664908e7@qwiklabs.net
+
+Password: 8WbXVGk36Bn
+
+GCP ProjetID: qwiklabs-gcp-02-f844915b6d20
+
+
+Welcome to Cloud Shell! Type "help" to get started.
+Your Cloud Platform project in this session is set to qwiklabs-gcp-02-f844915b6d20.
+Use “gcloud config set project [PROJECT_ID]” to change to a different project.
+student_02_8c12664908e7@cloudshell:~ (qwiklabs-gcp-02-f844915b6d20)$ gcloud auth list
+           Credentialed Accounts
+ACTIVE  ACCOUNT
+*       student-02-8c12664908e7@qwiklabs.net
+
+To set the active account, run:
+    $ gcloud config set account `ACCOUNT`
+
+student_02_8c12664908e7@cloudshell:~ (qwiklabs-gcp-02-f844915b6d20)$ gcloud config list project
+[core]
+project = qwiklabs-gcp-02-f844915b6d20
+
+Your active configuration is: [cloudshell-21635]
+student_02_8c12664908e7@cloudshell:~ (qwiklabs-gcp-02-f844915b6d20)$ gcloud config set compute/zone us-east1-d
+Updated property [compute/zone].
+student_02_8c12664908e7@cloudshell:~ (qwiklabs-gcp-02-f844915b6d20)$ git clone https://github.com/GoogleCloudPlatform/continuous-deployment-on-kubernetes.git
+Cloning into 'continuous-deployment-on-kubernetes'...
+remote: Enumerating objects: 10, done.
+remote: Counting objects: 100% (10/10), done.
+remote: Compressing objects: 100% (8/8), done.
+remote: Total 886 (delta 3), reused 2 (delta 1), pack-reused 876
+Receiving objects: 100% (886/886), 1.18 MiB | 0 bytes/s, done.
+Resolving deltas: 100% (439/439), done.
+student_02_8c12664908e7@cloudshell:~ (qwiklabs-gcp-02-f844915b6d20)$ cd continuous-deployment-on-kubernetes/
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ gcloud iam service-accounts create jenkins-sa \
+> ^C
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ gcloud iam service-accounts create jenkins-sa --display-name "jenkins-sa"
+Created service account [jenkins-sa].
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member "serviceAccount:jenkins-sa@$GOO
+GLE_CLOUD_PROJECT.iam.gserviceaccount.com" --role "roles/viewer"
+Updated IAM policy for project [qwiklabs-gcp-02-f844915b6d20].
+bindings:
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/appengine.appAdmin
+- members:
+  - serviceAccount:service-869063262149@gae-api-prod.google.com.iam.gserviceaccount.com
+  role: roles/appengineflex.serviceAgent
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/bigquery.admin
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com
+  role: roles/bigquerydatatransfer.serviceAgent
+- members:
+  - serviceAccount:869063262149@cloudbuild.gserviceaccount.com
+  role: roles/cloudbuild.builds.builder
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-cloudbuild.iam.gserviceaccount.com
+  role: roles/cloudbuild.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@gcf-admin-robot.iam.gserviceaccount.com
+  role: roles/cloudfunctions.serviceAgent
+- members
+  - serviceAccount:service-869063262149@gcp-sa-cloudiot.iam.gserviceaccount.com
+  role: roles/cloudiot.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-cloudtasks.iam.gserviceaccount.com
+  role: roles/cloudtasks.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@cloudcomposer-accounts.iam.gserviceaccount.com
+  role: roles/composer.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@compute-system.iam.gserviceaccount.com
+  role: roles/compute.serviceAgent
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/container.developer
+- members:
+  - serviceAccount:service-869063262149@container-engine-robot.iam.gserviceaccount.com
+  role: roles/container.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@container-analysis.iam.gserviceaccount.com
+  role: roles/containeranalysis.ServiceAgent
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-containerscanning.iam.gserviceaccount.com
+  role: roles/containerscanning.ServiceAgent
+- members:
+  - serviceAccount:service-869063262149@dataflow-service-producer-prod.iam.gserviceaccount.com
+  role: roles/dataflow.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@dataproc-accounts.iam.gserviceaccount.com
+  role: roles/dataproc.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@dlp-api.iam.gserviceaccount.com
+  role: roles/dlp.serviceAgent
+- members:
+  - serviceAccount:869063262149-compute@developer.gserviceaccount.com
+  - serviceAccount:869063262149@cloudservices.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@appspot.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - serviceAccount:service-869063262149@containerregistry.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/editor
+- members:
+  - serviceAccount:service-869063262149@firebase-rules.iam.gserviceaccount.com
+  role: roles/firebaserules.system
+- members:
+  - serviceAccount:service-869063262149@genomics-api.google.com.iam.gserviceaccount.com
+  role: roles/genomics.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@cloud-ml.google.com.iam.gserviceaccount.com
+  role: roles/ml.serviceAgent
+- members:
+  - serviceAccount:admiral@qwiklabs-services-prod.iam.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/owner
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/source.admin
+- members:
+  - serviceAccount:service-869063262149@sourcerepo-service-accounts.iam.gserviceaccount.com
+  role: roles/sourcerepo.serviceAgent
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/viewer
+etag: BwWhZ8oXO3E=
+version: 1
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" --role "roles/source.reader"
+-bash: projects: command not found
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+>     --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" \
+>     --role "roles/source.reader"
+Updated IAM policy for project [qwiklabs-gcp-02-f844915b6d20].
+bindings:
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/appengine.appAdmin
+- members:
+  - serviceAccount:service-869063262149@gae-api-prod.google.com.iam.gserviceaccount.com
+  role: roles/appengineflex.serviceAgent
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/bigquery.admin
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com
+  role: roles/bigquerydatatransfer.serviceAgent
+- members:
+  - serviceAccount:869063262149@cloudbuild.gserviceaccount.com
+  role: roles/cloudbuild.builds.builder
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-cloudbuild.iam.gserviceaccount.com
+  role: roles/cloudbuild.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@gcf-admin-robot.iam.gserviceaccount.com
+  role: roles/cloudfunctions.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-cloudiot.iam.gserviceaccount.com
+  role: roles/cloudiot.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-cloudtasks.iam.gserviceaccount.com
+  role: roles/cloudtasks.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@cloudcomposer-accounts.iam.gserviceaccount.com
+  role: roles/composer.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@compute-system.iam.gserviceaccount.com
+  role: roles/compute.serviceAgent
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/container.developer
+- members:
+  - serviceAccount:service-869063262149@container-engine-robot.iam.gserviceaccount.com
+  role: roles/container.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@container-analysis.iam.gserviceaccount.com
+  role: roles/containeranalysis.ServiceAgent
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-containerscanning.iam.gserviceaccount.com
+  role: roles/containerscanning.ServiceAgent
+- members:
+  - serviceAccount:service-869063262149@dataflow-service-producer-prod.iam.gserviceaccount.com
+  role: roles/dataflow.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@dataproc-accounts.iam.gserviceaccount.com
+  role: roles/dataproc.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@dlp-api.iam.gserviceaccount.com
+  role: roles/dlp.serviceAgent
+- members:
+  - serviceAccount:869063262149-compute@developer.gserviceaccount.com
+  - serviceAccount:869063262149@cloudservices.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@appspot.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - serviceAccount:service-869063262149@containerregistry.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/editor
+- members:
+  - serviceAccount:service-869063262149@firebase-rules.iam.gserviceaccount.com
+  role: roles/firebaserules.system
+- members:
+  - serviceAccount:service-869063262149@genomics-api.google.com.iam.gserviceaccount.com
+  role: roles/genomics.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@cloud-ml.google.com.iam.gserviceaccount.com
+  role: roles/ml.serviceAgent
+- members:
+  - serviceAccount:admiral@qwiklabs-services-prod.iam.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/owner
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/source.admin
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  role: roles/source.reader
+- members:
+  - serviceAccount:service-869063262149@sourcerepo-service-accounts.iam.gserviceaccount.com
+  role: roles/sourcerepo.serviceAgent
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/viewer
+etag: BwWhZ9M9rS0=
+version: 1
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+>     --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" \
+>     --role "roles/storage.admin"
+Updated IAM policy for project [qwiklabs-gcp-02-f844915b6d20].
+bindings:
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/appengine.appAdmin
+- members:
+  - serviceAccount:service-869063262149@gae-api-prod.google.com.iam.gserviceaccount.com
+  role: roles/appengineflex.serviceAgent
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/bigquery.admin
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com
+  role: roles/bigquerydatatransfer.serviceAgent
+- members:
+  - serviceAccount:869063262149@cloudbuild.gserviceaccount.com
+  role: roles/cloudbuild.builds.builder
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-cloudbuild.iam.gserviceaccount.com
+  role: roles/cloudbuild.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@gcf-admin-robot.iam.gserviceaccount.com
+  role: roles/cloudfunctions.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-cloudiot.iam.gserviceaccount.com
+  role: roles/cloudiot.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-cloudtasks.iam.gserviceaccount.com
+  role: roles/cloudtasks.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@cloudcomposer-accounts.iam.gserviceaccount.com
+  role: roles/composer.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@compute-system.iam.gserviceaccount.com
+  role: roles/compute.serviceAgent  
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/container.developer
+- members:
+  - serviceAccount:service-869063262149@container-engine-robot.iam.gserviceaccount.com
+  role: roles/container.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@container-analysis.iam.gserviceaccount.com
+  role: roles/containeranalysis.ServiceAgent
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-containerscanning.iam.gserviceaccount.com
+  role: roles/containerscanning.ServiceAgent
+- members:
+  - serviceAccount:service-869063262149@dataflow-service-producer-prod.iam.gserviceaccount.com
+  role: roles/dataflow.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@dataproc-accounts.iam.gserviceaccount.com
+  role: roles/dataproc.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@dlp-api.iam.gserviceaccount.com
+  role: roles/dlp.serviceAgent
+- members:
+  - serviceAccount:869063262149-compute@developer.gserviceaccount.com
+  - serviceAccount:869063262149@cloudservices.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@appspot.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - serviceAccount:service-869063262149@containerregistry.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/editor
+- members:
+  - serviceAccount:service-869063262149@firebase-rules.iam.gserviceaccount.com
+  role: roles/firebaserules.system
+- members:
+  - serviceAccount:service-869063262149@genomics-api.google.com.iam.gserviceaccount.com
+  role: roles/genomics.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@cloud-ml.google.com.iam.gserviceaccount.com
+  role: roles/ml.serviceAgent
+- members:
+  - serviceAccount:admiral@qwiklabs-services-prod.iam.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/owner
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/source.admin
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  role: roles/source.reader
+- members:
+  - serviceAccount:service-869063262149@sourcerepo-service-accounts.iam.gserviceaccount.com
+  role: roles/sourcerepo.serviceAgent
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  role: roles/storage.admin
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/viewer
+etag: BwWhZ9Qxz7s=
+version: 1
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+>     --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" \
+>     --role "roles/storage.objectAdmin"
+Updated IAM policy for project [qwiklabs-gcp-02-f844915b6d20].
+bindings:
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/appengine.appAdmin
+- members:
+  - serviceAccount:service-869063262149@gae-api-prod.google.com.iam.gserviceaccount.com
+  role: roles/appengineflex.serviceAgent
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/bigquery.admin
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com
+  role: roles/bigquerydatatransfer.serviceAgent
+- members:
+  - serviceAccount:869063262149@cloudbuild.gserviceaccount.com
+  role: roles/cloudbuild.builds.builder
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-cloudbuild.iam.gserviceaccount.com
+  role: roles/cloudbuild.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@gcf-admin-robot.iam.gserviceaccount.com
+  role: roles/cloudfunctions.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-cloudiot.iam.gserviceaccount.com
+  role: roles/cloudiot.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-cloudtasks.iam.gserviceaccount.com
+  role: roles/cloudtasks.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@cloudcomposer-accounts.iam.gserviceaccount.com
+  role: roles/composer.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@compute-system.iam.gserviceaccount.com
+  role: roles/compute.serviceAgent
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/container.developer
+- members:
+  - serviceAccount:service-869063262149@container-engine-robot.iam.gserviceaccount.com
+  role: roles/container.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@container-analysis.iam.gserviceaccount.com
+  role: roles/containeranalysis.ServiceAgent
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-containerscanning.iam.gserviceaccount.com
+  role: roles/containerscanning.ServiceAgent
+- members:
+  - serviceAccount:service-869063262149@dataflow-service-producer-prod.iam.gserviceaccount.com
+  role: roles/dataflow.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@dataproc-accounts.iam.gserviceaccount.com
+  role: roles/dataproc.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@dlp-api.iam.gserviceaccount.com
+  role: roles/dlp.serviceAgent
+- members:
+  - serviceAccount:869063262149-compute@developer.gserviceaccount.com
+  - serviceAccount:869063262149@cloudservices.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@appspot.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - serviceAccount:service-869063262149@containerregistry.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/editor
+- members:
+  - serviceAccount:service-869063262149@firebase-rules.iam.gserviceaccount.com
+  role: roles/firebaserules.system
+- members:
+  - serviceAccount:service-869063262149@genomics-api.google.com.iam.gserviceaccount.com
+  role: roles/genomics.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@cloud-ml.google.com.iam.gserviceaccount.com
+  role: roles/ml.serviceAgent
+- members:
+  - serviceAccount:admiral@qwiklabs-services-prod.iam.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/owner
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/source.admin
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  role: roles/source.reader
+- members:
+  - serviceAccount:service-869063262149@sourcerepo-service-accounts.iam.gserviceaccount.com
+  role: roles/sourcerepo.serviceAgent
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  role: roles/storage.admin
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  role: roles/storage.objectAdmin
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/viewer
+etag: BwWhZ9TtOFI=
+version: 1
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+>     --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" \
+>     --role "roles/cloudbuild.builds.editor"
+Updated IAM policy for project [qwiklabs-gcp-02-f844915b6d20].
+bindings:
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/appengine.appAdmin
+- members:
+  - serviceAccount:service-869063262149@gae-api-prod.google.com.iam.gserviceaccount.com
+  role: roles/appengineflex.serviceAgent
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/bigquery.admin
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com
+  role: roles/bigquerydatatransfer.serviceAgent
+- members:
+  - serviceAccount:869063262149@cloudbuild.gserviceaccount.com
+  role: roles/cloudbuild.builds.builder
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  role: roles/cloudbuild.builds.editor
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-cloudbuild.iam.gserviceaccount.com
+  role: roles/cloudbuild.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@gcf-admin-robot.iam.gserviceaccount.com
+  role: roles/cloudfunctions.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-cloudiot.iam.gserviceaccount.com
+  role: roles/cloudiot.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-cloudtasks.iam.gserviceaccount.com
+  role: roles/cloudtasks.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@cloudcomposer-accounts.iam.gserviceaccount.com
+  role: roles/composer.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@compute-system.iam.gserviceaccount.com
+  role: roles/compute.serviceAgent
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/container.developer
+- members:
+  - serviceAccount:service-869063262149@container-engine-robot.iam.gserviceaccount.com
+  role: roles/container.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@container-analysis.iam.gserviceaccount.com
+  role: roles/containeranalysis.ServiceAgent
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-containerscanning.iam.gserviceaccount.com
+  role: roles/containerscanning.ServiceAgent
+- members:
+  - serviceAccount:service-869063262149@dataflow-service-producer-prod.iam.gserviceaccount.com
+  role: roles/dataflow.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@dataproc-accounts.iam.gserviceaccount.com
+  role: roles/dataproc.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@dlp-api.iam.gserviceaccount.com
+  role: roles/dlp.serviceAgent
+- members:
+  - serviceAccount:869063262149-compute@developer.gserviceaccount.com
+  - serviceAccount:869063262149@cloudservices.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@appspot.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - serviceAccount:service-869063262149@containerregistry.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/editor
+- members:
+  - serviceAccount:service-869063262149@firebase-rules.iam.gserviceaccount.com
+  role: roles/firebaserules.system
+- members:
+  - serviceAccount:service-869063262149@genomics-api.google.com.iam.gserviceaccount.com
+  role: roles/genomics.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@cloud-ml.google.com.iam.gserviceaccount.com
+  role: roles/ml.serviceAgent
+- members:
+  - serviceAccount:admiral@qwiklabs-services-prod.iam.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/owner
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/source.admin
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  role: roles/source.reader
+- members:
+  - serviceAccount:service-869063262149@sourcerepo-service-accounts.iam.gserviceaccount.com
+  role: roles/sourcerepo.serviceAgent
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  role: roles/storage.admin
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  role: roles/storage.objectAdmin
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/viewer
+etag: BwWhZ9Wfy1g=
+version: 1
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+>     --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" \
+>     --role "roles/container.developer"
+Updated IAM policy for project [qwiklabs-gcp-02-f844915b6d20].
+bindings:
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/appengine.appAdmin
+- members:
+  - serviceAccount:service-869063262149@gae-api-prod.google.com.iam.gserviceaccount.com
+  role: roles/appengineflex.serviceAgent
+- members:
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/bigquery.admin
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-bigquerydatatransfer.iam.gserviceaccount.com
+  role: roles/bigquerydatatransfer.serviceAgent
+- members:
+  - serviceAccount:869063262149@cloudbuild.gserviceaccount.com
+  role: roles/cloudbuild.builds.builder
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  role: roles/cloudbuild.builds.editor
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-cloudbuild.iam.gserviceaccount.com
+  role: roles/cloudbuild.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@gcf-admin-robot.iam.gserviceaccount.com
+  role: roles/cloudfunctions.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-cloudiot.iam.gserviceaccount.com
+  role: roles/cloudiot.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-cloudtasks.iam.gserviceaccount.com
+  role: roles/cloudtasks.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@cloudcomposer-accounts.iam.gserviceaccount.com
+  role: roles/composer.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@compute-system.iam.gserviceaccount.com
+  role: roles/compute.serviceAgent
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/container.developer
+- members:
+  - serviceAccount:service-869063262149@container-engine-robot.iam.gserviceaccount.com
+  role: roles/container.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@container-analysis.iam.gserviceaccount.com
+  role: roles/containeranalysis.ServiceAgent
+- members:
+  - serviceAccount:service-869063262149@gcp-sa-containerscanning.iam.gserviceaccount.com
+  role: roles/containerscanning.ServiceAgent
+- members:
+  - serviceAccount:service-869063262149@dataflow-service-producer-prod.iam.gserviceaccount.com
+  role: roles/dataflow.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@dataproc-accounts.iam.gserviceaccount.com
+  role: roles/dataproc.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@dlp-api.iam.gserviceaccount.com
+  role: roles/dlp.serviceAgent
+- members:
+  - serviceAccount:869063262149-compute@developer.gserviceaccount.com
+  - serviceAccount:869063262149@cloudservices.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@appspot.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - serviceAccount:service-869063262149@containerregistry.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/editor
+- members:
+  - serviceAccount:service-869063262149@firebase-rules.iam.gserviceaccount.com
+  role: roles/firebaserules.system
+- members:
+  - serviceAccount:service-869063262149@genomics-api.google.com.iam.gserviceaccount.com
+  role: roles/genomics.serviceAgent
+- members:
+  - serviceAccount:service-869063262149@cloud-ml.google.com.iam.gserviceaccount.com
+  role: roles/ml.serviceAgent
+- members:
+  - serviceAccount:admiral@qwiklabs-services-prod.iam.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/owner
+  role: roles/owner
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/source.admin
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  role: roles/source.reader
+- members:
+  - serviceAccount:service-869063262149@sourcerepo-service-accounts.iam.gserviceaccount.com
+  role: roles/sourcerepo.serviceAgent
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  role: roles/storage.admin
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  role: roles/storage.objectAdmin
+- members:
+  - serviceAccount:jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - serviceAccount:qwiklabs-gcp-02-f844915b6d20@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com
+  - user:student-02-8c12664908e7@qwiklabs.net
+  role: roles/viewer
+etag: BwWhZ9ZOBCU=
+version: 1
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ gcloud iam service-accounts keys create ~/jenkins-sa-key.json \
+>     --iam-account "jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com"
+created key [22ce18a3f3fd47cf345c250b9d58057627cb94b7] of type [json] as [/home/student_02_8c12664908e7/jenkins-sa-key.json] for [jenkins-sa@qwiklabs-gcp-02-f844915b6d20.iam.gserviceaccount.com]
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ gcloud container clusters create jenkins-cd \
+>   --num-nodes 2 \
+>   --machine-type n1-standard-2 \
+>   --cluster-version latest \
+>   --service-account "jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com"
+WARNING: Currently VPC-native is not the default mode during cluster creation. In the future, this will become the default mode and can be disabled using `--no-enable-ip-alias` flag. Use `--[no-]enable-ip-alias` flag to suppress this warning.
+WARNING: Newly created clusters and node-pools will have node auto-upgrade enabled by default. This can be disabled using the `--no-enable-autoupgrade` flag.
+WARNING: Starting with version 1.18, clusters will have shielded GKE nodes by default.
+WARNING: Your Pod address range (`--cluster-ipv4-cidr`) can accommodate at most 1008 node(s).
+This will enable the autorepair feature for nodes. Please see https://cloud.google.com/kubernetes-engine/docs/node-auto-repair for more information on node autorepairs.
+Creating cluster jenkins-cd in us-east1-d... Cluster is being health-checked (master is healthy)...done.
+Created [https://container.googleapis.com/v1/projects/qwiklabs-gcp-02-f844915b6d20/zones/us-east1-d/clusters/jenkins-cd].
+To inspect the contents of your cluster, go to: https://console.cloud.google.com/kubernetes/workload_/gcloud/us-east1-d/jenkins-cd?project=qwiklabs-gcp-02-f844915b6d20
+kubeconfig entry generated for jenkins-cd.
+NAME        LOCATION    MASTER_VERSION  MASTER_IP     MACHINE_TYPE   NODE_VERSION   NUM_NODES  STATUS
+jenkins-cd  us-east1-d  1.15.9-gke.26   35.185.17.27  n1-standard-2  1.15.9-gke.26  2          RUNNING
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ gcloud container clusters list
+NAME        LOCATION    MASTER_VERSION  MASTER_IP     MACHINE_TYPE   NODE_VERSION   NUM_NODES  STATUS
+jenkins-cd  us-east1-d  1.15.9-gke.26   35.185.17.27  n1-standard-2  1.15.9-gke.26  2          RUNNING
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ gcloud container clusters get-credentials jenkins-cd
+Fetching cluster endpoint and auth data.
+kubeconfig entry generated for jenkins-cd.
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ kubectl cluster-info
+Kubernetes master is running at https://35.185.17.27
+GLBCDefaultBackend is running at https://35.185.17.27/api/v1/namespaces/kube-system/services/default-http-backend:http/proxy
+Heapster is running at https://35.185.17.27/api/v1/namespaces/kube-system/services/heapster/proxy
+KubeDNS is running at https://35.185.17.27/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+Metrics-server is running at https://35.185.17.27/api/v1/namespaces/kube-system/services/https:metrics-server:/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$(gcloud config get-value account)
+Your active configuration is: [cloudshell-21635]
+clusterrolebinding.rbac.authorization.k8s.io/cluster-admin-binding created
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ wget https://storage.googleapis.com/kubernetes-helm/helm-v2.14.3-linux-amd64.tar.gz
+--2020-03-21 22:03:45--  https://storage.googleapis.com/kubernetes-helm/helm-v2.14.3-linux-amd64.tar.gz
+Resolving storage.googleapis.com (storage.googleapis.com)... 108.177.111.128, 2607:f8b0:4001:c05::80
+Connecting to storage.googleapis.com (storage.googleapis.com)|108.177.111.128|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 26533763 (25M) [application/x-tar]
+Saving to: ‘helm-v2.14.3-linux-amd64.tar.gz’
+
+helm-v2.14.3-linux-amd64.tar.gz                              100%[==============================================================================================================================================>]  25.30M   136MB/s    in 0.2s
+
+2020-03-21 22:03:46 (136 MB/s) - ‘helm-v2.14.3-linux-amd64.tar.gz’ saved [26533763/26533763]
+
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ tar zxfv helm-v2.14.3-linux-amd64.tar.gz
+linux-amd64/
+linux-amd64/helm
+linux-amd64/README.md
+linux-amd64/LICENSE
+linux-amd64/tiller
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ cp linux-amd64/helm .
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ kubectl create serviceaccount tiller --namespace kube-system
+serviceaccount/tiller created
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ kubectl create clusterrolebinding tiller-admin-binding --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+clusterrolebinding.rbac.authorization.k8s.io/tiller-admin-binding created
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ ./helm init --service-account=tiller
+Creating /home/student_02_8c12664908e7/.helm
+Creating /home/student_02_8c12664908e7/.helm/repository
+Creating /home/student_02_8c12664908e7/.helm/repository/cache
+Creating /home/student_02_8c12664908e7/.helm/repository/local
+Creating /home/student_02_8c12664908e7/.helm/plugins
+Creating /home/student_02_8c12664908e7/.helm/starters
+Creating /home/student_02_8c12664908e7/.helm/cache/archive
+Creating /home/student_02_8c12664908e7/.helm/repository/repositories.yaml
+Adding stable repo with URL: https://kubernetes-charts.storage.googleapis.com
+Adding local repo with URL: http://127.0.0.1:8879/charts
+$HELM_HOME has been configured at /home/student_02_8c12664908e7/.helm.
+
+Tiller (the Helm server-side component) has been installed into your Kubernetes Cluster.
+
+Please note: by default, Tiller is deployed with an insecure 'allow unauthenticated users' policy.
+To prevent this, run `helm init` with the --tiller-tls-verify flag.
+For more information on securing your installation see: https://docs.helm.sh/using_helm/#securing-your-helm-installation
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ ./helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Skip local chart repository
+...Successfully got an update from the "stable" chart repository
+Update Complete.
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ ./helm version
+Client: &version.Version{SemVer:"v2.14.3", GitCommit:"0e7f3b6637f7af8fcfddb3d2941fcc7cbebb0085", GitTreeState:"clean"}
+Server: &version.Version{SemVer:"v2.14.3", GitCommit:"0e7f3b6637f7af8fcfddb3d2941fcc7cbebb0085", GitTreeState:"clean"}
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ ./helm install -n cd stable/jenkins -f jenkins/values.yaml --version 1.7.3 --wait
+NAME:   cd
+LAST DEPLOYED: Sat Mar 21 22:06:18 2020
+NAMESPACE: default
+STATUS: DEPLOYED
+
+RESOURCES:
+==> v1/ConfigMap
+NAME              DATA  AGE
+cd-jenkins        5     118s
+cd-jenkins-tests  1     118s
+
+==> v1/Deployment
+NAME        READY  UP-TO-DATE  AVAILABLE  AGE
+cd-jenkins  1/1    1           1          118s
+
+==> v1/PersistentVolumeClaim
+NAME        STATUS  VOLUME                                    CAPACITY  ACCESS MODES  STORAGECLASS  AGE
+cd-jenkins  Bound   pvc-9c36fc6d-8063-4be1-994d-d8190e0623e9  100Gi     RWO           standard      118s
+
+==> v1/Pod(related)
+NAME                         READY  STATUS   RESTARTS  AGE
+cd-jenkins-7b9f67bfdf-cqx6v  1/1    Running  0         117s
+
+==> v1/Role
+NAME                        AGE
+cd-jenkins-schedule-agents  118s
+
+==> v1/RoleBinding
+NAME                        AGE
+cd-jenkins-schedule-agents  118s
+
+==> v1/Secret
+NAME        TYPE    DATA  AGE
+cd-jenkins  Opaque  2     118s
+
+==> v1/Service
+NAME              TYPE       CLUSTER-IP    EXTERNAL-IP  PORT(S)    AGE
+cd-jenkins        ClusterIP  10.35.248.42  <none>       8080/TCP   118s
+cd-jenkins-agent  ClusterIP  10.35.246.72  <none>       50000/TCP  118s
+
+==> v1/ServiceAccount
+NAME        SECRETS  AGE
+cd-jenkins  1        118s
+
+
+NOTES:
+1. Get your 'admin' user password by running:
+  printf $(kubectl get secret --namespace default cd-jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
+2. Get the Jenkins URL to visit by running these commands in the same shell:
+  export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/component=jenkins-master" -l "app.kubernetes.io/instance=cd" -o jsonpath="{.items[0].metadata.name}")
+  echo http://127.0.0.1:8080
+  kubectl --namespace default port-forward $POD_NAME 8080:8080
+
+3. Login with the password from step 1 and the username: admin
+For more information on running Jenkins on Kubernetes, visit:
+https://cloud.google.com/solutions/jenkins-on-container-engine
+
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ kubectl get pods
+NAME                          READY   STATUS    RESTARTS   AGE
+cd-jenkins-7b9f67bfdf-cqx6v   1/1     Running   0          2m28s
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ kubectl create clusterrolebinding jenkins-deploy \
+>     --clusterrole=cluster-admin --serviceaccount=default:cd-jenkins
+clusterrolebinding.rbac.authorization.k8s.io/jenkins-deploy created
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ export JENKINS_POD_NAME=$(kubectl get pods -l "app.kubernetes.io/component=jenkins-master" -o jsonpath="{.items[0].metadata.name}")
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ kubectl port-forward $JENKINS_POD_NAME 8080:8080 >> /dev/null &
+[1] 918
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ kubectl get svc
+NAME               TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)     AGE
+cd-jenkins         ClusterIP   10.35.248.42   <none>        8080/TCP    3m14s
+cd-jenkins-agent   ClusterIP   10.35.246.72   <none>        50000/TCP   3m14s
+kubernetes         ClusterIP   10.35.240.1    <none>        443/TCP     8m59s
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ printf $(kubectl get secret cd-jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
+qKjz1h5nev
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes (qwiklabs-gcp-02-f844915b6d20)$ cd sample-app/
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ ls
+Dockerfile  Gopkg.lock  Gopkg.toml  html.go  Jenkinsfile  k8s  main.go  main_test.go  vendor
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ kubectl create ns production
+namespace/production created
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ kubectl --namespace=production apply -f k8s/production
+deployment.extensions/gceme-backend-production created
+deployment.extensions/gceme-frontend-production created
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ kubectl --namespace=production apply -f k8s/canary
+deployment.extensions/gceme-backend-canary created
+deployment.extensions/gceme-frontend-canary created
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ kubectl --namespace=production apply -f k8s/services
+service/gceme-backend created
+service/gceme-frontend created
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ kubectl --namespace=production scale deployment gceme-frontend-production --replicas=4
+deployment.extensions/gceme-frontend-production scaled
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ kubectl get pods -n production -l app=gceme -l role=frontend
+NAME                                         READY   STATUS    RESTARTS   AGE
+gceme-frontend-canary-5f996dd744-9dbsn       1/1     Running   0          66s
+gceme-frontend-production-76bb445bbc-2mllb   1/1     Running   0          24s
+gceme-frontend-production-76bb445bbc-bnmvp   1/1     Running   0          84s
+gceme-frontend-production-76bb445bbc-sdlkd   1/1     Running   0          24s
+gceme-frontend-production-76bb445bbc-vvfxv   1/1     Running   0          24s
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ kubectl get pods -n production -l app=gceme -l role=backend
+NAME                                       READY   STATUS    RESTARTS   AGE
+gceme-backend-canary-d6f654f8b-wbp57       1/1     Running   0          98s
+gceme-backend-production-d6ff496f9-hgvlm   1/1     Running   0          116s
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ kubectl --namespace=production get service gceme-frontend
+NAME             TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)        AGE
+gceme-frontend   LoadBalancer   10.35.244.155   104.196.54.131   80:31584/TCP   2m21s
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ export FRONTEND_SERVICE_IP=$(kubectl get -o jsonpath="{.status.loadBalancer.ingress[0].ip}" --namespace=production services gceme-frontend)
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ curl http://$FRONTEND_SERVICE_IP/version
+1.0.0
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ gcloud source repos create gceme
+Created [gceme].
+WARNING: You may be billed for this repository. See https://cloud.google.com/source-repositories/docs/pricing for details.
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git init
+Initialized empty Git repository in /home/student_02_8c12664908e7/continuous-deployment-on-kubernetes/sample-app/.git/
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git config credential.helper gcloud.sh
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git remote add origin https://source.developers.google.com/p/$GOOGLE_CLOUD_PROJECT/r/gceme
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git remote -v
+origin  https://source.developers.google.com/p/qwiklabs-gcp-02-f844915b6d20/r/gceme (fetch)
+origin  https://source.developers.google.com/p/qwiklabs-gcp-02-f844915b6d20/r/gceme (push)
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git config --global user.email "$USER@qwiklabs.net"
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git config --global user.name "$USER"
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git config --global -l
+user.email=student_02_8c12664908e7@qwiklabs.net
+user.name=student_02_8c12664908e7
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git add .
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git commit -m "Initial commit"
+[master (root-commit) 69a69a7] Initial commit
+ 31 files changed, 2440 insertions(+)
+ create mode 100644 Dockerfile
+create mode 100644 Gopkg.lock
+ create mode 100644 Gopkg.toml
+ create mode 100644 Jenkinsfile
+ create mode 100644 html.go
+ create mode 100644 k8s/canary/backend-canary.yaml
+ create mode 100644 k8s/canary/frontend-canary.yaml
+ create mode 100644 k8s/dev/backend-dev.yaml
+ create mode 100644 k8s/dev/default.yml
+ create mode 100644 k8s/dev/frontend-dev.yaml
+ create mode 100644 k8s/production/backend-production.yaml
+ create mode 100644 k8s/production/frontend-production.yaml
+ create mode 100644 k8s/services/backend.yaml
+ create mode 100644 k8s/services/frontend.yaml
+pipeline {
+ create mode 100644 main.go
+<div class="container">
+ create mode 100644 main_test.go
+        "flag"
+ create mode 100644 vendor/cloud.google.com/go/AUTHORS
+ create mode 100644 vendor/cloud.google.com/go/CONTRIBUTORS
+ create mode 100644 vendor/cloud.google.com/go/LICENSE
+ create mode 100644 vendor/cloud.google.com/go/compute/metadata/metadata.go
+ create mode 100644 vendor/golang.org/x/net/AUTHORS
+ create mode 100644 vendor/golang.org/x/net/CONTRIBUTORS
+ create mode 100644 vendor/golang.org/x/net/LICENSE
+ create mode 100644 vendor/golang.org/x/net/PATENTS 
+create mode 100644 vendor/golang.org/x/net/context/context.go
+ create mode 100644 vendor/golang.org/x/net/context/ctxhttp/ctxhttp.go
+ create mode 100644 vendor/golang.org/x/net/context/ctxhttp/ctxhttp_pre17.go
+ create mode 100644 vendor/golang.org/x/net/context/go17.go
+ create mode 100644 vendor/golang.org/x/net/context/go19.go
+ create mode 100644 vendor/golang.org/x/net/context/pre_go17.go
+ create mode 100644 vendor/golang.org/x/net/context/pre_go19.go
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git push origin master
+Counting objects: 48, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (43/43), done.
+Writing objects: 100% (48/48), 27.19 KiB | 0 bytes/s, done.
+Total 48 (delta 11), reused 0 (delta 0)
+remote: Resolving deltas: 100% (11/11)
+To https://source.developers.google.com/p/qwiklabs-gcp-02-f844915b6d20/r/gceme
+ * [new branch]      master -> master
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ echo https://source.developers.google.com/p/$GOOGLE_CLOUD_PROJECT/r/gceme
+https://source.developers.google.com/p/qwiklabs-gcp-02-f844915b6d20/r/gceme
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git checkout -b new-feature
+Switched to a new branch 'new-feature'
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ vi Jenkinsfile
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ vi html.go
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ vi main.go
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git add -A
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git commit -m "Version 2.0.0"
+[new-feature 5eac59a] Version 2.0.0
+ 3 files changed, 3 insertions(+), 3 deletions(-) 
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git push origin new-feature
+Counting objects: 5, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (5/5), done.
+Writing objects: 100% (5/5), 481 bytes | 0 bytes/s, done.
+Total 5 (delta 4), reused 0 (delta 0)
+remote: Resolving deltas: 100% (4/4)
+To https://source.developers.google.com/p/qwiklabs-gcp-02-f844915b6d20/r/gceme
+ * [new branch]      new-feature -> new-feature
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ export DEV_POD_NAME=$(kubectl get pods -n new-feature -l "app=gceme,env=dev,role=frontend" -o jsonpath="{.items[0].metadata.name}")
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ kubectl port-forward -n new-feature $DEV_POD_NAME 8001:80 >> /dev/null &
+[2] 1512
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ curl http://localhost:8001/api/v1/namespaces/new-feature/services/gceme-frontend:80/
+<!doctype html>
+<html>
+<head>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/css/materialize.min.css">
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js"></script>
+<title>Frontend Web Server</title>
+</head>
+<body>
+<div class="container">
+<div class="row"> 
+<div class="col s2">&nbsp;</div>
+<div class="col s8">
+
+
+<div class="card orange">
+<div class="card-content white-text">
+<div class="card-title">Backend that serviced this request</div>
+</div>
+<div class="card-content white">
+<table class="bordered">
+  <tbody>
+        <tr>
+          <td>Name</td>
+          <td>gke-jenkins-cd-default-pool-a1f0b9f8-4s6k</td>
+        </tr>
+        <tr>
+          <td>Version</td>
+          <td>2.0.0</td>
+        </tr>
+        <tr>
+          <td>ID</td>
+          <td>7508457662910789743</td>
+        </tr>
+        <tr>
+          <td>Hostname</td>
+          <td>gke-jenkins-cd-default-pool-a1f0b9f8-4s6k.c.qwiklabs-gcp-02-f844915b6d20.internal</td>
+		</tr>
+        <tr>
+          <td>Zone</td>
+          <td>us-east1-d</td>
+        </tr>
+        <tr>
+          <td>Project</td>
+          <td>qwiklabs-gcp-02-f844915b6d20</td>
+        </tr>
+        <tr>
+          <td>Internal IP</td>
+          <td>10.142.0.2</td>
+        </tr>
+        <tr>
+          <td>External IP</td>
+          <td>35.229.69.176</td>
+        </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<div class="card blue">
+<div class="card-content white-text">
+<div class="card-title">Proxy that handled this request</div>
+</div>
+<div class="card-content white">
+<table class="bordered">
+  <tbody>
+        <tr>
+          <td>Address</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Request</td>
+          <td>GET / HTTP/1.1
+Host: 10.35.240.207:8080
+Accept-Encoding: gzip
+User-Agent: Go-http-client/1.1
+
+</td>
+        </tr>
+<tr>
+  <td>Error</td>
+  <td></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+</div>
+<div class="col s2">&nbsp;</div>
+</div>
+</div>
+</html>student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ curl http://localhost:8001/api/v1/namespaces/new-feature/services/gceme-frontend:80/		  
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git checkout -b canary
+Switched to a new branch 'canary'
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git push origin canary
+Total 0 (delta 0), reused 0 (delta 0)
+To https://source.developers.google.com/p/qwiklabs-gcp-02-f844915b6d20/r/gceme
+ * [new branch]      canary -> canary
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ export FRONTEND_SERVICE_IP=$(kubectl get -o jsonpath="{.status.loadBalancer.ingress[0].ip}" --namespace=production services gceme-frontend)
+error: You must be logged in to the server (Unauthorized)
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ export FRONTEND_SERVICE_IP=$(kubectl get -o jsonpath="{.status.loadBalancer.ingress[0].ip}" --namespace=production services gceme-frontend)
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ while true; do curl http://$FRONTEND_SERVICE_IP/version; sleep 1; done
+1.0.0
+1.0.0
+1.0.0
+1.0.0
+2.0.0
+2.0.0
+1.0.0
+1.0.0
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git checkout master
+Switched to branch 'master'
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git merge canary
+Updating 69a69a7..5eac59a
+Fast-forward
+ Jenkinsfile | 2 +-
+ html.go     | 2 +-
+ main.go     | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ git push origin master
+Total 0 (delta 0), reused 0 (delta 0)
+To https://source.developers.google.com/p/qwiklabs-gcp-02-f844915b6d20/r/gceme
+   69a69a7..5eac59a  master -> master
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ while true; do curl http://$FRONTEND_SERVICE_IP/version; sleep 1; done
+2.0.0
+2.0.0
+2.0.0
+2.0.0
+2.0.0
+2.0.0
+2.0.0
+2.0.0
+2.0.0
+2.0.0
+2.0.0
+2.0.0
+2.0.0
+2.0.0
+^C
+student_02_8c12664908e7@cloudshell:~/continuous-deployment-on-kubernetes/sample-app (qwiklabs-gcp-02-f844915b6d20)$ kubectl get service gceme-frontend -n production
+NAME             TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)        AGE
+gceme-frontend   LoadBalancer   10.35.244.155   104.196.54.131   80:31584/TCP   42m
+
+ 
+history:
+---------
+
+    1  gcloud auth list
+    2  gcloud config list project
+    3  gcloud config set compute/zone us-east1-d
+    4  git clone https://github.com/GoogleCloudPlatform/continuous-deployment-on-kubernetes.git
+    5  cd continuous-deployment-on-kubernetes/
+    6  gcloud iam service-accounts create jenkins-sa \
+    7  gcloud iam service-accounts create jenkins-sa --display-name "jenkins-sa"
+    8  gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" --role "roles/viewer"
+    9  projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" --role "roles/source.reader"
+   10  gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT     --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com"     --role "roles/source.reader"
+   11  gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT     --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com"     --role "roles/storage.admin"
+   12  gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT     --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com"     --role "roles/storage.objectAdmin"
+   13  gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT     --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com"     --role "roles/cloudbuild.builds.editor"
+   14  gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT     --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com"     --role "roles/container.developer"
+   15  gcloud iam service-accounts keys create ~/jenkins-sa-key.json     --iam-account "jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com"
+   16  gcloud container clusters create jenkins-cd   --num-nodes 2   --machine-type n1-standard-2   --cluster-version latest   --service-account "jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com"
+   17  gcloud container clusters list
+   18  gcloud container clusters get-credentials jenkins-cd
+   19  kubectl cluster-info
+   20  kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$(gcloud config get-value account)
+   21  wget https://storage.googleapis.com/kubernetes-helm/helm-v2.14.3-linux-amd64.tar.gz
+   22  tar zxfv helm-v2.14.3-linux-amd64.tar.gz
+   23  cp linux-amd64/helm .
+   24  kubectl create serviceaccount tiller --namespace kube-system
+   25  kubectl create clusterrolebinding tiller-admin-binding --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+   26  ./helm init --service-account=tiller
+   27  ./helm repo update
+   28  ./helm version
+   29  ./helm install -n cd stable/jenkins -f jenkins/values.yaml --version 1.7.3 --wait
+   30  kubectl get pods
+   31  kubectl create clusterrolebinding jenkins-deploy     --clusterrole=cluster-admin --serviceaccount=default:cd-jenkins
+   32  export JENKINS_POD_NAME=$(kubectl get pods -l "app.kubernetes.io/component=jenkins-master" -o jsonpath="{.items[0].metadata.name}")
+   33  kubectl port-forward $JENKINS_POD_NAME 8080:8080 >> /dev/null &
+   34  kubectl get svc
+   35  printf $(kubectl get secret cd-jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
+   36  cd sample-app/
+   37  ls
+   38  kubectl create ns production
+   39  kubectl --namespace=production apply -f k8s/production
+   40  kubectl --namespace=production apply -f k8s/canary
+   41  kubectl --namespace=production apply -f k8s/services
+   42  kubectl --namespace=production scale deployment gceme-frontend-production --replicas=4
+   43  kubectl get pods -n production -l app=gceme -l role=frontend
+   44  kubectl get pods -n production -l app=gceme -l role=backend
+   45  kubectl --namespace=production get service gceme-frontend
+   46  export FRONTEND_SERVICE_IP=$(kubectl get -o jsonpath="{.status.loadBalancer.ingress[0].ip}" --namespace=production services gceme-frontend)
+   47  curl http://$FRONTEND_SERVICE_IP/version
+   48  gcloud source repos create gceme
+   49  git init
+   50  git config credential.helper gcloud.sh
+   51  git remote add origin https://source.developers.google.com/p/$GOOGLE_CLOUD_PROJECT/r/gceme
+   52  git remote -v
+   53  git config --global user.email "$USER@qwiklabs.net"
+   54  git config --global user.name "$USER"
+   55  git config --global -l
+   56  git add .
+   57  git commit -m "Initial commit"
+   58  git push origin master
+   59  echo https://source.developers.google.com/p/$GOOGLE_CLOUD_PROJECT/r/gceme
+   60  git checkout -b new-feature
+   61  vi Jenkinsfile
+   62  vi html.go
+   63  vi main.go
+   64  git add -A
+   65  git commit -m "Version 2.0.0"
+   66  git push origin new-feature
+   67  export DEV_POD_NAME=$(kubectl get pods -n new-feature -l "app=gceme,env=dev,role=frontend" -o jsonpath="{.items[0].metadata.name}")
+   68  kubectl port-forward -n new-feature $DEV_POD_NAME 8001:80 >> /dev/null &
+   69  curl http://localhost:8001/api/v1/namespaces/new-feature/services/gceme-frontend:80/
+   70  git checkout -b canary
+   71  git push origin canary
+   72  export FRONTEND_SERVICE_IP=$(kubectl get -o jsonpath="{.status.loadBalancer.ingress[0].ip}" --namespace=production services gceme-frontend)
+   73  while true; do curl http://$FRONTEND_SERVICE_IP/version; sleep 1; done
+   74  git checkout master
+   75  git merge canary
+   76  git push origin master
+   77  while true; do curl http://$FRONTEND_SERVICE_IP/version; sleep 1; done
+   78  kubectl get service gceme-frontend -n production
+   
+   
+   
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+gcloud iam service-accounts create jenkins-sa --display-name "jenkins-sa"
+
+
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+    --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" \
+    --role "roles/viewer"
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+    --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" \
+    --role "roles/source.reader"
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+    --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" \
+    --role "roles/storage.admin"
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+    --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" \
+    --role "roles/storage.objectAdmin"
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+    --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" \
+    --role "roles/cloudbuild.builds.editor"
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+    --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" \
+    --role "roles/container.developer"
+
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" --role "roles/viewer"
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" --role "roles/source.reader"
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" --role "roles/storage.admin"
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" --role "roles/storage.objectAdmin"
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" --role "roles/cloudbuild.builds.editor"
+
+gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT --member "serviceAccount:jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" --role "roles/container.developer"
+
+
+
+gcloud container clusters create jenkins-cd \
+  --num-nodes 2 \
+  --machine-type n1-standard-2 \
+  --cluster-version latest \
+  --service-account "jenkins-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com"
+  
+  
+  
+  
+Continuous Deployment with Spinnaker
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+Lab5:
+------
+
+Username : student-02-a4d671d03e97@qwiklabs.net
+           student-04-d601700cc196@qwiklabs.net
+
+Password: YZ3hM3nC4x
+          KygB6P7P3w
+
+GCP Project ID: qwiklabs-gcp-02-5151d7ce6451
+                qwiklabs-gcp-04-548c35408be0
+
+
+ 1  gcloud auth list
+    2  gcloud config list project
+    3  mkdir ~/cloudshell_open && cd ~/cloudshell_open
+    4  git clone https://github.com/GoogleCloudPlatform/spinnaker-for-gcp.git
+    5  cd spinnaker-for-gcp
+    6  ./scripts/install/setup_properties.sh
+    7  cat ./scripts/install/properties
+    8  source ./scripts/install/properties
+    9  git config --global user.email "$USER@qwiklabs.net"
+   10  git config --global user.name "$USER"
+   11  cd ~/cloudshell_open/spinnaker-for-gcp
+   12  source ./scripts/install/properties
+   13  ./scripts/manage/connect_unsecured.sh
+   
+  15  APP_REGION=us-west1-b; gcloud config set compute/zone $APP_REGION
+   16  gcloud container clusters create app-cluster --machine-type=n1-standard-2
+   17  ./scripts/manage/add_gke_account.sh
+   18  kubectl config use-context gke_${PROJECT_ID}_${ZONE}_spinnaker-1
+   19  ./scripts/manage/push_and_apply.sh
+   20  cd ./samples/helloworldwebapp/
+   21  ~/spin app save --application-name helloworldwebapp     --cloud-providers kubernetes --owner-email $IAP_USER
+   22  cat templates/pipelines/deploystaging_json.template | envsubst  > templates/pipelines/deploystaging.json
+   23  ~/spin pi save -f templates/pipelines/deploystaging.json
+   24  export DEPLOY_STAGING_PIPELINE_ID=$(~/spin pi get -a helloworldwebapp -n 'Deploy to Staging' | jq -r '.id')
+   25  cat templates/pipelines/deployprod_json.template | envsubst  > templates/pipelines/deployprod.json
+   26  ~/spin pi save -f templates/pipelines/deployprod.json
+
+   28  mkdir -p ~/$PROJECT_ID/spinnaker-for-gcp-helloworldwebapp/
+   29  cp -r templates/repo/src ~/$PROJECT_ID/spinnaker-for-gcp-helloworldwebapp/
+   30  cp -r templates/repo/config ~/$PROJECT_ID/spinnaker-for-gcp-helloworldwebapp/
+   31  cp templates/repo/Dockerfile ~/$PROJECT_ID/spinnaker-for-gcp-helloworldwebapp/
+   32  cat templates/repo/cloudbuild_yaml.template | envsubst '$BUCKET_NAME' > ~/$PROJECT_ID/spinnaker-for-gcp-helloworldwebapp/cloudbuild.yaml
+   33  cat ~/$PROJECT_ID/spinnaker-for-gcp-helloworldwebapp/config/staging/replicaset_yaml.template | envsubst > ~/$PROJECT_ID/spinnaker-for-gcp-helloworldwebapp/config/staging/replicaset.yaml
+   34  rm ~/$PROJECT_ID/spinnaker-for-gcp-helloworldwebapp/config/staging/replicaset_yaml.template
+   35  cat ~/$PROJECT_ID/spinnaker-for-gcp-helloworldwebapp/config/prod/replicaset_yaml.template | envsubst > ~/$PROJECT_ID/spinnaker-for-gcp-helloworldwebapp/config/prod/replicaset.yaml
+   36  rm ~/$PROJECT_ID/spinnaker-for-gcp-helloworldwebapp/config/prod/replicaset_yaml.template
+   37  cd ~/$PROJECT_ID/spinnaker-for-gcp-helloworldwebapp
+   38  git init
+   39  git add .
+   40  git commit -m "Initial commit"
+   41  gcloud source repos create spinnaker-for-gcp-helloworldwebapp
+   42  git config credential.helper gcloud.sh
+   43  git remote add origin https://source.developers.google.com/p/$PROJECT_ID/r/spinnaker-for-gcp-helloworldwebapp
+   44  git push origin master
+   
+   46  cat ./cloudbuild.yaml
+   47  gcloud beta builds triggers create cloud-source-repositories     --repo spinnaker-for-gcp-helloworldwebapp     --branch-pattern master     --build-config cloudbuild.yaml     --included-files "src/**,config/**"
+   48  gcloud beta builds triggers list
+   
+   
+  51  sed -i 's/Hello World/Hello World 1.0/g' ./src/main.go
+   52  git diff
+   53  git commit -a -m "Change to 1.0"
+   54  git push origin master
+   
+   
+   59  sed -i 's/green/blue/g' ./src/main.go
+   60  git diff
+   61  git commit -a -m "Change to blue."
+   62  git push origin master
+   63  git revert --no-edit HEAD
+   64  git push origin master
+   
+   
+  
+
+Following Action will be done on lsl30427 ( e74e10d6-ccab-4f14-b2d4-9ab44bc3cccd ):
+************************************************************************************
+
+MP health Check: curl http://10.27.165.139:8082/v1/servers/self/reachable
+
+MR health Check: curl http://10.27.165.139:8081/v1/servers/self/reachable
+
+MP uuid: curl http://10.27.165.139:8082/v1/servers/self/uuid
+
+MR uuid: curl http://10.27.165.139:8081/v1/servers/self/uuid
+
+
+Get the current servers associated with the environments:
+---------------------------------------------------------
+
+curl -u jrstockstill@west.com -X GET "http://10.27.165.138:8080/v1/organizations/west/environments/test/servers" 
+
+curl -u jrstockstill@west.com -X GET "http://10.27.165.138:8080/v1/organizations/west/environments/dev/servers"
+
+curl -u jrstockstill@west.com -X GET "http://10.27.165.146:8080/v1/organizations/west/environments/test/servers"
+
+curl -u jrstockstill@west.com -X GET "http://10.27.165.146:8080/v1/organizations/west/environments/dev/servers"
+
+
+Get Environments details:
+--------------------------
+
+curl -X GET "https://api.enterprise.apigee.com/v1/organizations/org_name/environments/env_name"
+
+curl -u jrstockstill@west.com -X GET "http://10.27.165.138:8080/v1/organizations/west/environments/test"
+
+curl -u jrstockstill@west.com -X GET "http://10.27.165.146:8080/v1/organizations/west/environments/test"
+
+
+
+Get API Proxy Deployments for an Environment:
+---------------------------------------------
+
+curl -u jrstockstill@west.com -X GET "http://10.27.165.138:8080/v1/organizations/west/environments/test/deployments"
+
+Get API Proxy deployment Details:
+---------------------------------
+
+curl -u jrstockstill@west.com -X GET "http://10.27.165.138:8080/v1/organizations/west/environments/test/apis/deployments"
+
+Disassociate the environments with a message processor led36924:
+----------------------------------------------------------------
+
+curl -u jrstockstill@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=remove&uuid=e74e10d6-ccab-4f14-b2d4-9ab44bc3cccd" "http://10.27.165.138:8080/v1/organizations/west/environments/dev/servers"
+
+curl -u jrstockstill@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=remove&uuid=e74e10d6-ccab-4f14-b2d4-9ab44bc3cccd" "http://10.27.165.146:8080/v1/organizations/west/environments/dev/servers"
+
+
+management log like this in accecc.log file : ( tail -f /opt/apigee/var/log/edge-management-server/logs/access.log )
+----------------------------------------------
+2020-03-24 11:48:05,126 org:west env:dev target:/v1/organizations/west/environments/dev/servers contextId: action: pool-1-thread-1 INFO  ACCESSLOG - AccessInfo.logAuditInfo() : {OrganizationName=west, RequestURIQP=/v1/organizations/west/environments/dev/servers, ResponseCode=200, User=jrstockstill@west.com, ServerIP=10.27.165.138, Request=''west'', Operation=POST, ClientIP=10.72.40.115, Timestamp=1585064885121, skipAudit=false, ServerHostName=lsl30426, UserAgent=curl/7.50.3, X-Forwarded-For=, RequestURI=/v1/organizations/west/environments/dev/servers, authenticationType=basic}
+
+Message processors log like this :
+------------------------------------
+
+2020-03-24 11:47:53,722 org:west env:dev  Apigee-Main-33 INFO  TRANSACTION.MANAGEMENT - TransactionManager.logToSyslog() : Transaction id 1585064873721 for "Processing an update for ConfigEvent{beanName='null', path='/organizations/west/environments/dev/', action=delete, beanClass=class com.apigee.messaging.config.beans.EnvironmentBean, bean=null, itemType='Environment', description='DELETE Environment /organizations/west/environments/dev/'}" completed.
+2020-03-24 11:47:53,722 org:west env:dev  Apigee-Main-33 INFO  TRANSACTION.SUMMARY - TransactionLog.logToSyslog() : [24-03-2020 11:47:53:721] : Transaction is a global transaction created by the thread : 44.
+[24-03-2020 11:47:53:721] : Processing an update for ConfigEvent{beanName='null', path='/organizations/west/environments/dev/', action=delete, beanClass=class com.apigee.messaging.config.beans.EnvironmentBean, bean=null, itemType='Environment', description='DELETE Environment /organizations/west/environments/dev/'}.
+[24-03-2020 11:47:53:721] : Transaction started for : ConfigEvent{beanName='null', path='/organizations/west/environments/dev/', action=delete, beanClass=class com.apigee.messaging.config.beans.EnvironmentBean, bean=null, itemType='Environment', description='DELETE Environment /organizations/west/environments/dev/'}with TX id : Xid(1585064873721:0).
+[24-03-2020 11:47:53:721] : DELETE Environment /organizations/west/environments/dev/.
+[24-03-2020 11:47:53:721] : Event ConfigEvent{beanName='null', path='/organizations/west/environments/dev/', action=delete, beanClass=class com.apigee.messaging.config.beans.EnvironmentBean, bean=null, itemType='Environment', description='DELETE Environment /organizations/west/environments/dev/'} accepted by handler com.apigee.messaging.runtime.OrganizationManager@26eb3961.
+[24-03-2020 11:47:53:721] : Event ConfigEvent{beanName='null', path='/organizations/west/environments/dev/', action=delete, beanClass=class com.apigee.messaging.config.beans.EnvironmentBean, bean=null, itemType='Environment', description='DELETE Environment /organizations/west/environments/dev/'} accepted by handler com.apigee.messaging.runtime.EnvironmentManager@4383e167.
+[24-03-2020 11:47:53:721] : Enlisted west__dev.applicationsMap.
+[24-03-2020 11:47:53:722] : Transaction failed for : ConfigEvent{beanName='null', path='/organizations/west/environments/dev/', action=delete, beanClass=class com.apigee.messaging.config.beans.EnvironmentBean, bean=null, itemType='Environment', description='DELETE Environment /organizations/west/environments/dev/'}with TX id : Xid(1585064873721:0).
+[24-03-2020 11:47:53:722] : Rolling back the changes due to error: Resource is in use by [PopulateCacheStepDefinition:Populate-Cache-1;API Proxy:hda_Validate_JWT_Against_WSO2-1;Revision:1;Environment:dev;Organization:west, LookupCacheStepDefinition:Lookup-Cache-1;API Proxy:hda_Validate_JWT_Against_WSO2-1;Revision:1;Environment:dev;Organization:west].
+[24-03-2020 11:47:53:722] : Starting a rollback on all the resources : [west__dev.applicationsMap].
+[24-03-2020 11:47:53:722] : Rollback on west__dev.applicationsMap was successfull.
+[24-03-2020 11:47:53:722] : Transaction moved to state Rolledback.
+[24-03-2020 11:47:53:722] : Dis-associating thread 44 with transaction. Current state = Rolledback.
+[24-03-2020 11:47:53:722] : Transaction ended by thread : 44.
+
+Check the logs for configurations change:
+-----------------------------------------
+
+tail -10 /opt/apigee/var/log/edge-message-processor/logs/transactions.log  - update
+
+tail -10 /opt/apigee/var/log/edge-message-processor/logs/configurations.log
+
+tail -10 /opt/apigee/var/log/edge-message-processor/logs/events.log-- deployment log
+
+tail -10 /opt/apigee/var/log/edge-message-processor/logs/system.log
+
+
+Perform the tests for the environments:
+----------------------------------------
+
+
+Associate back the environments with a message processor led36924:
+------------------------------------------------------------------
+
+curl -u jrstockstill@west.com -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=e74e10d6-ccab-4f14-b2d4-9ab44bc3cccd" "http://10.27.165.138:8080/v1/organizations/west/environments/dev/servers"
+
+curl -X POST --header "Content-Type: application/x-www-form-urlencoded" -d "action=add&uuid=e74e10d6-ccab-4f14-b2d4-9ab44bc3cccd" "http://10.27.165.146:8080/v1/organizations/west/environments/dev/servers"
+
+
+message processors log : ( tail -f /opt/apigee/var/log/edge-message-processor/logs/transactions.log )
+-------------------------------
+
+2020-03-24 11:52:29,829  Apigee-Main-43 INFO  TRANSACTION.MANAGEMENT - TransactionManager.logToSyslog() : Transaction id 1585065149828 for "Processing an update for DeployEvent{organization='west', application='HelloWorld', applicationRevision='14', deploymentSpec=basepath=/;env=dev;server=fe3927ed-0ab7-4504-b311-2c1e31a84a31;server=e0a31dd4-a32b-4ba5-ad20-955fa05646c1;server=e74e10d6-ccab-4f14-b2d4-9ab44bc3cccd;server=9600d3c0-6310-4af7-a440-f4fe16125510;, deploymentID=null}" completed.
+2020-03-24 11:52:29,829  Apigee-Main-43 INFO  TRANSACTION.SUMMARY - TransactionLog.logToSyslog() : [24-03-2020 11:52:29:828] : Transaction is a global transaction created by the thread : 54.
+[24-03-2020 11:52:29:828] : Processing an update for DeployEvent{organization='west', application='HelloWorld', applicationRevision='14', deploymentSpec=basepath=/;env=dev;server=fe3927ed-0ab7-4504-b311-2c1e31a84a31;server=e0a31dd4-a32b-4ba5-ad20-955fa05646c1;server=e74e10d6-ccab-4f14-b2d4-9ab44bc3cccd;server=9600d3c0-6310-4af7-a440-f4fe16125510;, deploymentID=null}.
+[24-03-2020 11:52:29:828] : SYNC Application /organizations/west/apiproxies/HelloWorld/revisions/14/.
+[24-03-2020 11:52:29:828] : Event DeployEvent{organization='west', application='HelloWorld', applicationRevision='14', deploymentSpec=basepath=/;env=dev;server=fe3927ed-0ab7-4504-b311-2c1e31a84a31;server=e0a31dd4-a32b-4ba5-ad20-955fa05646c1;server=e74e10d6-ccab-4f14-b2d4-9ab44bc3cccd;server=9600d3c0-6310-4af7-a440-f4fe16125510;, deploymentID=null} accepted by handler com.apigee.application.entities.EnvironmentManager@a2f67ba.
+[24-03-2020 11:52:29:828] : Enlisted west__dev.applicationsMap.
+[24-03-2020 11:52:29:829] : Enlisted .children.
+[24-03-2020 11:52:29:829] : Enlisted .children.
+[24-03-2020 11:52:29:829] : Enlisted null.flows.
+[24-03-2020 11:52:29:829] : Enlisted .proxyConnection.
+[24-03-2020 11:52:29:829] : Enlisted .routeRules.
+[24-03-2020 11:52:29:829] : Enlisted default.transportProperties.
+[24-03-2020 11:52:29:829] : Enlisted default.basepath.
+[24-03-2020 11:52:29:829] : Enlisted default.pathsuffix.
+[24-03-2020 11:52:29:829] : Enlisted HelloWorld.proxiesMap.
+[24-03-2020 11:52:29:829] : Prepare on west__dev.applicationsMap was successful.
+[24-03-2020 11:52:29:829] : Prepare on .children was successful.
+[24-03-2020 11:52:29:829] : Prepare on .children was successful.
+[24-03-2020 11:52:29:829] : Prepare on null.flows was successful.
+[24-03-2020 11:52:29:829] : Prepare on .proxyConnection was successful.
+[24-03-2020 11:52:29:829] : Prepare on .routeRules was successful.
+[24-03-2020 11:52:29:829] : Prepare on default.transportProperties was successful.
+[24-03-2020 11:52:29:829] : Prepare on default.basepath was successful.
+[24-03-2020 11:52:29:829] : Prepare on default.pathsuffix was successful.
+[24-03-2020 11:52:29:829] : Prepare on HelloWorld.proxiesMap was successful.
+[24-03-2020 11:52:29:829] : Transaction moved to state Prepared.
+[24-03-2020 11:52:29:829] : Commit on west__dev.applicationsMap was successfull.
+[24-03-2020 11:52:29:829] : Commit on .children was successfull.
+[24-03-2020 11:52:29:829] : Commit on .children was successfull.
+[24-03-2020 11:52:29:829] : Commit on null.flows was successfull.
+[24-03-2020 11:52:29:829] : Commit on .proxyConnection was successfull.
+[24-03-2020 11:52:29:829] : Commit on .routeRules was successfull.
+[24-03-2020 11:52:29:829] : Commit on default.transportProperties was successfull.
+[24-03-2020 11:52:29:829] : Commit on default.basepath was successfull.
+[24-03-2020 11:52:29:829] : Commit on default.pathsuffix was successfull.
+[24-03-2020 11:52:29:829] : Commit on HelloWorld.proxiesMap was successfull.
+[24-03-2020 11:52:29:829] : Transaction moved to state Committed.
+[24-03-2020 11:52:29:829] : Delisted west__dev.applicationsMap from the transaction.
+[24-03-2020 11:52:29:829] : Delisted .children from the transaction.
+[24-03-2020 11:52:29:829] : Delisted .children from the transaction.
+[24-03-2020 11:52:29:829] : Delisted null.flows from the transaction.
+[24-03-2020 11:52:29:829] : Delisted .proxyConnection from the transaction.
+[24-03-2020 11:52:29:829] : Delisted .routeRules from the transaction.
+[24-03-2020 11:52:29:829] : Delisted default.transportProperties from the transaction.
+[24-03-2020 11:52:29:829] : Delisted default.basepath from the transaction.
+[24-03-2020 11:52:29:829] : Delisted default.pathsuffix from the transaction.
+[24-03-2020 11:52:29:829] : Delisted HelloWorld.proxiesMap from the transaction.
+[24-03-2020 11:52:29:829] : Dis-associating thread 54 with transaction. Current state = Committed.
+[24-03-2020 11:52:29:829] : Transaction ended by thread : 54.
+
+
+Check the logs for configurations change:
+-----------------------------------------
+
+tail -10 /opt/apigee/var/log/edge-message-processor/logs/transactions.log
+
+tail -10 /opt/apigee/var/log/edge-message-processor/logs/configurations.log
+
+tail -10 /opt/apigee/var/log/edge-message-processor/logs/events.log
+
+tail -10 /opt/apigee/var/log/edge-message-processor/logs/system.log
+
+
+Perform the tests for the environments:
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+  
+Following Action will be done on led36924 (MP uuid: bece0ce9-d297-4dcf-8000-6dae530e95ba ):
+*******************************************************************************************
+Get the current servers associated with the environments: Platform Engineering ( Amdad )
+
+Disassociate the environments with a message processor led36924: Platform Engineering ( Amdad )
+
+Make sure and check the logs for configurations change for the environment: Platform Engineering ( Amdad )
+
+Perform/Run the regression tests for the environments: API Marketplace team ( xxxxxx )
+
+Associate back the environments with a message processor led36924: Platform Engineering ( Amdad )
+
+Make sure and check the logs for configurations update for the environment: Platform Engineering ( Amdad )
+
+Perform/Run the regression tests for the environments: API Marketplace team ( xxxxxx )
+

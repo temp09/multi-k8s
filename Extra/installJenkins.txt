@@ -1,0 +1,89 @@
+Install Jenkins: ( jenkins.io )
+****************
+
+prerequisites:
+-------------
+check the system:
+
+cat /etc/redhat-release
+
+Install Java:
+
+sudo yum install java -y
+
+memory check: 
+
+sudo free -m 
+
+SELINUX disabled:
+
+sudo sestatus
+
+firewalled disabled:
+
+sudo iptables -L
+
+
+install jenkins:
+----------------
+
+RedHat Linux RPM packages for Jenkins
+
+
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+
+sudo yum install jenkins
+
+sudo systemctl start jenkins
+
+ps -ef |grep java
+
+netstat -lntp | grep pid
+
+port change:  vim /etc/sysconfig/jenkins    /8080 change it if you need and restart jenkins
+
+setup ui : get password from /var/lib/jenkins/secrets/initialAdminPassword
+
+
+logfile locations:  /var/log/jenkins/jenkins.log 
+
+
+Setup agent node:
+-----------------
+
+Step 1: Install the necessary packages
+
+   sudo yum -y install java-1.8.0-openjdk git
+   
+Step 2: Create a user on the agent to be used by Jenkins
+
+   sudo useradd -d /var/lib/jenkins jenkins
+   
+Step 3: Generate an ssh key
+
+   ssh-keygen
+   
+Step 4: Add the public key to the authorized_keys file of the jenkins user on the agent node
+
+   sudo mkdir /var/lib/jenkins/.ssh
+   sudo vi /var/lib/jenkins/.ssh/authorized_keys
+   
+Step 5: Add the agent node via the Jenkins UI
+
+   Select Launch Slave Agents via SSH for Launch Method.
+   Enter the hostname or IP address of your agent node in the Host field.
+   Click the Add button next to Credentials and select the Jenkins scope.
+   For the credential, set Kind to SSH username with private key.
+   Enter jenkins for the username.
+   For the private key, select Enter directly. Then, copy the contents of your private key file (~/.ssh/id_rsa by default) and paste it into the Key box.
+   If you used a passphrase when generating the key, enter that for Passphrase, otherwise, leave it blank.
+   Enter a descriptive id and description, then click Add.
+   Click Save to save the new node.
+   
+   
+
+Unistall:
+
+sudo yum remove jenkins

@@ -1,0 +1,38 @@
+Let's learn a little bit
+about Cloud Dataproc. Cloud Dataproc is
+a fast easy to use fully managed Cloud
+service for running Apache Spark and Apache Hadoop
+clusters in a simpler way. You only pay for
+the resources you use with per second billing. If you leverage preemptible
+instances in your cluster, you can reduce your
+costs even further. Without using Cloud Dataproc, it can take from five
+to 30 minutes to create Spark and Hadoop
+clusters On-premise or through other infrastructure
+as a service providers. Cloud Dataproc clusters
+are quick to start, scale, and shut down with each
+of these operations taking 90 seconds
+or less on average. This means you can spend
+less time waiting for clusters and more hands-on
+time working with your data. Cloud Dataproc has
+built-in integration with other GCP services
+such as BigQuery, Cloud Storage, Cloud Bigtable, Stackdriver Logging, and
+Stackdriver monitoring. This provides you with the complete data platform rather than just a Spark
+or Hadoop cluster. As a managed service, you can create clusters quickly, manage them easily,
+and save money by turning clusters off when
+you don't need them. With less time and money
+spent on administration, you can focus on your
+jobs and your data. If you're already
+using Spark, Hadoop, Pig or Hive you don't
+even need to learn new tools or API's is
+to use Cloud Dataproc. This makes it easy to
+move existing projects into Cloud Dataproc
+without redevelopment. Now, Cloud Dataproc and Cloud Dataflow can both be
+used for data processing, and there's overlap in their batch and
+streaming capabilities. So how do you decide which product is a better
+fit for your environment? But first ask yourself whether
+you have dependencies on specific tools or packages in the Apache Hadoop
+or Spark ecosystem. If that's the case, you'll obviously want
+to use Cloud Dataproc. If not, ask yourself
+whether you prefer a hands-on or DevOps approach to Operations or a hands-off
+or serverless approach. If you opt for the
+DevOps approach, you want to use Cloud Dataproc. Otherwise, use Cloud Dataflow.

@@ -1,0 +1,56 @@
+Shared VPC allows an organization
+to connect resources from multiple projects to a common VPC network. This allows the resources to communicate
+with each other securely and efficiently using internal
+IPs from that network. For example, in this diagram, there is one network that belongs to
+the web application service project. This network is shared with three other
+projects, namely the recommendation service, the personalization service,
+and the analytic service. Each of these service projects has
+instances that are in the same network as the web application server allowing for private communication to that
+server using internal IP addresses. The Web Application Server
+communicates with clients and on premises using the service
+external IP address. The backend services, on the other hand,
+cannot be reached externally because they only communicate
+using internal IP addresses. When you use Shared VPC, you designate
+a project as a host project and attach one or
+more other service projects to it. In this case, the web application of
+our project is the host project, and the three other projects
+are these service projects. The overall VPC network is
+called the shared VPC network. Shared VPC makes use of cloud roles for
+delegated administration. Let me walk through how to provision
+shared VPC by focusing on the required administrative roles. The first required role is
+the organization admin. The organization resource represents
+an organization, for example, a company and is the root note
+in the gcp resource hierarchy. The G-Suite or Cloud Identity super
+administrators are the first users who can access the organization. And they assign the organization
+admin role to users. The organization admin's role
+in provisioning Shared VPC is to nominate Shared VPC admins by granting
+them appropriate project creation and deletion roles and the compute.xpnAdmin
+role for the organization. Note that shared VPC is also
+referred to as XPN in the API and the command line interface. Next, the Shared VPC admin
+performs various tasks necessary to set up Shared VPC. This includes enabling
+Shared VPC on the host project, attaching service projects to the host
+project, and delegating access to some or all of these subnets in a shared VPC
+network to service project admins. Access is provided by granting
+the compute network user role. Typically, a Shared VPC admin is also the
+project owner for a given host project. Now, in addition to being a network user,
+Service Project Admins also maintain ownership and control over resources
+defined in their service project. These Service Project Admins must at least
+have the Compute Instance Admin role to the corresponding service project. However, typically, the service project admins are project
+owners of their own service projects. This allows them to create and
+manage resources in the Shared VPC. These resources could be VM instances,
+instance templates and groups, static internal IP addresses,
+and load balancers. Let me come back to our original
+example that had one host project and three service projects. In this diagram, the Shared VPC admin which was nominated
+by an organization admin configured the web application project to be a host
+project with subnet level permissions. Doing so allowed the Shared VPC admin to selectively share subnets
+from the VPC network. Next, the Shared VPC Admin attach these
+three service projects to the host project and gave each project owner the network
+user role for the corresponding subnets. Each project owner than
+created VM instances from the service project in this short subnets. By the way billing for those VM
+instances is attributed to the project where the resources are created,
+which are the service projects. Shared VPC Admins have full control
+over the resources in the host project, including administration
+of shared VPC network. They can optionally delegate the network
+admin and security admin roles for the host project. Overall Shared VPC is a centralized
+approach to multi project networking because security and network policy occurs
+in a single designated VPC network.

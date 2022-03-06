@@ -1,0 +1,147 @@
+Hello, welcome to
+the topology design lesson. In this lesson we will explore key
+concepts related to designing the layout of Apigee components across your
+physical or virtual infrastructure. Let's jump into details. A clear understanding of the
+responsibilities of each Apigee component is required to successfully
+design your topology. We covered Apigee component
+responsibilities in detail as part of the technology stack lesson. If you haven't completed that lesson,
+please pause this video and complete it,
+prior to continuing with topology design. Apigee Edge components can be
+arranged into multiple groupings we call topologies. These topologies range
+from a single machine to many machines in
+different data centers. The Apigee Edge architecture
+is horizontally scalable. This is true for all components. On the diagram, nodes correspond
+to physical or virtual servers. Each node contains one or
+more Apigee components. Each component represents one or
+more processes hosted on those nodes. Depending on the requirements, nodes
+are added to the topology design to meet capacity, availability, resiliency,
+and network zoning requirements. A typical Apigee Edge
+topology looks like this. By typical, I mean the placement
+of components across nodes, not necessarily the number of nodes. Let's explore the diagram
+from left to right. Node 1 shows three components, UI,
+management server, and OpenLDAP. This is a common configuration option. These components are all associated
+with management functions, and it makes sense for
+them to be together on the same node. In this two region topology,
+we illustrate high availability for management functions. This is represented on node 11. Each planet only needs
+one management server, but having two or more is possible. The need for more than one management
+server will be driven by requirements, such as availability and resiliency,
+for the management capability. Nodes 2, 3, 4, 12, 13 and 14 host
+Cassandra and ZooKeeper components. Both Cassandra and
+ZooKeeper are clustered technologies. On this diagram we illustrate a Cassandra
+ring composed of six nodes, and a ZooKeeper ensemble with
+the same number of nodes. Any Apigee Edge topology beyond
+a single node all-in-one installation requires three
+Cassandra servers per region. This requirement is driven by then
+Cassandra replication factor and query read/write consistency
+configured in Apigee Edge. Since ZooKeeper and Cassandra share nodes,
+we recommend having the same number of Cassandra and
+ZooKeeper processes on each node. Making all data store nodes
+containing Cassandra and ZooKeeper equal, makes capacity planning,
+monitoring, and automation easier. In order to guarantee a consistent view
+of configuration data across the cluster, ZooKeeper uses a voting mechanism. We recommend having an odd number
+of ZooKeeper voters in the cluster. If you have an even number of
+ZooKeeper notes, make one an observer. On the diagram, voters and observers are highlighted by
+the subscript found next to ZK. For example, ZKV represents a voter,
+while ZKO represents an observer. The ZooKeeper voting mechanism
+is described in more detail in the official ZooKeeper documentation. Nodes 5, 6, 7, 15, 16, and
+17 correspond to the gateway. These nodes contain routers and
+message processors. A typical Apigee typology
+places both routers and message processors on the same server. It is possible for you to host routers and
+message processors on different machines. Separation of these processes
+is only needed if network zone requirements call for it. The number of routers and message
+processors is driven by requirements and capacity planning. The minimum requirement is one of each,
+but most production installations
+will have two or more per region. Routers and message processors
+are stateless and horizontally scalable. They can be added and
+removed quickly if necessary. Nodes 8, 9, 18 and 19 host Qpid and
+Qpid server components. A typical topology has two
+Qpid nodes per region. Adding more Qpids is possible, but
+rarely needed for most installations. Nodes 10 and 20 are the Postgres nodes. These nodes host PostgreSQL
+as well as the analytics aggregation process
+called Postgres server. On the diagram, we indicate that the
+PostgreSQL master is located in region 1, the PostgreSQL standby is in region 2. This is indicated by the subscript
+shown next to each PG. Depending on your analytic capacity and
+network requirements, Qpid and Postgres components may be
+combined on the same server. This is typically the case for
+non-production planets. In production, most customers have Qpid
+service separate from Postgres servers. The green horizontal lines
+going across regions correspond to eventually
+consistent data replication. Please notice that the developer
+portal is not included on the diagram. An additional node to
+host developer portal and its PostgreSQL database may be required. The Apigee Edge installation guide,
+located at docs.apigee.com, describes multiple sample
+installation topologies and patterns you can use as a staring
+point when designing your topology. Apigee Edge is built to scale. The architecture and technology selected
+allow you to scale horizontally. Horizontal scalability applies not only
+to components in the same region, but also across regions. Apigee Edge planets can contain one,
+two, three or more regions. As you scale horizontally and add regions to a planet, remember that
+not all components need to scale equally. Adding components for a specific functional area must be driven
+by requirements associated with that area. For example, on the diagram
+we illustrate three regions. Regions 1 and
+2 possess the same number of components. In both regions we find UIs, management
+servers, OpenLDAP, and Postgres servers. Region N looks different. In this region,
+only specific components are present. The minimum set of components required
+in a region contains Cassandra, ZooKeeper, Qpid, and one or
+more routers and message processors. Having a clear understanding of components
+roles and responsibilities, as well as the architecture characteristics of
+Edge, makes it easy to identify problems, plan for capacity needs,
+and monitor the platform. It is important to remember that most of
+the time components can horizontally scale across the functional group shown here,
+independently of each other. Depending on API traffic patterns and availability needs, you may need to add
+additional capacity to components in a different functional group as you grow
+the number of components in one group. For example, you can add routers and message processors without having to worry
+about management or developer components. If the number of message processors
+increases due to more API calls, at some point in time you may need
+to add capacity to PostgreSQL or revisit your analytics
+data retention period. We will discuss capacity
+planning in more detail later on. For now,
+remember the grouping of components. By design, Apigee Edge is active, active. Depending on your needs, you can decide to
+send API traffic to one or more regions. It is possible to route Apigee traffic
+using active, passive regions, active, active regions, or geolocation. Typically, global load balancing,
+or DNS resolution, will be used. Let's use the diagram to illustrate
+runtime API traffic data flow. An API call initiated by a client
+application will be directed by the global load balancer to a specific region. All traffic arriving in the region
+typically passes through a local load balancer before hitting an Apigee router. Once API calls arrive at the router,
+they will remain in the same region. Apigee routers and message processors
+are configured to direct calls to only local resources within
+the same gateway pod. API calls that arrive at
+the router are directed to one of the available message processors. Message processors execute API calls. Depending on the API proxy implementation,
+APIs may call Cassandra to install or retrieve data, as well as call one or
+more backend systems. API proxies may call backend systems
+in the same region, or across regions. The decision is based on the API
+proxy implementation and target server configuration. Analytics data flow works as follows. Analytics events are generated
+by the message processors. Message processors asynchronously
+send these events to Qpid. Qpid servers read data from Qpid
+queues and write data to PostgreSQL. Notice that all Qpid servers
+connect to the PostgreSQL master, as only that database is writable. Standby databases are read-only. Over time, the PostgreSQL master
+replicates data to all standby databases. Analytics events are generated by
+the message processors contain raw data about each API request. This raw data is aggregated
+by the Postgres server. Apigee Edge allows you to query
+both raw and aggregated data. Most reports visualized in the UI
+are powered by aggregated data. Customer reports provided
+by Edge use raw data. As you design your topology, it is important to consider your
+organization and environment design. Organizations and
+environments can be added at any time. You can also allocate underlying
+resources to different organizations or environments at any time. We cover this topic in detail
+as part of the terminology and organizational structure lesson. On Apigee Edge it is possible
+to control environment scope. Message processors are associated
+with environments. This association controls whether
+a given message processor will process API calls for
+a particular environment. Typically, all message processors
+are associated with each environment. On the diagram, we illustrate
+the association between environment A and all available message processors. As new environments are added, they can share the existing
+physical capacity on the system. In the second example,
+we show that environment A and B are associated with all
+available message processors. This is a common design option. Most customers share message processors
+across one or more environments. If required,
+it is possible to allocate dedicated processing capacity to
+specific environments. In the third example, we illustrate
+dedicated processing capacity being allocated to environment A and B. You can associate and disassociate message
+processors with environments at any time using the management API. The association between
+message processors and environments can be useful in scenarios
+where physical separation of internal and external API traffic is required
+due to network zoning requirements. If required, routers and message processors can be placed
+in different network zones. Environments can be used to separate
+API deployments and traffic. For more information on this topic,
+refer to our documentation. If you have any questions,
+please post them on our community. Thanks for watching.

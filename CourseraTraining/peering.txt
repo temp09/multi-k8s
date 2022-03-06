@@ -1,0 +1,37 @@
+Let's talk about the
+Cloud Peering services which are Direct Peering
+and Carrier Peering. These services are
+useful when you require access to Google and
+Google Cloud properties. Google allows you to establish a direct peering
+connection between your business network
+and Google's. With this connection,
+you will be able to exchange internet traffic
+between your network and Google's at one of the Google's broad-reaching
+Edge network locations. Direct Peering with Google
+is done by exchanging BGP routes between Google
+and the peering entity. After a direct peering
+connection is in place, you can use it to reach
+all the Google's services including the full suite of Google Cloud Platform products. Unlike dedicated interconnect, direct peering does
+not have an SLA. In order to use direct peering, you need to satisfy the peering requirements in the links section of this video. GCP's Edge points
+of presence or PoPs are where Google's
+network connects to the rest of the
+internet via peering. PoPs are present on over 90 internet exchanges and at over 100 interconnection
+facilities around the world. For more information about these exchange points
+and facilities, I recommend looking at
+Google's PeeringDB entries, which are linked
+below this video. If you look at this
+map and say, "hey, I am nowhere near one of these locations," you will want to
+consider Carrier Peering. If you require access to Google public infrastructure and cannot satisfy Google's
+peering requirements, you can connect via a
+carrier peering partner. Work directly with your service provider to
+get the connection you need and to understand
+the partners requirements. For a full list of available
+service providers, see the links section
+of this video. Now, just like direct peering, carrier peering also
+does not have an SLA. Let me compare the
+peering options that we just discussed. All of these options provide public IP address access to
+all of Google's services. The main differences are capacity and the requirements
+for using a service. Direct peering has a capacity
+of 10Gbps per link and requires you to have a connection in a GCP Edge point of presence. Carrier peering's capacity
+and requirements vary depending on the service
+provider that you work with.

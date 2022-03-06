@@ -1,0 +1,859 @@
+Coursera:
+**********
+
+SLI
+
+SLO
+
+SLA
+
+user: student-02-06f24c7397a0@qwiklabs.net,
+      student-00-6ea774c6920b@qwiklabs.net,
+	  student-01-48d5797674ae@qwiklabs.net
+	  student-01-a1807855fee9@qwiklabs.net
+	  
+	  
+	  student-01-dabdbf9fea8d@qwiklabs.net
+
+Pass: F8hxCR4h22jt
+      6GnPDjW7k
+      Yt4hTJ6X
+	  JD6V25L4yNxr
+	  
+	  
+	  f5vD7Nw3nFX
+
+GCP Project ID : qwiklabs-gcp-02-296e86c46efd
+                 qwiklabs-gcp-00-020047630cfd
+				 qwiklabs-gcp-01-6902521577be
+				 qwiklabs-gcp-01-d6db7fc18577
+				 
+				 
+				 
+				 qwiklabs-gcp-01-a59107867595
+
+
+
+*********************************
+Define service layer:
+*********************************
+
+
+
+Deployment Manager:
+@@@@@@@@@@@@@@@@@@@@@
+
+
+open cloud shell 
+
+mkdir ~/archdp
+
+cd ~/archdp
+
+touch appserver.yaml
+
+
+resources:
+- name: appserver
+  type: compute.v1.instance
+  properties:
+  
+ gcloud deployment-manager types list
+ 
+ touch instance-properties.txt
+ 
+ {
+  "kind": "compute#instance",
+  "id": unsigned long,
+  "creationTimestamp": string,
+  "name": string,
+  "description": string,
+  "tags": {
+    "items": [
+      string
+    ],
+    "fingerprint": bytes
+  },
+  "machineType": string,
+  "status": string,
+  "statusMessage": string,
+  "zone": string,
+  "canIpForward": boolean,
+  "networkInterfaces": [
+    {
+      "kind": "compute#networkInterface",
+      "network": string,
+      "subnetwork": string,
+      "networkIP": string,
+      "name": string,
+      "accessConfigs": [
+        {
+          "kind": "compute#accessConfig",
+          "type": string,
+          "name": string,
+          "natIP": string
+        }
+      ]
+    }
+  ],
+  "disks": [
+    {
+      "kind": "compute#attachedDisk",
+      "type": string,
+      "mode": string,
+      "source": string,
+      "deviceName": string,
+      "index": integer,
+      "boot": boolean,
+      "initializeParams": {
+        "diskName": string,
+        "sourceImage": string,
+        "diskSizeGb": long,
+        "diskType": string,
+        "sourceImageEncryptionKey": {
+          "rawKey": string,
+          "sha256": string
+        }
+      },
+      "autoDelete": boolean,
+      "licenses": [
+        string
+      ],
+      "interface": string,
+      "diskEncryptionKey": {
+        "rawKey": string,
+        "sha256": string
+      }
+    }
+  ],
+  "metadata": {
+    "kind": "compute#metadata",
+    "fingerprint": bytes,
+    "items": [
+      {
+        "key": string,
+        "value": string
+      }
+    ]
+  },
+  "serviceAccounts": [
+    {
+      "email": string,
+      "scopes": [
+        string
+      ]
+    }
+  ],
+  "selfLink": string,
+  "scheduling": {
+    "onHostMaintenance": string,
+    "automaticRestart": boolean,
+    "preemptible": boolean
+  },
+  "cpuPlatform": string,
+  "labels": {
+    (key): string
+  },
+  "startRestricted": boolean
+}
+
+
+
+1  mkdir ~/archdp
+    2  cd ~/archdp
+    3  ls -lart
+    4  gcloud deployment-manager types list
+    5  gcloud deployment-manager types list | grep v1.*instance
+    6  ls
+    7  ls -lart
+    8  pwd
+    9  touch appserver.yaml
+   10  ls -alrt
+   11  cat appserver.yaml
+   12  clear
+   13  ls -lart
+   14  cat appserver.yaml
+   15  clear
+   16  touch instance-properties.txt
+   17  ls -lart
+   18  cat instance-properties.txt
+   19  clear
+   20  touch proto2json
+   21  cat proto2json
+   22  clear
+   23  chmod +x proto2json
+   24  ls -lart
+   25  ./proto2json instance-properties.txt
+   26  gcloud compute zones list
+   34  gcloud compute machine-types list | grep us-west1-b
+   35  gcloud compute networks list
+   36  gcloud compute networks describe default
+   37  gcloud compute machine-types describe f1-micro --zone us-west1-b
+   38  gcloud compute images list
+   39  gcloud compute images list | grep debian
+   40  gcloud compute images list --uri | grep debian
+   41  gcloud deployment-manager deployments create appserver --config appserver.yaml
+   42  gcloud deployment-manager deployments create development --config appserver.yaml
+   43  gcloud deployment-manager deployments create load-testing --config appserver.yaml
+   44  gcloud deployment-manager deployments create security --config appserver.yaml
+   45  gcloud deployment-manager deployments create production --config appserver.yaml
+
+
+appserver.ymal file:
+***********************
+
+resources:
+- name: appserver
+  type: compute.v1.instance
+  properties:
+    zone: us-west1-b
+    machineType: https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-00-020047630cfd/zones/us-west1-b/machineTypes/f1-micro
+	            #https://www.googleapis.com/compute/v1/projects/my-learn-project-268721/zones/us-west1-b/machineTypes/f1-micro
+    networkInterfaces:
+    - network: https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-00-020047630cfd/global/networks/default
+	          #https://www.googleapis.com/compute/v1/projects/my-learn-project-268721/global/networks/default
+      accessConfigs:
+      - name: External_NAT
+        type: ONE_TO_ONE_NAT
+    disks:
+    - type: PERSISTENT
+      deviceName: boot
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-10-buster-v20200309
+		
+SED scripts proto2json:
+*************************
+
+echo $1
+sed -i 's/string/"string"/g' $1
+sed -i 's/boolean/"boolean"/g' $1
+sed -i 's/integer/"integer"/g' $1
+sed -i 's/unsigned long/"unsigned long"/g' $1
+sed -i 's/bytes/"bytes"/g' $1
+sed -i 's/(key)/"(key)"/g' $1
+sed -i 's/float/"float"/g' $1
+sed -i 's/etag/"etag"/g' $1
+sed -i 's/long,/"long",/g' $1
+
+instance-properties.txt:
+*****************************
+
+{
+  "kind": "compute#instance",
+  "id": "unsigned long",
+  "creationTimestamp": "string",
+  "name": "string",
+  "description": "string",
+  "tags": {
+    "items": [
+      "string"
+    ],
+    "fingerprint": "bytes"
+  },
+  "machineType": "string",
+  "status": "string",
+  "statusMessage": "string",
+  "zone": "string",
+  "canIpForward": "boolean",
+  "networkInterfaces": [
+    {
+      "kind": "compute#networkInterface",
+      "network": "string",
+      "subnetwork": "string",
+      "networkIP": "string",
+      "name": "string",
+      "accessConfigs": [
+        {
+          "kind": "compute#accessConfig",
+          "type": "string",
+          "name": "string",
+          "natIP": "string"
+        }
+      ]
+    }
+  ],
+  "disks": [
+    {
+      "kind": "compute#attachedDisk",
+      "type": "string",
+      "mode": "string",
+      "source": "string",
+      "deviceName": "string",
+      "index": "integer",
+      "boot": "boolean",
+      "initializeParams": {
+        "diskName": "string",
+        "sourceImage": "string",
+        "diskSizeGb": "long",
+        "diskType": "string",
+        "sourceImageEncryptionKey": {
+          "rawKey": "string",
+          "sha256": "string"
+        }
+      },
+      "autoDelete": "boolean",
+      "licenses": [
+        "string"
+      ],
+      "interface": "string",
+      "diskEncryptionKey": {
+        "rawKey": "string",
+        "sha256": "string"
+      }
+    }
+  ],
+  "metadata": {
+    "kind": "compute#metadata",
+    "fingerprint": "bytes",
+    "items": [
+      {
+        "key": "string",
+        "value": "string"
+      }
+    ]
+  },
+  "serviceAccounts": [
+    {
+      "email": "string",
+      "scopes": [
+        "string"
+      ]
+    }
+  ],
+  "selfLink": "string",
+  "scheduling": {
+    "onHostMaintenance": "string",
+    "automaticRestart": "boolean",
+    "preemptible": "boolean"
+  },
+  "cpuPlatform": "string",
+  "labels": {
+    "(key)": "string"
+  },
+  "startRestricted": "boolean"
+}
+
+
+*****************************
+Business-logi Layer Design
+****************************
+
+
+Microservice architecture
+
+GCP 12-factor support
+
+Mapping compute needs to platform products
+
+Compute ssystem provisioning
+
+The photo service is slow
+
+Log aggregations
+
+Deployment-manager : packages and deployment-manager
+
+
+Develop a service using a pre-written Python application called "Echo" and example Deployment Manager templates written in YAML and JINJA2.
+
+Create a deployment package suitable for Deployment Manager using the python package manager, pip.
+
+Stage your package in a Cloud Storage bucket.
+
+Manually test the application to ensure that it is working properly.
+
+Use Deployment Manager to deploy the Echo service.
+
+Test the new service.
+
+
+
+About photo service :
+======================
+
+Greetings!
+
+The photo application test/alpha version is behind schedule. Please create the deployment manager template infrastructure using the sample application provided. It is called Echo.
+
+Requirements:
+
+The application in development only runs on Ubuntu OS.
+
+It is tested to work only on Ubuntu 16.04 LTS amd64
+
+The application requires flask and gunicorn frameworks.
+
+Please create a sample production server using deployment manager templates. Make sure that it loads and runs the Python application.
+
+Thanks!
+
+App Dev Team
+
+
+
+
+LAB2
+=======
+
+
+In cloud shell:
+================
+
+
+mkdir ~/echolb
+mkdir ~/echolb/deployment-manager-examples
+mkdir ~/echolb/echo
+mkdir ~/echolb/echo/echo
+
+
+create package:
+===============
+cd ~/echolb/echo
+python3 setup.py sdist
+cd dist
+ls
+
+
+Create a bucket:
+====================
+
+MY_BUCKET=ullah_bucket-1
+
+gsutil -h 'Content-Type: application/gzip' -h 'Cache-Control:private' cp -a public-read echo-0.0.1.tar.gz gs://$MY_BUCKET
+
+verify object property:
+=========================
+
+gsutil ls -L gs://$MY_BUCKET/echo-0.0.1.tar.gz
+
+
+Create compute engine:
+===========================
+
+ssh to vm:
+=================
+
+sudo apt-get update
+sudo apt-get -y install python3-pip
+
+
+sudo python3 -m pip install --upgrade pip
+
+
+Install the package in new VM instance:
+=========================================
+
+MY_BUCKET=ullah_bucket-1
+
+sudo python3 -m pip install http://storage.googleapis.com/$MY_BUCKET/echo-0.0.1.tar.gz
+
+
+Run the application:
+=======================
+
+sudo gunicorn -b 0.0.0.0:80 -w 4 echo:app
+
+
+35.225.159.83
+
+hostname:echo-test-instance
+
+
+Configuration the template:
+================================
+
+change the zoon and bucket name on config.yaml file 
+
+imports:
+  - path: instance.jinja
+  - path: install-echo.sh
+    name: startup-script
+resources:
+  - name: instance
+    type: instance.jinja
+    properties:
+      zone: us-west1-b
+      tags:
+        - http
+      metadata:
+        - key: echo
+          value: https://storage.googleapis.com/ullah_bucket-1/echo-0.0.1.tar.gz
+		  
+		  
+deploy the service:
+=========================
+
+cd ~/echolb/deployment-manager-examples
+
+gcloud deployment-manager deployments create echo-service --config config.yaml
+
+
+Allow traffic to the service:
+==================================
+
+Create a firewall rule to allow tcp:80 traffic to the test server.
+
+On the Navigation menu, click VPC Network > Firewall rules
+
+Click on Create Firewall Rule and specify the following:
+
+
+Property       Value(type value or select option as specified)
+
+Name            allow-80
+
+Description
+
+Network         default
+
+Priority         1000
+
+Direction of traffic     Ingress
+
+Action on match    allow
+
+Targets        Specified target tags
+
+Target Tags               http
+
+Source filter / IP Ranges                0.0.0.0/0
+
+Protocols and ports         specified protocols and ports
+
+                            Check tcp and enter 80.
+							
+							
+Verify that the echo application is working:
+=============================================
+
+curl -d "Design and Process class ROCKS" -X POST http://35.233.145.115/
+
+__init__.py
+=============
+
+#!/usr/bin/env python
+import logging
+import socket
+import os.path
+import pkg_resources
+from flask import Flask, request
+app = Flask(__name__)
+try:
+    __version__ = pkg_resources.require("echo")[0].version
+except pkg_resources.DistributionNotFound:
+    __version__ = 'dev'
+except:
+    raise
+# Load Conf
+app.config.from_pyfile('default.cfg')
+if os.path.isfile('/etc/echo.cfg'):
+    app.config.from_pyfile('/etc/echo.cfg')
+@app.route('/', methods=['POST', 'PUT'])
+def echo():
+    """Echo data"""
+    return request.get_data() + '\n'
+@app.route('/', methods=['GET'])
+def whoami():
+    """Echo hostname and version"""
+    return '''<body style="background: {};">
+    hostname: {}
+</body>
+'''.format(app.config['BACKGROUND'], socket.gethostname())
+@app.errorhandler(500)
+def server_error(e):
+    logging.exception('An error occurred during a request.')
+    return """
+    An internal error occurred: <pre>{}</pre>
+    See logs for full stacktrace.
+    """.format(e), 500
+if __name__ == '__main__':
+    # This is used when running locally. Gunicorn is used to run the
+    # application on Google App Engine. See entrypoint in app.yaml.
+    app.run(host=app.config['HOST'],
+            port=app.config['PORT'],
+            debug=True)
+# [END app]
+
+
+setup.py:
+===========
+
+from setuptools import setup
+
+setup(
+    name="echo",
+    version="0.0.1",
+    author="Google Cloud Training",
+    author_email="cloud-training@google.com",
+
+    # Packages
+    packages=["echo"],
+
+    # Include additional files into the package
+    include_package_data=True,
+
+    # Details
+    #url="http://pypi.python.org/pypi/MyApplication_v010/",
+
+    license="LICENSE.txt",
+    # description="Useful towel-related stuff.",
+
+    # long_description=open("README.txt").read(),
+
+    # Dependent packages (distributions)
+    install_requires=[
+        "flask==0.12.2",
+        "gunicorn"
+    ]
+)
+
+
+MANIFEST.in:
+=============
+
+recursive-include echo/templates *
+include echo/default.cfg
+
+LICENSE.txt:
+=============
+
+Copyright 2017 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License
+
+config.yaml:
+============
+
+Copyright 2017 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License
+
+install-echo.sh:
+==================
+
+#!/bin/bash -e
+
+ATTR=http://metadata.google.internal/computeMetadata/v1/instance/attributes
+
+apt-get update
+apt-get -y install python3-pip
+python3 -m pip install --upgrade pip
+
+if pkg=$(curl -sf "${ATTR}/echo" -H "Metadata-Flavor: Google"); then
+    python3 -m pip install $pkg
+    gunicorn -b 0.0.0.0:80 -w 4 echo:app
+fi
+
+
+instance.jinja:
+==================
+
+{#
+Copyright 2017 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+#}
+
+resources:
+- name: {{ env['deployment'] }}
+  type: compute.v1.instance
+  properties:
+    zone: {{ properties['zone'] }}
+    machineType: zones/{{ properties['zone'] }}/machineTypes/{{ properties['machineType'] }}
+    metadata:
+      items:
+        - key: deployment
+          value: {{ env['deployment'] }}
+        {% if imports['startup-script'] %}
+        - key: startup-script
+          value: |
+            {{ imports['startup-script']|indent(12) }}
+        {% endif %}
+        {% for i in properties["metadata"] %}
+        - {{ i }}
+        {% endfor %}
+    disks:
+      - deviceName: boot
+        boot: true
+        autoDelete: true
+        initializeParams:
+          diskSizeGb: 10
+          sourceImage: {{ properties['sourceImage'] }}
+    networkInterfaces:
+      - name: {{ ID }}-eth0
+        network: {{ properties['network'] }}
+        {% if properties['subnet'] %}
+        subnetwork: {{ properties['subnet'] }}
+        {% endif %}
+        accessConfigs:
+          - name: eth0
+            type: ONE_TO_ONE_NAT
+    serviceAccounts:
+      - email: {{ properties['serviceAccount'] }}
+        scopes:
+          - 'https://www.googleapis.com/auth/cloud-platform'
+    {% if properties['tags'] %}
+    tags:
+      items:
+        {% for i in properties["tags"] %}
+        - {{ i }}
+        {% endfor %}
+    {% endif %}
+
+outputs:
+  - name: url
+    value: http://$(ref.{{ env['deployment'] }}.networkInterfaces[0].accessConfigs[0].natIP)
+	
+instance.jinja.schema:
+=======================
+
+info:
+  title: Test instance
+  author: cloud-training@google.com
+  description: |
+    Creates a test instance
+  version: 0.1
+imports:
+  - path: instance.jinja
+required:
+  - zone
+properties:
+  zone:
+    type: string
+    description: i.e. us-east1-d
+
+  network:
+    type: string
+    description: Network URL i.e. projects/project/global/networks/network
+    default: global/networks/default
+  subnet:
+    type: string
+    description: Subnet URL i.e regions/region/subnetworks/subnetwork
+  sourceImage:
+    type: string
+    description: Image uri
+    default: projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts
+
+  machineType:
+    type: string
+    default: n1-standard-1
+
+  serviceAccount:
+    type: string
+    description: Service account with permissions to label resources i.e. Project editor.
+    default: default
+  tags:
+    type: array
+    description: Array of tags
+    items:
+      type: string
+  metadata:
+    type: array
+    description: Array of metadata key pairs
+    items:
+      type: object
+      required:
+        - key
+        - value
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+		  
+
+default.cfg:
+===============
+
+HOST='0.0.0.0'
+PORT=80
+BACKGROUND='#F6F6F6'
+
+
+**************************
+Data-Layer:
+**************************
+
+
+Data integrity
+
+Log aggrgation
+
+
+********************************
+Presentation_layer
+*************************************
+
+
+Network edge configuration
+
+Network configuration for data transfer whithin the services
+
+Network integration with other environments
+
+Adding load balancing with automated deployment
+
+
+
+LAB3:
+-----
+
+
+    1  mkdir ~/archdp
+    2  cd archdp/
+    3  gsutil cp gs://cloud-training/archdp/archdp-echo.tar.gz .
+    4  tar -xzvf archdp-echo.tar.gz
+    5  cd deployment-manager-examples/
+    6  cat http-lb-service.jinja | grep type:
+    7  cd ~/archdp/echo
+    8  python setup.py sdist
+    9  cd dist
+   10  ls
+   11  MY_BUCKET=ullah_bucket-2
+   12  gsutil -h 'Content-Type: application/gzip' -h 'Cache-Control:private' cp -a public-read echo-0.0.1.tar.gz gs://$MY_BUCKET
+   13  gsutil ls -L gs://$MY_BUCKET/echo-0.0.1.tar.gz
+   14  cd ~/archdp/deployment-manager-examples/
+   15  gcloud compute zones list
+   16  vi http-lb.yaml
+   17  cd ~/archdp/deployment-manager-examples
+   18  ls
+   19  gcloud deployment-manager deployments create echo-lb-service --config http-lb.yaml
+   
+   
+   sudo apt-get update
+    2  sudo apt-get -y install apache2-utils
+    3  ab -n 1000 -c 100/http://34.98.126.116/
+    4  ab -n 1000 -c 100 http://34.98.126.116/
+    5  history

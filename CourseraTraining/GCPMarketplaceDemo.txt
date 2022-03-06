@@ -1,0 +1,60 @@
+Let me show you how to launch Infrastructure solutions
+on GCP Marketplace. My goal is to deploy a lamp stack to a single
+Compute Engine instance. A LAMP stack consists of Linux, Apache HTTP Server,
+MySQL, and PHP. So here I am in the GCP console and let's go ahead and navigate
+to the GCP Marketplace. I'm going to go to
+the navigation menu and just go to marketplace. Now, I have lots of
+different options available. There are some filters
+on the left that could search by making search directly. There's some featured
+solutions that are in here. So there's really a lot
+of stuff to choose from. In my case, I'm
+going to search for LAMP stack because that's
+what I want to create. Here, I actually have
+different options, there different providers, and that's really
+what that means. The different providers
+will offer these services. I'm going to click the
+first one that's in here. Now, I have the
+configuration page. I see the package contents. Tells me that what LAMP is again. I can see they're also here, the operating system is Linux. It has Apache installed and
+have PHP and I have MySQL. We should also basically have HTTP enabled and we'll
+see that in a second. There's no usage fee
+for this service, if there was it all
+be built together. We have an instance billing. This is just an
+n1-standard-1 instance along with its persistent disk, and there's a sustained
+use discount. So if I click on Launch
+on Compute Engine, I get the actual VM
+configuration page. I could now change the
+instance type if I wanted. I could create a larger
+instances, small instance, I could customize an
+instance, and now, because this is an Apache HTTP, we can see that the HTTP
+firewall rule is also set up. I also have some
+networking options if we want place this somewhere else, I even have some extra
+options if I want to install PHP Myadmin, all that is available to me here. I may have logging options
+for Stackdriver to enable Stackdriver
+logging and monitoring, and I can do that
+directly in here. So it's just like a
+regular VM instance page. So I'm going to go
+and click Deploy, and when I do that, it's going to navigate us to
+Deployment Manager. You can see all of the configuration as well as all the imported
+files are just displayed there that are used
+throughout this deployment. So we can see again that the
+solutions on marketplace are just Deployment
+Manager configurations that are already set
+up for you to use so that you don't have
+to recreate them. I also see that a
+passwords being generated, a VM is being generated. I can click on that and get some more information about it. We can see that we use
+in software and we have that HTTP firewall rules. So just TCPAD that's
+being enabled here. So we can just wait for that. The instance is up. It's just configuring some more software. Then once it's up and running, we can get some more information about that LAMP stack that
+we just have generated. Second, click back on
+LAMP, still pending. But once it's up and running, we'll have some more
+information here. Let's see. Doesn't
+have the address yet. It's still pending,
+and there we go. So we have an address, we have a user with password, the instance, zone, all
+the type information. We can visit the site, we can SSH to this. We
+have some next steps. We could open also HTTPS
+traffic, change the password, assign a static external
+IP address rather than the current default if
+a ephemeral IP address. We can learn more about the software that's
+being installed. But we can also look at this from a Compute Engine perspective. So if I navigate
+to Compute Engine, I'll also see the
+instance right here. That's how easy it is to launch Infrastructure solutions
+on GCP marketplace.

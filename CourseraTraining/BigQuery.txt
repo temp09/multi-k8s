@@ -1,0 +1,18 @@
+BigQuery is GCP's serverless, highly scalable, and cost
+effective Cloud data warehouse. It's a petabyte scale data
+warehouse that allows for super-fast queries using the processing power of
+Google's infrastructure. Because there's no infrastructure
+for you to manage, you can focus on uncovering meaningful insights
+using familiar SQL, without the need for the
+database administrator. BigQuery is used by all
+types of organizations, and there's a free usage tier
+to help you get started. For more information, see the links section of this video. You can access BigQuery
+by using the GCP console, by using the command line tool, or by making calls to
+the BigQuery REST API, using the variety
+of client libraries such as Java,.NET or Python. There are also several
+third-party tools that you can use to
+interact with BigQuery, such as visualizing the data, or loading the data. Here's an example of
+a query on the table with over 100 billion rows. This query processes
+over 4.1 terabyte, but takes less than
+a minute to execute. The same query would take hours if not days through
+a serial execution.

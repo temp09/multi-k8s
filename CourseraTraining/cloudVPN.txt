@@ -1,0 +1,61 @@
+Cloud VPN securely connects
+your on-premise network to your GCP VPC network through
+an IPSec VPN tunnel. Traffic traveling
+between the two networks is encrypted by one VPN gateway. Then decrypted by the
+other VPN gateway. This protects your data as it travels over the public internet. That's why Cloud VPN is useful for low volume data connections. As a managed service Cloud VPN provides an SLA of 99.9 percent service availability
+and supports site to site VPN static and
+dynamic routes, and IKEv1 and IKEv2 ciphers. Cloud VPN doesn't support new cases where a
+client computers need to dial in to a VPN
+using client VPN software. Also, dynamic routes are configured with Cloud
+Router which we will cover briefly for more
+information about the SLA and these features see the
+links section of this video. Let me walk through an
+example of Cloud VPN. This diagram shows a
+simple VPN connection between your VPC and
+on-premise network. Your VPC network has subnets in US-east one and US-west one. With GCP resources in
+each of those regions. These resources are able
+to communicate using their internal IP
+addresses because routing within a network is
+automatically configured, assuming that firewall rules
+allow the communication. Now, in order to connect to your on-premise network and
+its resources you need to configure your Cloud
+VPN gateway on-premise VPN gateway and to VPN tunnels. The Cloud VPN gateway is a regional resource that uses a regional external IP address. Your on-premise VPN gateway can be a physical device
+in your data center or a physical or
+software based VPN offering in another
+Cloud providers network. This VPN gateway also has
+an external IP address. A VPN tunnel then connects
+your VPN gateways and serves as the virtual medium through which encrypted
+traffic is passed. In order to create a
+connection between two VPN gateways you must
+establish two VPN tunnels. Each tunnel defines
+the connection from the perspective of its gateway and traffic can only pass when the pair of
+tunnels established. Now, one thing to
+remember when using Cloud VPN is that the
+maximum transmission unit or MTU for your on-premises VPN gateway cannot be
+greater than 1,460 bytes. This is because of the encryption and encapsulation of packets. For more information about this empty you consideration see the links section of this video. I mentioned earlier
+that Cloud VPN supports both static
+and dynamic routes. In order to use dynamic routes you need to configure
+Cloud Router. Cloud Router can
+manage routes from Cloud VPN tunnel using border
+gateway protocol or BGP. This routing method
+allows for routes to be updated and exchanged without changing the tunnel
+configuration. For example, this diagram shows two different regional subnets in a VPC network namely
+tests and prod. The on-premise network
+has 29 subnets and the two networks are connected
+through Cloud VPN tunnels. Now, how would you handle
+adding new subnets? For example, how would you add a new staging subnet in
+the GCP network and a new on-premise 10.0.30.0/24 subnet to handle growing traffic
+in your data center? To automatically propagate
+network configuration changes the VPN tunnel
+uses Cloud Router to establish a BGP session
+between the VPC and the on-premise VPN gateway
+which must support BGP. The new subnets are then seamlessly advertised
+between networks. This means that instances in the new subnets can
+start sending and receiving traffic immediately as you will explore in
+the upcoming lab. To set up BGP an
+additional IP address has to be assigned to each
+end of the VPN tunnel. These two IP addresses must
+be link-local IP addresses. Belonging to the IP address
+range 169.254.0.0/16. These addresses are not
+part of IP address space of either network and are used exclusively for
+establishing a BGP session.

@@ -1,0 +1,127 @@
+Hello, I'm Philipp Maier. I'm Mylene Biddle. We are
+both course developers at Google Cloud and
+we want to welcome you to architecting
+with Compute Engine, a series of three courses. Before we start using all
+of the different services that Google Cloud
+Platform or GCP offers, let's talk about what GCP is. When you look at Google Cloud, you'll see that it's
+actually part of a much larger ecosystem. This ecosystem consists of open-source software, providers, partners, developers,
+third-party software, and other Cloud providers. Google is actually a
+very strong supporter of open source software. That's right. Now, Google Cloud consists of Chrome,
+Google devices, Google Maps, Gmail,
+Google Analytics, G-Suite, Google Search, and
+the Google Cloud Platform. GCP itself is a computing
+solution platform that really encompasses
+three core features; infrastructure,
+platform, and software. This map represents GCP's
+global Infrastructure. As of this recording, GCP is well provisioned
+global network. Connects over 60 zones to over a 130 points of presence through a global network of
+fiber optic cables. Google is continuously investing in this network with new regions, points of presence, and
+subsea cable investments. On top of this infrastructure, GCP uses state of
+the art software defined networking and
+distributed systems technologies to host and deliver your
+services around the world. These technologies are
+represented by a suite of Cloud-based products and services that is continuously expanding. Many of the products and
+services are represented by unique blue hexagonal logos
+such as the ones shown here. Now, it's important to
+understand that there is usually more than one solution for a
+task or application in GCP. To better understand this, let's look at a
+solution continuum. Google Cloud Platform spans
+from Infrastructure as a Service or IAAS to Software
+as a Service or SAAS. You really can build
+applications on GCP for the web or
+mobile that are global, auto-scaling, assistive,
+and it provides services where the
+infrastructure is completely invisible to the user. It is not just that
+Google has opened the infrastructure that powers
+applications like Search, Gmail, Google Maps, and G Suite. Google has opened all of
+these services that make these products possible and
+package them for your use. Alternative solutions
+are possible. For example, you could start up your own VM in Google
+Computer Engine, Install Open Source
+MySQL on it and run it just like a MySQL database on your own computer
+in a data center. Or you could use the Cloud SQL service which provides a MySQL
+instance and handles operational work like backups and security patching for you using the same service as Google does to automate
+backups and patches. You could even move to a NoSQL database that is
+auto-scaling and serverless. So that growth no
+longer requires adding server instances or possibly changing the design to
+handle the new capacity. This series of courses focuses
+on the infrastructure, and IT infrastructure is
+like a city infrastructure. The infrastructure is the
+basic underlying framework of fundamental facilities and
+systems such as transport, communications,
+power, water, fuel, and other essential services. The people in the city
+are like users and the cars and bikes and buildings in the city
+are like applications. Everything that goes into
+creating and supporting those applications for the
+users is the infrastructure. The purpose of this course is to explore as efficiently
+and clearly as possible the infrastructure
+services provided by GCP. You should become
+familiar enough with the infrastructure
+services that you will know what services do
+and how to use them. We won't go into very deep dive case studies on specific vertical
+applications. But you know enough to put all the building blocks together to build
+your own solution. Now, GCP offers a range
+of Compute services. The service that might be most familiar to newcomers
+is Computer Engine, which lets you run
+virtual machines on demand in the Cloud. It's Google Cloud's Infrastructure
+as a Service solution. It provides maximum
+flexibility for people who preferred a managed
+server instances themselves. Google Kubernetes Engine lets you run Container as applications on a Cloud environment
+that Google manages for you under your
+administrative control. Think of containerization
+as a way to package code. This design to be highly portable and to use
+resources very efficiently and think of Kubernetes as a way to orchestrate
+code in Containers. App Engine is GCP's fully managed Platform as
+a service framework, that means it's a
+way to run code in the Cloud without having to
+worry about Infrastructure. You just focus on your
+code and let Google deal with all the provisioning
+and resource management. You can learn a lot more
+about App Engine in that developing applications with Google Cloud Platform
+Core series. Cloud Functions is a completely serverless
+execution environment or Functions as a Service. It executes your code in
+response to events whether those events occur once a day
+or many times per second. Google's scales
+resources as required, but you only pay for the
+service while your code runs. The developing applications with Google Cloud Platform Core series also discusses code Functions. In this series of courses, Compute Engine will
+be our main focus. The architecting with Google
+Compute Engine courses are part of the Cloud
+Infrastructure learning path. This path is designed for IT professionals who are
+responsible for implementing, deploying, migrating, and maintaining
+applications in the Cloud. The prerequisite for
+these courses is the Google Cloud
+Platform Fundamentals, Core Infrastructure
+course which you can find in the link
+section for this video. The architecting with Google
+Compute Engine series consists of three courses. Essential Cloud
+Infrastructure foundation is the first course of the architecting with
+Compute Engine series. In that course, we start
+by introducing you to GCP and how to interact with the GCP Console
+and Cloud Shell. Next we'll get into virtual
+networks and you will create VPC networks and
+other networking objects. Then we'll take a deep dive into Virtual Machines and you will Create Virtual Machines
+using Compute Engine. Essential Cloud
+Infrastructure Core service is the second course
+of this series, and that course we start by
+talking about Cloud IAM and you will administer Identity and Access Management
+for resources. Next, we'll cover the different
+data storage services in GCP and you will implement
+some of those services. Then we'll go over
+resource management, where you are managed and examined billing
+of GCP resources. Lastly, we'll talk about
+resource monitoring and you will monitor GCP resources using
+Stackdriver services. Elastic Cloud
+Infrastructure Scaling and Automation is the last
+course of this series. In that course, we start by going over the
+different options to Interconnect networks to enable you to connect your
+infrastructure to GCP. Next we'll go over GCP
+is load balancing and auto-scaling services which you will get to explore directory. Then we'll cover Infrastructure
+Automation services like Deployment Manager and terraform so that
+you can automate the development of GCP
+infrastructure services. Lastly, we'll talk
+about other managed services that you might
+want to leverage in GCP. Now, our goal for you is
+to remember and understand the different GCP services and features and also be able
+to apply your knowledge, analyze requirements,
+evaluate different options, and create your own services. That's why these courses include interactive hands-on labs
+through the Qwiklabs Platform. Qwiklabs provisions you with a Google account and credentials. So you can access the GCP console for each lab at no cost.
