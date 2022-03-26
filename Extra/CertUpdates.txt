@@ -1,0 +1,394 @@
+[flucman@led01537 certs]$ cat san.cnf
+[ req ]
+default_bits         = 2048
+distinguished_name   = req_distinguished_name
+req_extensions       = req_ext
+[ req_distinguished_name ]
+[ req_ext ]
+subjectAltName  = @alt_names
+[alt_names]
+DNS.1  = zabbix.west.com
+DNS.2  = led01537.wic.west.com
+DNS.3  = led01532.wic.west.com
+IP.1   = 10.65.149.87
+IP.2   = 10.70.114.215
+
+For Artifactory:
+****************
+DNS.1  = artifacts.west.com
+DNS.2  = artifacts.swn01.west.com
+DNS.3  = artifacts.den06.west.com
+DNS.4  = led35681.west.com
+DNS.5  = led35682.west.com
+DNS.6  = led35658.wic.west.com
+DNS.7  = led35659.wic.west.com
+IP.1   = 10.65.149.73
+IP.2   = 10.65.149.74
+IP.3   = 10.70.114.192
+IP.4   = 10.70.114.193
+
+For Jenkins:
+************
+DNS.1  = build.west.com
+DNS.2  = build.swn01.west.com
+DNS.3  = build.den06.west.com
+DNS.4  = led35669.west.com
+DNS.5  = led35662.wic.west.com
+IP.1   = 10.65.148.246
+IP.2   = 10.70.114.196
+
+
+
+ 
+Create CSR and KEY with:
+------------------------
+ 
+        openssl req -out zabbixui.csr -newkey rsa:2048 -nodes -keyout zabbixui.key -config san.cnf -subj "/C=US/ST=NE/L=Omaha/CN=zabbix.west.com"
+ 
+Check for DNS entries:
+ 
+        openssl req -noout -text -in *.csr | grep DNS
+ 
+What check looks like on CSR.
+ 
+openssl req -noout -text -in *.csr | grep DNS
+                DNS:zabbix.west.com, DNS:led01537.wic.west.com, DNS:led01532.wic.west.com, IP Address:10.65.149.87, IP Address:10.70.114.215
+				
+				
+				
+				
+For artifactory:
+----------------
+san.cnf
+----------
+[ req ]
+default_bits         = 2048
+distinguished_name   = req_distinguished_name
+req_extensions       = req_ext
+[ req_distinguished_name ]
+[ req_ext ]
+subjectAltName  = @alt_names
+[alt_names]
+DNS.1  = artifacts.west.com
+DNS.2  = artifacts.swn01.west.com
+DNS.3  = artifacts.den06.west.com
+DNS.4  = led35681.west.com
+DNS.5  = led35682.west.com
+DNS.6  = led35658.wic.west.com
+DNS.7  = led35659.wic.west.com
+IP.1   = 10.65.149.73
+IP.2   = 10.65.149.74
+IP.3   = 10.70.114.192
+IP.4   = 10.70.114.193
+
+
+Create CSR and KEY with:
+------------------------
+ 
+openssl req -out artifacts.west.com.csr -newkey rsa:2048 -nodes -keyout artifacts.west.com.key -config san.cnf -subj "/C=US/ST=NE/L=Omaha/CN=artifacts.west.com"
+ 
+Check for DNS entries:
+----------------------
+ 
+openssl req -noout -text -in *.csr | grep DNS
+ 
+What check looks like on CSR:
+-----------------------------
+			DNS:artifacts.west.com, DNS:artifacts.swn01.west.com, DNS:artifacts.den06.west.com, DNS:led35681.west.com, DNS:led35682.west.com, DNS:led35658.wic.west.com, DNS:led35658.wic.west.com, IP Address:10.65.149.73, IP Address:10.65.149.74,  IP Address:10.70.114.192, IP Address:10.70.114.193
+
+
+
+For jenkins production:
+-----------------------
+
+san.cnf
+----------
+[ req ]
+default_bits         = 2048
+distinguished_name   = req_distinguished_name
+req_extensions       = req_ext
+[ req_distinguished_name ]
+[ req_ext ]
+subjectAltName  = @alt_names
+[alt_names]
+DNS.1  = build.west.com
+DNS.2  = build.swn01.west.com
+DNS.3  = build.den06.west.com
+DNS.4  = led35669.west.com
+DNS.5  = led35662.wic.west.com
+IP.1   = 10.65.148.246
+IP.2   = 10.70.114.196
+
+Create CSR and KEY with:
+------------------------
+ 
+openssl req -out build.west.com.csr -newkey rsa:2048 -nodes -keyout build.west.com.key -config san.cnf -subj "/C=US/ST=NE/L=Omaha/CN=build.west.com"
+ 
+Check for DNS entries:
+----------------------
+ 
+openssl req -noout -text -in *.csr | grep DNS
+
+
+For jenkins sandbox:
+-----------------------
+
+san.cnf
+----------
+[ req ]
+default_bits         = 2048
+distinguished_name   = req_distinguished_name
+req_extensions       = req_ext
+[ req_distinguished_name ]
+[ req_ext ]
+subjectAltName  = @alt_names
+[alt_names]
+DNS.1  = sandbox.west.com
+DNS.2  = *.sandbox.west.com
+DNS.1  = led35546.west.com
+IP.1   = 10.50.219.72
+
+
+DNS Name=sandbox.west.com
+DNS Name=*.sandbox.west.com
+
+
+Create CSR and KEY with:
+------------------------
+ 
+openssl req -out build.west.com.csr -newkey rsa:2048 -nodes -keyout build.west.com.key -config san.cnf -subj "/C=US/ST=NE/L=Omaha/CN=build.west.com"
+ 
+Check for DNS entries:
+----------------------
+ 
+openssl req -noout -text -in *.csr | grep DNS
+
+
+All Commands for Cert:
+-----------------------
+
+Move old cert to backup location:
+----------------------------------
+	cd /etc/ssl/certs/
+	sudo mkdir old
+	ls -la
+	sudo mv artifacts.west.com.cer /etc/ssl/certs/old/artifacts.west.com.cer_03062021
+	ls old
+
+Move the new cert to right location:
+------------------------------------
+	cd /home/aullah/temp
+	ls -la
+	sudo cp artifacts.west.com.cer /etc/ssl/certs
+	cd /etc/ssl/certs/
+	ls -la
+	ls -la /etc/pki/tls/certs
+
+Move the old key to backup location:
+------------------------------------
+	cd /etc/pki/tls/private
+	ls -la
+	sudo mv swn01-west-com-pkey.pem /etc/ssl/certs/old/swn01-west-com-pkey.pem_03062021
+	ls -la
+	ls -la /etc/pki/tls/private/
+	ls -la /etc/ssl/certs/old/
+
+Move the new key to right location:
+------------------------------------
+	cd /home/aullah/temp
+	ls -la
+	sudo cp swn01-west-com-pkey.pem /etc/pki/tls/private
+	ls -la /etc/pki/tls/private/
+
+Restart the web server:
+------------------------
+
+********************************************************************************************
+
+
+FOR LONDON13 server:
+**********************
+
+artifacts.swn01.west.com
+artifacts.den06.west.com
+led35681.west.com
+led35682.west.com
+led35658.wic.west.com
+led35659.wic.west.com
+artifacts.west.com
+artifacts.lon13.west.com
+led01564.wic.west.com
+
+artifacts.west.com
+artifacts.swn01.west.com
+artifacts.den06.west.com
+artifacts.lon13.west.com
+led35681.west.com
+led35682.west.com
+led35658.wic.west.com
+led35659.wic.west.com
+led01564.wic.west.com
+
+Create san.conf file with all entries:
+---------------------------------------
+
+cd /home/aullah/
+	ls -la
+	mkdir temp
+	ls -la
+	cd temp/
+	ls -la
+	sudo vi san.cnf
+	cat san.cnf
+	ls -la
+
+
+san.cnf
+----------
+[ req ]
+default_bits         = 2048
+distinguished_name   = req_distinguished_name
+req_extensions       = req_ext
+[ req_distinguished_name ]
+[ req_ext ]
+subjectAltName  = @alt_names
+[alt_names]
+DNS.1  = artifacts.west.com
+DNS.2  = artifacts.swn01.west.com
+DNS.3  = artifacts.den06.west.com
+DNS.4  = artifacts.lon13.west.com
+DNS.5  = led35681.west.com
+DNS.6  = led35682.west.com
+DNS.7  = led35658.wic.west.com
+DNS.8  = led35659.wic.west.com
+DNS.9  = led01564.wic.west.com
+IP.1   = 10.65.149.73
+IP.2   = 10.65.149.74
+IP.3   = 10.70.114.192
+IP.4   = 10.70.114.193
+IP.5   = 10.85.116.84
+
+
+DNS:artifacts.west.com, DNS:artifacts.swn01.west.com, DNS:artifacts.den06.west.com, DNS:artifacts.lon13.west.com, DNS:led35681.west.com, DNS:led35682.west.com, DNS:led35658.wic.west.com, DNS:led35659.wic.west.com, DNS:led01564.wic.west.com, IP Address:10.65.149.73, IP Address:10.65.149.74, IP Address:10.70.114.192, IP Address:10.70.114.193, IP Address:10.85.116.84
+
+
+Create CSR and KEY with:
+------------------------
+ 
+sudo openssl req -out artifacts.west.com.csr -newkey rsa:2048 -nodes -keyout artifacts.west.com.key -config san.cnf -subj "/C=US/ST=NE/L=Omaha/CN=artifacts.west.com"
+
+Check for DNS entries:
+----------------------
+ 
+openssl req -noout -text -in *.csr | grep DNS
+
+
+Move old cert to backup location: 
+----------------------------------
+	cd /etc/ssl/certs/
+	sudo mkdir old
+	
+	ls -la
+	
+	sudo mv artifacts.west.com.cer /etc/ssl/certs/old/artifacts.west.com.cer_05202021
+	
+	ls old
+
+Move the new cert to right location:
+------------------------------------
+	cd /home/aullah/temp
+	ls -la
+	sudo cp artifacts.west.com.cer /etc/ssl/certs
+	cd /etc/ssl/certs/
+	ls -la
+	ls -la /etc/pki/tls/certs
+
+Move the old key to backup location:
+------------------------------------
+	cd /etc/pki/tls/private
+	ls -la
+	sudo mv swn01-west-com-pkey.pem /etc/ssl/certs/old/swn01-west-com-pkey.pem_05202021
+	ls -la
+	ls -la /etc/pki/tls/private/
+	ls -la /etc/ssl/certs/old/
+
+Move the new key to right location:
+------------------------------------
+	cd /home/aullah/temp
+	ls -la
+	sudo cp swn01-west-com-pkey.pem /etc/pki/tls/private
+	ls -la /etc/pki/tls/private/
+
+Restart the web server:
+------------------------
+
+	systemctl restart httpd
+	
+	systemctl status httpd
+
+1.Short description: Upgrade Artifactory cert( artifacts.west.com ) in Production for lon13 which will be expired on 05/24/2021
+
+2.Description: PLATFORM:  CICD Artifactory production artifacts.west.com Certificates on lon13 are going to be expire on 05/24/2021 
+
+DUE DATE: 05/20/2021 at 11 PM Central
+
+BRIEF DESCRIPTION:
+Platform Operations - CI/CD Operators - GTS team will be updating the artifacts.west.com certificates on the Artifactory Production server on lon13, while DEN06 and SWN01 artifactory will keep traffic continuously.
+Artifactory application is directly not in the path of customer data or workflow. It will be only used by internal systems and development teams.
+ 
+Traffic will be routed away from LON13 and certificate will be updated for lon13.So there is no expected impact to traffic. 
+
+Notification has already sent out to the appropriate Channel. 
+
+Platform Operations - CI/CD Operators - GTS team will run their test from their side as per post change plan.
+Welcome to all dev teams ( whoever use artifactory ) to run any tests from their side
+Once all the certificates are updated, the Platform Operations - CI/CD Operators - GTS team will perform final tests.
+
+Plan:
+
+Please refer to the Implementation plan section and attached MOP.
+Work will be done when traffic routed to other site
+
+
+3 Client at Risk:.Artifactory application is directly not in the path of customer data or workflow. It will be only used by internal systems and development teams. No anticipated risk to clients
+
+4.Justification: Upgrading the artifacts.west.com cert which will be expired on 05/24/2021
+
+5.ImplementationPlan: Backup the old cert in desired locations on the server
+Traffic for Production instance will be routed to DEN06 and SWN01 sites (available at any given time), while the certificates are updated on LON13. So there is no expected impact to traffic. 
+
+LON13:
+********
+Stop all the artifactory services
+Update the new certs in desired location on the server
+Restart all the httpd services
+Test the updated certs
+Run jobs from Jenkins
+
+
+6.Expected impact: Application will be down for 3 to 5 mins , No impcat expected since traffic routed to DEN06 and SWN01
+
+7. Worst case scenarion:  Will revert back all the changes with the saved backup and move the old cert back.
+
+8. Remediation plan: Put back the old cert in place 
+
+9. Coordination: Communication will be sent out to CICD-Announcements@west.com Webex Teams channel
+
+10. Pre change test plan: Take the backup of the cert and keys  for application Artifactory
+
+
+Test artifactory UI and Logs
+
+Run sample jobs by DEv teams
+
+Test all artifactory, Xray UI and logs
+
+Test Integration with Jenkins and Xray
+
+Run sample job from Jenkins and make sure upload in artifactory is happenning
+
+F5 Cert Update Request:  SCTASK0532959
+
+
+
+CORE SYSTEMS LINUX OPERATIONS

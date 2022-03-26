@@ -1,0 +1,160 @@
+Artifactory Upgrade steps:
+****************************
+ sonarQube: user -->sonar  db--->sonar  pass--->
+ Artifactory: user -->artifactory  db--->artifactory_n01  pass --->
+ Xray: user -->xray  db--->xraydb_01   pass --->
+ mission-control: user--->root db---->mission-control-01  pass---->
+
+Artifactory binaries:
+-----------------------
+
+/var/opt/jfrog/artifactory/etc/logback.xml  -- log
+
+/var/opt/jfrog/artifactory/etc/binarystore.xml  -- binaries
+
+/var/opt/jfrog/artifactory/etc/db.properties  -- Db
+
+/var/opt/jfrog/artifactory/etc/artifactory.properties  -- artifactory info
+
+/var/opt/jfrog/artifactory/etc/artifactory.config.latest.xml  -- artifactory latest config info
+
+/var/opt/jfrog/artifactory/etc/artifactory.system .properties  -- artifactory system info
+
+/var/opt/jfrog/artifactory/etc/default
+----------------
+#!/bin/sh
+
+#Default values
+export ARTIFACTORY_HOME=/var/opt/jfrog/artifactory
+export ARTIFACTORY_USER=artifactory
+#export JAVA_HOME=/opt/java/1.8.0
+export JAVA_HOME=/usr/java/latest
+
+export TOMCAT_HOME=/opt/jfrog/artifactory/tomcat
+export ARTIFACTORY_PID=/var/run/artifactory.pid
+
+export JAVA_OPTIONS="-server -Xms4g -Xmx8g -Xss256k -XX:+UseG1GC -XX:OnOutOfMemoryError=\"kill -9 %p\""
+export JAVA_OPTIONS="$JAVA_OPTIONS -Djruby.compile.invokedynamic=false -Dfile.encoding=UTF8 -Dartdist=rpm -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true -Djava.security.egd=file:/dev/./urandom"
+export JAVA_OPTIONS="-javaagent:/opt/jfrog/artifactory/tomcat/newrelic/newrelic.jar"
+
+# Timeout waiting for artifactory to start
+# START_TMO=60
+
+-----------------------
+
+
+
+
+
+
+
+The upgrade procedure involves the following main steps:
+
+
+Backup:
+**********
+
+conf_pg location: /var/lib/pgsql/10/data
+
+A. Backup PostgreSQL DB ( take snapshot of the VMs )
+
+sudo vi /var/opt/jfrog/artifactory/etc/db.properties   *--- led35554 ( sandbox )
+
+type=postgresql
+driver=org.postgresql.Driver
+url=jdbc:postgresql://10.50.219.71:5432/artifactory_n01
+username=artifactory
+password=JE2f2DQWwrcSK2DHVrTswrSXy8mLtgUUXhQnWVTa1vdcV3Xwu5
+
+
+sudo vi /var/opt/jfrog/artifactory/etc/db.properties   *--- led35658 ( den06 )
+
+type=postgresql
+driver=org.postgresql.Driver
+#url=jdbc:postgresql://led35652.wic.west.com:5432/artifactory_n02
+url=jdbc:postgresql://led36720.wic.west.com:5432/artifactory_n02
+username=artifactory
+password=JE2eNYR1PsVmACe662Went4LHmNnztV2Yv7iYifH68GKb5Cj4M
+
+
+sudo cat /var/opt/jfrog/artifactory/etc/db.properties   ----- led35681 ( swn01 )
+[sudo] password for aullah:
+
+type=postgresql
+driver=org.postgresql.Driver
+#url=jdbc:postgresql://led35652.wic.west.com:5432/artifactory
+url=jdbc:postgresql://led36722.wic.west.com:5432/artifactory
+username=artifactory
+password=JE2cHhVmsYNNqhwJbjg5kuDcXof1mqbSnQoJBqWbsRsLB55b35
+
+sudo cat /var/opt/jfrog/artifactory/etc/db.properties -----led01564  ( lon13 )
+
+type=postgresql
+driver=org.postgresql.Driver
+url=jdbc:postgresql://led01734.wic.west.com:5432/artifactory_n03
+username=artifactory
+password=JE2cPbxDz4bSrF87eb1AoqkaSKmgFtNC3aiSicW3YsWe2B7i9V
+#password=JE2eWGCN4tuWX7hvZfx17mVHCkkcsD3x4K2XBo5BBemgftus2b
+
+
+
+B. Backup artifactory ( take a snapshot of the VMs )
+
+
+1. Stop the current server
+
+  service artifactory stop 
+
+2. Download the package to upgrade (RPM).
+
+
+https://releases.jfrog.io/artifactory/artifactory-pro-rpms/jfrog-artifactory-pro/jfrog-artifactory-pro-7.15.4.rpm
+
+
+    https://jfrog.com/download-legacy/?product=artifactory&installer=rpm&version=7.15.4
+	
+    sudo wget https://releases.jfrog.io/artifactory/artifactory-pro-rpms/artifactory-pro-rpms.repo -O jfrog-artifactory-pro-rpms.repo;
+	
+	wget https://releases.jfrog.io/artifactory/artifactory-pro-rpms/jfrog-artifactory-pro/jfrog-artifactory-pro-7.15.4.rpm
+	
+    sudo mv jfrog-artifactory-pro-rpms.repo /etc/yum.repos.d/;
+	
+	yum update --exclude=jfrog*
+	
+	needs-restarting  -r ; echo $?
+	
+    yum install jfrog-artifactory-pro-7.15.4
+
+    ll /etc/yum.repos.d/
+    
+    yum -y upgrade  jfrog-artifactory-pro-7.15.4
+   
+
+
+  
+3. Check the Migration Log and review system.yaml to validate the migration was successful (only for upgrading from v6.x).
+   
+   migration log: $JFROG_HOME/artifactory/var/log/migration.log
+   
+   system.yaml configuration: $JFROG_HOME/artifactory/var/etc/system.yaml
+   
+4. Start the service using the start scripts or OS service management.
+
+   service artifactory start
+   
+5. Reset the reverse proxy
+   
+   navigate to 
+   Administration > Artifactory > General > HTTP Settings adjust your Reverse Proxy Settings and generate a new configuration template
+   
+6. Check the Artifactory Log for the status of the service.
+
+   tail -f $JFROG_HOME/artifactory/var/log/console.log
+   
+   
+   
+   
+   
+
+
+   

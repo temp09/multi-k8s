@@ -1,0 +1,97 @@
+docker --version
+
+docker login -u scmaccess -p 'LeroyJenkins2018' systems-and-platforms.docker.west.com
+
+
+customer-experience.docker.west.com conferencing-and-collaboration.docker.west.com enterprise-architecture.docker.west.com enterprise-communications.docker.west.com gts-general.docker.west.com safety-systems.docker.west.com wdc.docker.west.com
+
+
+scripts:
+*********
+
+bintray-docker-remote ( Repo Key ) ---- Docker ( Type ) ------ https://docker.bintray.io ( URL ) -- https://releases-docker.jfrog.io/
+
+canon-remote ( Repo Key ) ---- ---------Canon ( Type ) ------ https://conan.bintray.com ( URL )
+
+jcenter ( Repo Key ) ---- -----------------Maven ( Type ) ------ https://jcenter.bintray.com ( URL )
+
+
+docker --version
+
+#docker login -u scmaccess -p 'LeroyJenkins2018' systems-and-platforms.docker.west.com
+#docker login -u scmaccess -p 'LeroyJenkins2018' docker.docker.west.com
+docker login -u scmaccess -p $PASSWORD docker.sandbox.west.com
+docker pull releases-docker.jfrog.io/jfrog/artifactory-pro:6.0.0
+docker push docker.sandbox.west.com/docker-local/artifactory-pro:6.0.0
+#dir > file.text
+#docker push file.text NAME[:]
+
+
+docker push customer-experience-dev.docker.west.com/hvca/outageinfo:master-1.0.24-SNAPSHOT
+
+Since Our docker-remote bintray url "https://docker.bintray.io" will no longer work after May 1, 2021 so I am testing the new docker bintray url which need to be used in future,  Does anyone have any job which will pull images from "bintray-docker-remote" and push that same image to our local docker repository and validate that image pushed successfully 
+
+
+
+
+Docker Test:
+---------------------------------
+
+docker pull docker-test-virtual.sandbox.west.com/jfrog/artifactory-pro:latest
+Trying to pull repository docker-test-virtual.sandbox.west.com/jfrog/artifactory-pro ...
+latest: Pulling from docker-test-virtual.sandbox.west.com/jfrog/artifactory-pro
+Digest: sha256:69aeb0b04d34e3a6bdbcdb2f32d0aadc3c6182aefe13e896c115962938fd6a09
+Status: Image is up to date for docker-test-virtual.sandbox.west.com/jfrog/artifactory-pro:latest
+[root@led35545 aullah]# docker images |grep artifactory-pro
+docker-test-virtual.sandbox.west.com/jfrog/artifactory-pro          latest                                     3a5a33fbc9d9        4 days ago          933 MB
+docker.docker.west.com/docker/artifactory-pro                       6.0.0                                      fc3b534456ec        2 years ago         1.25 GB
+docker.sandbox.west.com/docker/artifactory-pro                      6.0.0                                      fc3b534456ec        2 years ago         1.25 GB
+releases-docker.jfrog.io/jfrog/artifactory-pro                      6.0.0                                      fc3b534456ec        2 years ago         1.25 GB
+[root@led35545 aullah]# docker push docker-test-virtual.sandbox.west.com/jfrog/artifactory-pro:latest
+The push refers to a repository [docker-test-virtual.sandbox.west.com/jfrog/artifactory-pro]
+b1517bf38b53: Layer already exists
+7263660864b9: Layer already exists
+1b9e5af3596b: Layer already exists
+4140d2526e79: Layer already exists
+5bb7aba52db6: Layer already exists
+782a3e129cfe: Layer already exists
+0360aaddae63: Layer already exists
+93c8b46525e5: Layer already exists
+9a804e776391: Layer already exists
+46e231ead3cb: Layer already exists
+028d75689961: Layer already exists
+latest: digest: sha256:69aeb0b04d34e3a6bdbcdb2f32d0aadc3c6182aefe13e896c115962938fd6a09 size: 2627
+
+Getting the limit docker pull:
+*******************************
+
+TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
+
+jwt decode $TOKEN
+
+curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep RateLimit
+
+
+
+For Authenticate USER:
+***********************
+
+TOKEN=$(curl --user 'username:password' "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
+
+jwt decode $TOKEN
+
+
+curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep RateLimit
+
+
+
+Docker test:
+***************
+
+docker login -u scmaccess -p 'LeroyJenkins2018' docker-test.sandbox.west.com
+
+
+docker pull docker-test.sandbox.west.com/artifactory-pro:6.0.0
+
+
+docker pull docker-test.sandbox.west.com/artifactory-pro:6.0.0

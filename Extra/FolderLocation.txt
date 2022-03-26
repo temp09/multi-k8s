@@ -1,0 +1,4 @@
+Installation directory was set to /opt/jfrog/artifactory
+You can find more information in the log directory /opt/jfrog/artifactory/var/log
+System configuration templates can be found under /opt/jfrog/artifactory/var/etc
+Copy any configuration you want to modify from the template to /opt/jfrog/artifactory/var/etc/system.yaml

@@ -1,0 +1,240 @@
+su - wicpstgp
+
+[wicpstgp@led02272 ~]$ . ./pgprofile
+[wicpstgp@led02272 ~]$ psql
+psql (12.4)
+Type "help" for help.
+
+postgres=# \l
+                                      List of databases
+      Name       |    Owner    | Encoding |   Collate   |    Ctype    |   Access privileges
+-----------------+-------------+----------+-------------+-------------+-----------------------
+ artifactory     | artifactory | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
+ artifactory_n02 | artifactory | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
+ artifactory_n03 | artifactory | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
+ postgres        | wicpstgp    | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
+ template0       | wicpstgp    | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/wicpstgp          +
+                 |             |          |             |             | wicpstgp=CTc/wicpstgp
+ template1       | wicpstgp    | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/wicpstgp          +
+                 |             |          |             |             | wicpstgp=CTc/wicpstgp
+ xraydb_01       | xray        | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
+ xraydb_02       | xray        | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
+ xraydb_03       | xray        | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
+(9 rows)
+
+postgres=# \c artifactory_n03
+You are now connected to database "artifactory_n03" as user "wicpstgp".
+artifactory_n03=# SELECT * FROM access_servers;
+              server_id               |    created    |   modified    |             server_name              | version |
+                    prvkey_fingerprint                        | prvkey_last_modified | last_heartbeat | prv_ca_key_fingerpri
+nt
+--------------------------------------+---------------+---------------+--------------------------------------+---------+----
+--------------------------------------------------------------+----------------------+----------------+---------------------
+---
+ 087e4d75-6576-4e24-83ea-9d928c4db06f | 1527018298104 | 1643694364864 | 56a74ad1-8f05-490b-992e-6d38d70dd87a | 4.11.0  | 8b4
+7f5345a3336757e3b90cb48ae4d20abd7180f0c28b35003f8375b97a4ce03 |        1643694364864 |  1644308149197 | missing
+(1 row)
+
+artifactory_n03=# SELECT * FROM artifactory_servers
+artifactory_n03-# SELECT * FROM artifactory_servers;
+ERROR:  syntax error at or near "SELECT"
+LINE 2: SELECT * FROM artifactory_servers;
+        ^
+artifactory_n03=# SELECT * FROM artifactory_servers
+SELECT * FROM artifactory_servers;
+ERROR:  syntax error at or near "SELECT"
+LINE 2: SELECT * FROM artifactory_servers;
+        ^
+artifactory_n03=# \dt
+                       List of relations
+ Schema |              Name              | Type  |    Owner
+--------+--------------------------------+-------+-------------
+ public | access_configs                 | table | artifactory
+ public | access_federation_log          | table | artifactory
+ public | access_federation_servers      | table | artifactory
+ public | access_groups                  | table | artifactory
+ public | access_groups_custom_data      | table | artifactory
+ public | access_master_key_status       | table | artifactory
+ public | access_nodes                   | table | artifactory
+ public | access_permission_action       | table | artifactory
+ public | access_permissions             | table | artifactory
+ public | access_permissions_custom_data | table | artifactory
+ public | access_platform_config         | table | artifactory
+ public | access_schema_version          | table | artifactory
+ public | access_servers                 | table | artifactory
+ public | access_tokens                  | table | artifactory
+ public | access_topology                | table | artifactory
+ public | access_unique_ids              | table | artifactory
+ public | access_users                   | table | artifactory
+ public | access_users_custom_data       | table | artifactory
+ public | access_users_groups            | table | artifactory
+ public | archive_names                  | table | artifactory
+ public | archive_paths                  | table | artifactory
+ public | artifact_bundles               | table | artifactory
+ public | artifactory_servers            | table | artifactory
+ public | binaries                       | table | artifactory
+ public | binary_blobs                   | table | artifactory
+ public | blob_infos                     | table | artifactory
+ public | build_artifacts                | table | artifactory
+ public | build_dependencies             | table | artifactory
+ public | build_jsons                    | table | artifactory
+ public | build_modules                  | table | artifactory
+ public | build_promotions               | table | artifactory
+ public | build_props                    | table | artifactory
+ public | builds                         | table | artifactory
+ public | bundle_blobs                   | table | artifactory
+artifactory_n03=# SELECT * FROM artifactory_servers;
+  server_id  |  start_time   |          context_url          | membership_port | server_state | server_role | last_heartbeat
+ | artifactory_version | artifactory_revision | artifactory_release | artifactory_running_mode |               license_hash
+
+-------------+---------------+-------------------------------+-----------------+--------------+-------------+---------------
+-+---------------------+----------------------+---------------------+--------------------------+----------------------------
+---------------
+ led01564    | 1644307483093 | 10.85.116.84:8082/artifactory |               0 | STOPPED      | STANDALONE  |  1644307483093
+ | 7.15.4              |             71504900 |       1167040800000 | PRO                      | e373c5b40f1b9d96e2e1120b4d6
+2a9b481be43063
+ Artifactory | 1643694413468 |                               |               0 | RUNNING      | STANDALONE  |  1644308148632
+ | 6.17.0              |             61700900 |       1578567031468 | PRO                      | e373c5b40f1b9d96e2e1120b4d6
+2a9b481be43063
+(2 rows)
+
+artifactory_n03=# \dt
+                       List of relations
+ Schema |              Name              | Type  |    Owner
+--------+--------------------------------+-------+-------------
+ public | access_configs                 | table | artifactory
+ public | access_federation_log          | table | artifactory
+ public | access_federation_servers      | table | artifactory
+ public | access_groups                  | table | artifactory
+ public | access_groups_custom_data      | table | artifactory
+ public | access_master_key_status       | table | artifactory
+ public | access_nodes                   | table | artifactory
+ public | access_permission_action       | table | artifactory
+ public | access_permissions             | table | artifactory
+ public | access_permissions_custom_data | table | artifactory
+ public | access_platform_config         | table | artifactory
+ public | access_schema_version          | table | artifactory
+ public | access_servers                 | table | artifactory
+ public | access_tokens                  | table | artifactory
+ public | access_topology                | table | artifactory
+ public | access_unique_ids              | table | artifactory
+ public | access_users                   | table | artifactory
+ public | access_users_custom_data       | table | artifactory
+ public | access_users_groups            | table | artifactory
+ public | archive_names                  | table | artifactory
+ public | archive_paths                  | table | artifactory
+ public | artifact_bundles               | table | artifactory
+ public | artifactory_servers            | table | artifactory
+ public | binaries                       | table | artifactory
+ public | binary_blobs                   | table | artifactory
+ public | blob_infos                     | table | artifactory
+ public | build_artifacts                | table | artifactory
+ public | build_dependencies             | table | artifactory
+ public | build_jsons                    | table | artifactory
+ public | build_modules                  | table | artifactory
+ public | build_promotions               | table | artifactory
+ public | build_props                    | table | artifactory
+ public | builds                         | table | artifactory
+ public | bundle_blobs                   | table | artifactory
+ public | bundle_files                   | table | artifactory
+ public | configs                        | table | artifactory
+ public | db_properties                  | table | artifactory
+ public | distributed_locks              | table | artifactory
+ public | indexed_archives               | table | artifactory
+ public | indexed_archives_entries       | table | artifactory
+ public | jobs                           | table | artifactory
+ public | master_key_status              | table | artifactory
+ public | md_configs                     | table | artifactory
+ public | md_contributors                | table | artifactory
+ public | md_database_migrations         | table | artifactory
+ public | md_fil_qualifiers              | table | artifactory
+ public | md_fil_targets                 | table | artifactory
+ public | md_files                       | table | artifactory
+ public | md_files_versions              | table | artifactory
+ public | md_licenses                    | table | artifactory
+ public | md_packages                    | table | artifactory
+ public | md_pkg_descriptions            | table | artifactory
+ public | md_pkg_info_sources            | table | artifactory
+ public | md_pkg_licenses                | table | artifactory
+ public | md_pkg_qualifiers              | table | artifactory
+ public | md_pkg_stats                   | table | artifactory
+ public | md_pkg_tags                    | table | artifactory
+ public | md_pkg_user_properties         | table | artifactory
+ public | md_pkg_vulns_sum               | table | artifactory
+ public | md_repos                       | table | artifactory
+ public | md_servers                     | table | artifactory
+ public | md_sources                     | table | artifactory
+ public | md_task_batches                | table | artifactory
+ public | md_tasks                       | table | artifactory
+ public | md_ver_contributors            | table | artifactory
+ public | md_ver_licenses                | table | artifactory
+ public | md_ver_qualifiers              | table | artifactory
+ public | md_ver_repos                   | table | artifactory
+ public | md_ver_stats                   | table | artifactory
+ public | md_ver_tags                    | table | artifactory
+ public | md_ver_user_properties         | table | artifactory
+ public | md_ver_vulns_sum               | table | artifactory
+ public | md_versions                    | table | artifactory
+ public | migration_status               | table | artifactory
+ public | module_props                   | table | artifactory
+ public | node_event_cursor              | table | artifactory
+ public | node_event_priorities          | table | artifactory
+ public | node_events                    | table | artifactory
+ public | node_events_errors             | table | artifactory
+ public | node_meta_infos                | table | artifactory
+ public | node_props                     | table | artifactory
+ public | nodes                          | table | artifactory
+ public | stats                          | table | artifactory
+ public | stats_remote                   | table | artifactory
+ public | tasks                          | table | artifactory
+ public | trusted_keys                   | table | artifactory
+ public | ui_session                     | table | artifactory
+ public | ui_session_attributes          | table | artifactory
+ public | unique_ids                     | table | artifactory
+ public | watches                        | table | artifactory
+(90 rows)
+artifactory_n03=# SELECT * FROM migration_status;
+         identifier         |    started    | finished |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+artifactory_n03=# SELECT * FROM md_servers;
+    id    |    created    |   modified    | version | last_heartbeat |       base_url        | node_unique_id
+----------+---------------+---------------+---------+----------------+-----------------------+----------------
+ led01564 | 1644306191346 | 1644306796165 | v7.15.3 |  1644307491166 | http://localhost:8046 |             37
+(1 row)
+
+artifactory_n03=#

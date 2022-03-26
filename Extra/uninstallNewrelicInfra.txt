@@ -1,0 +1,113 @@
+1.Short description: Uninstall newrelic-infra agent on all CI/CD servers in Production
+
+2.Description:
+
+PLATFORM:  Zabbix monitoring tool is already setup for all CI/CD servers monitoring , so no need to keep newrelic-infra agents running on those servers.
+
+DUE DATE: 05/12/2021 at 11 PM Central
+
+BRIEF DESCRIPTION:
+Platform Operations - CI/CD Operators - GTS team will be uninstalling the newrelic-infra agent for all CI/CD servers in Production while all server will continue take traffic.
+Generally uninstalling newrelic-infra agent is not directly impact any of the customer data or workflow even it doesn't need any processes restart or anything which will only safely remove the newrelic-infra agents package from the system.
+ 
+So there is no expected impact to traffic. 
+
+Notification has already sent out to the appropriate Channel. 
+
+Platform Operations - CI/CD Operators - GTS team will run their test from their side as per post change plan.
+
+Welcome to all dev teams ( whoever use CI/CD ) to run any tests from their side
+
+Once newrelic-infra agent uninstalled from all the servers , the Platform Operations - CI/CD Operators - GTS team will perform final tests.
+
+Plan:
+
+Please refer to the Implementation plan section and attached MOP.
+
+
+3 Client at Risk:.Uninstallation of newrelic-infra agent is directly not in the path of customer data or workflow. No anticipated risk to clients
+
+4.Justification: Using monitoring tool zabbix for monitors the CI/CD servers.
+
+5.ImplementationPlan: Ansible playbook will run through the Ansible tower and playbook will execute for one server at a time. So there is no expected impact to traffic.
+For refference , Ansible playbook job link will be : https://tower.svc.west.com/#/jobs/playbook/256116  
+
+1. Login to https://tower.svc.west.com 
+2. Go to the Templates option and search newrelic-cicd
+3. Click on "newrelic-cicd" template 
+4. Update the LIMIT box with desired TAG name ( sonarqube_prod_swn, jenkins_prod_lon_server , ete )
+5. SAVE and LAUNCH the job.
+
+6.Run some sampe jobs from Jenkins which are related to Artifactory, Xray, SonarQube.
+
+
+6.Expected impact: No impcat expected since traffic will not interrupt with this uninstallation process.
+
+7. Worst case scenarion:  Since Job will run for one server at a time and perform the test if any issue occur just abort the job so all will be remain as previous state.
+
+8. Remediation plan: Put back the old state in place 
+
+9. Coordination: Communication will be sent out to CICD-Announcements@west.com Webex Teams channel
+
+10. Pre change test plan: Playbook will check first newrelic-infra agent is running or not and then stop the newrelic-infra agent and undeploy the package for the server.
+Playbook was run successfully for sandbox/dev environment without any issue.
+
+11.Post change Test tasks:
+
+Test Jenkins logs
+Test all artifactory, Xray UI and logs
+Test Integration with Jenkins and Xray
+Run sample job from Jenkins and make sure upload in artifactory is happenning
+
+
+
+[artifactory_prod_swn]
+led35681.west.com
+
+
+[artifactory_prod_den]
+led35658.wic.west.com
+
+[artifactory_prod_lon]
+led01564.wic.west.com
+
+[xray_prod_swn]
+led35683.west.com
+
+[xray_prod_den]
+led35660.wic.west.com
+
+[xray_prod_lon]
+led01565.wic.west.com
+
+[jenkins_prod_swn_server]
+led35669.west.com
+
+[jenkins_prod_swn_agents]
+led35685.west.com
+led35686.west.com
+led37215.west.com
+led37216.west.com
+
+[jenkins_prod_den_server]
+led35662.wic.west.com
+
+[jenkins_prod_den_agents]
+led35663.wic.west.com
+led35664.wic.west.com
+
+[jenkins_prod_lon_server]
+led01567.wic.west.com
+
+[jenkins_prod_lon_agents]
+led01568.wic.west.com
+led01569.wic.west.com
+
+[sonarqube_prod_swn]
+led35687.west.com
+
+[sonarqube_prod_den]
+led35665.wic.west.com
+
+[sonarqube_prod_lon]
+led01572.wic.west.com

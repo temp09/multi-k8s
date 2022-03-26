@@ -1,0 +1,182 @@
+Review 2018: ( Aaron Carter )
+********************************
+Amdad has proven himself to be a quick study and proficient coder.
+He has collaborated closely with his teammates on the microservices team and made significant contributions to the team's work.
+
+
+
+Amdad is a quick study and easily transitions to new challenges. These traits will be invaluable to his team in the coming months.
+Manager Comments
+
+Employee Comments
+
+
+
+
+
+Since I am  on RDX team so I  believed my work will be benefited for our company since we used new technology for our product and also keep researching new technologies and trying to implementing.
+
+
+Review 2019:
+***************
+
+
+Manager Comments
+
+
+
+
+Amdad continues to grow in platform engineering. He is partnering with other engineers to ensure stability and future state are good.
+He has also stepped up as lead on documentation. Keep looking for new ways to provide even more value to West. 
+Manager Comments
+
+Employee Comments
+
+confidence, good listener, hard worker and continue to be more collaborative and communicative with others and team building exercise, etc.
+
+
+Manager Comments
+
+
+
+
+
+Amdad is a very involved team player and a pleasure to work with.  He has a very positive attitude and never complains about anything.  His good mood makes him very easy to work with as well.
+
+
+
+Amdad has successfully met his goals while focusing most of his attention on his current Apigee project.   Learning and progression of goals will continue as the Apigee project is completed.
+
+
+
+I admire his willingness to take on any project and give 100% to that project.
+
+
+
+Manager Comments
+
+Employee Comments
+
+
+
+
+
+1.I am part of  GTS standards committee for standard documentation. Created standard documentations for our platforms , reviewed with peers , engineering leadership also approved by them and put the docs in standard location: https://wiki.west.com/pages/viewpage.action?pageId=151041861&src=contextnavpagetreemode which is using by across the teams.
+
+2. Implemented the monitoring solution for the platform with monitoring tools Zabbix and NewRelic.
+
+3. Used successfully ansible scripts and use tower as a tool to run ansible scripts for automate the software update , install , etc.  in our platform work.
+
+4. Worked successfully with diff teams like Apigee vendor , Devops, Networking , Appdev etc. also worked with leadership to take challenge and solved the issue by using my Trust , Colla. etc.
+
+Review 2020:
+*************
+
+
+Manager Comments
+
+
+
+
+
+Amdad is very proficient at setting up monitoring solution for Apigee, using Zabbix and New Relic.  He practices our Winning Behaviors on a daily basis.  He is eager to learn new or unfamiliar technology, and is also doing all of the operational support for 100+ linux Apigee servers.
+
+He is always willing to learn and lead, and is a great asset to Intrado.  I look forward to his continues growth.
+Manager Comments
+
+Employee Comments
+
+
+
+
+
+* Demonstrate our company Intrado winning behaviors, collaborates with internal and external teams ,
+ outside Product vendors. Also try to take the lead on a Project , interested to learn new tech and implements for
+ our Intrado
+
+*Expertise on set up monitoring solution for the platform with different tools
+
+*Make sure review with peers and teams, groups  and get approved and published the document as needed for other
+
+*Successfully accomplished the automation procedures for my platform ( Apigee ) through
+ ansible scripts by using Ansible tower as well using Jenkins to build whole platform
+
+*Also Working on building our apigee platform in GCP ( Appdev Apigee platform is already built in GCP ).
+  Working on automation process to build whole platform as service in GCP for our platform without Apigee Vendor support ( partially completed )
+
+* Also I am doing the operation work for all of my platform servers ( more than 100 linux servers ) and successfully handled my job as required.
+
+
+Manager Comments
+
+
+
+
+
+Amdad has learned a variety of things since the last appraisal, and is eager to continue learning additional things.  He is always willing to help any of his peers with their workload or issues,  He is very pleasant and always has a positive attitude, never complaining.  He is an active listener and asks questions if he doesn't understand something or needs more information.
+
+I enjoy having him as part of the team, and look forward to seeing his continued growth and ability to support additional platforms.
+Manager Comments
+
+Employee Comments
+
+
+
+
+
+1.Learnt and Implemented the monitoring solution for the platform with monitoring tools Zabbix
+
+2.Collaborates with team members and other Intrado employees to accomplish my goals.  I always willing to step up and take the lead on projects
+ 3.I am always interested in learning different technologies to assist  my teammates with, and to implement at Intrado.
+
+4.Learnt the ansible scripts and use Jenkins as a tool to run ansible scripts for automate the software update , install , etc.  in our platform work
+
+
+Review 2021:
+**************
+
+
+Manager Comments
+
+
+
+
+Amdad has successfully met all of his goals.  He has really stepped up since he has taken on Primary support of the Apigee and CI/CD platforms.  He  does whatever is necessary, doesn't complain, and is a pleasure to have on our team.
+Manager Comments
+
+Employee Comments
+
+
+
+
+
+I believe I am leading as outstanding support, troubleshoot , resolving for our apigee platform and CICD ( Jenkins, JFrog Artifactory, Xray, Mission-control and SonarQube ) platform along with helping segmentation for of those tools/ product for Intrado.
+
+I also resolve the vulnerabilities as industry standard way  for Intrado.
+
+Also I believe I am a good candidate for be working as lead Engineer with Intrado.
+
+
+Manager Comments
+
+
+
+
+
+ Amdad has been tasked with much more responsibility recently, and has successfully stepped up to the challenge.  He is always eager to learn new things, does his research on things he is not familiar with, and shares his knowledge willingly.   He communicates with colleagues and others that are outside of the company.  He proactively researches and determines a path forward when faced with obstacles.
+
+Amdad is an asset to my team and Intrado.  I enjoy working with him and look forward to many more years of success.
+Manager Comments
+
+Employee Comments
+
+
+
+
+
+I clearly communicate my expectations to my team also effectively communicate at all levels in our Intrado as needed and always try my best to present my ideas to groups of all size in our Intrado. Also share relevant informations to my peer if I feel this is beneficial for us.
+
+I try to volunteer to participate in projects that are beyond my job responsibilities also I am happy to answer questions my peer and try to use my time effectively  and try to prioritize my work efficiently .
+
+I frequently collaborate with others to brainstorm and problem-solve
+

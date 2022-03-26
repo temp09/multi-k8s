@@ -1,0 +1,32 @@
+The simplest migration is to set up a working instance of the version you need but with no configuration or data on it yet, just blank instance, no artifacts, default data in the database (new database, not pointing to the old DB).
+After you have this working the way you want you can work on migrating from the old instance to the new instance using a full system export from the old and then import on the new.
+If things don't work out, you can just switch your DNS back to the old instance.
+
+The above is the simplest procedure but would involve some downtime if you wanted to ensure the instances both contain the same data at the time of the cut-over.
+We have some things you can do to reduce or even eliminate downtime.
+
+Method 1:
+
+1. Admin tab -> Advanced -> Maintenance -> Disable Garbage collection on both servers
+2. Old server: Copy the $ARTIFACTORY_HOME/data/filestore folder to the new server's filestore folder (in Artifactory 7.x, the path is $JFROG_HOME/artifactory/var/data/artifactory/filestore)
+3. Old server: Take server off the network to block new requests
+4. Old server: Perform full system export with the "Exclude Content" option selected (no other options selected)
+5. Old server: Shut down
+6. Old Server: rsync from $ARTIFACTORY_HOME/data/filestore folder to the new server's filestore folder
+7. New server: Perform full system import (Do NOT select the Exclude Content option).
+8. New server: Turn on network traffic / switch DNS to new server
+9. New Server: Enable Garbage Collection again
+
+Method 1 is pretty fast as it only has downtime from the final rsync and the export/import of metadata. Method 2 will give close to zero downtime but is more complicated.
+
+Method 2:
+
+1. Admin tab -> Advanced -> Maintenance -> Disable Garbage collection on both servers
+2. Old server: Copy the $ARTIFACTORY_HOME/data/filestore folder to the new server's filestore folder 7.x, the path is $JFROG_HOME/artifactory/var/data/artifactory/filestore)
+3. Old server: Perform full system export with the "Exclude Content" option selected (no other options selected)
+4. New server: Perform full system import (Do NOT select the Exclude Content option)
+5. Old Server: Set up all local repositories to replicate to the repositories on the new server (you may disable the ‘sync delete’ checkbox if needed)
+6. New server: Turn on network traffic / switch DNS to new server
+7. Old server: Execute and successfully complete all replication jobs
+8. Old server: Shut down
+9. New Server: Enable Garbage Collection again

@@ -1,0 +1,38 @@
+cd /opt/
+  965  ls -la
+  966  df -h
+  967  pwd
+  968  mkdir jfrog
+  969  ls -la
+  970  cd jfrog/
+  971  ls -la
+  972  weget https://bintray.com/jfrog/product/JFrog-Artifactory-Cpp-CE/view
+  973  yum install weget
+  974  wget https://bintray.com/jfrog/product/JFrog-Artifactory-Cpp-CE/view
+  975  wget -O artifactory-pro.rpm "https://releases.jfrog.io/artifactory/artifactory-pro-rpms/jfrog-artifactory-pro/jfrog-artifactory-pro-[RELEASE].rpm"
+  976  sudo yum install ./artifactory-pro.rpm -y
+  977  sudo systemctl start artifactory.service
+  978  sudo systemctl status artifactory.service
+  979  ls -la
+  980  pwd
+  981  export JFROG_HOME=/opt/jfrog
+  982  firewall-cmd --permanent --zone=public --add-port=8081/tcp
+  983  firewall-cmd --permanent --zone=public --add-port=8082/tcp
+  984  firewall-cmd --reload
+  985  ls -la /home/aullah/
+  986  cd /home/aullah/temp/
+  987  ls -la
+  988  pwd
+  989  zip -r hashtag.zip hashtag
+  990  yum install zip unzip -y
+  991  zip -r hashtag.zip hashtag
+  992  ls -la
+  993  ls /mnt/
+  994  cd /mnt/
+  995  ls -la
+  996  ls /dev/cdrom
+  997  ls -la /dev/
+  998  ls -la /dev/cdrom
+  999  cd /dev/cdrom
+ 1000  cd sr0
+ 1001  df -h

@@ -1,0 +1,60 @@
+CSR generate steps  :
+****************************
+
+Step 1: Create san.cnf file
+
+[ req ]
+default_bits = 2048
+distinguished_name = req_distinguished_name
+req_extensions = req_ext
+[ req_distinguished_name ]
+[ req_ext ]
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = artifacts.west.com
+DNS.2 = artifacts.swn01.west.com
+DNS.3 = artifacts.den06.west.com
+DNS.4 = artifacts.lon13.west.com
+DNS.5 = led35681.west.com
+DNS.6 = led35682.west.com
+DNS.7 = led35658.wic.west.com
+DNS.8 = led35659.wic.west.com
+DNS.9 = led01564.wic.west.com
+IP.1 = 10.65.149.73
+IP.2 = 10.65.149.74
+IP.3 = 10.70.114.192
+IP.4 = 10.70.114.193
+IP.5 = 10.85.116.84
+
+DNS.1 = led35554.west.com
+IP.1 = 10.50.219.74
+
+
+Step 2: Generate a certificate signing request ( CSR ) and key using the following command
+
+   openssl req -out led35554.west.com.csr -newkey rsa:2048 -nodes -keyout led35554.west.com.key -config san.cnf -subj "/O=Intrado/C=US/ST=NE/L=Omaha/CN=led35554.west.com"
+  
+  
+Step 3: Receive a p7b cert from Infosec named led35554.west.com.p7b
+ 
+Step 4: Generate a crt file from the p7b from Infosec with the following command,
+ 
+   openssl pkcs7 -print_certs -in led35554.west.com.p7b -out led35554.west.com.crt
+ 
+Step 5: Convert crt to a pem ( if needed )
+ 
+   openssl x509 -in led35554.west.com.crt -out led35554.west.com.pem -outform PEM 
+ 
+Step 6: Generate a pkcs12  file for this key named led35554.west.com.p12 with the following command. ( if needed )
+ 
+   openssl pkcs12 -export -clcerts -in led35554.west.com.pem -inkey led35554.west.com.key -out led35554.west.com.pkcs12 
+ 
+  If prompted for a password, enter "sagjenkinsintrado"
+ 
+Step 7: Generate a Java keystore for Jenkins using the following command,
+ 
+  keytool -importkeystore -srckeystore led35554.west.com.pkcs12 -srcstoretype pkcs12 -destkeystore led35554.west.com.jks -deststoretype jks
+ 
+  If prompted for a password, enter "sagjenkinsintrado"
+
+  

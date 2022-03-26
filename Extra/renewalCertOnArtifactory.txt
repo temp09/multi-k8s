@@ -1,0 +1,78 @@
+Simple step to renewal the certificates on server ( wild-card.docker.west.com )
+********************************************************************************
+
+
+Rename the old certs and move ( backup steps ) :
+------------------------------------------------
+
+Log in to led01564/led35681/led35658 and 
+
+cd /etc/ssl/certs/
+
+**Log in to led35681/led35658 and 
+
+**cd /etc/ssl/certs/
+
+ls -lart
+
+sudo mv wild-card.docker.west.com.cer /etc/ssl/certs/old/wild-card.docker.west.com.cer_09202021
+
+**sudo mv artifacts.west.com.cer /etc/ssl/certs/old/artifacts.west.com.cer_09202021
+
+cd /etc/pki/tls/private
+
+ls -lart
+
+sudo mv wild-card.docker.west.com.key /etc/ssl/certs/old/wild-card.docker.west.com.key_09202021 ( if needed )
+
+**sudo mv swn01-west-com-pkey.pem /etc/ssl/certs/old/swn01-west-com-pkey.pem_09202021 ( if needed )
+
+Update the new cert in /etc/ssl/certs/:
+----------------------------------------
+
+cd /home/aullah/temp/docker
+
+**cd /home/aullah/temp/latestCert
+
+ls -lart
+
+sudo cp wild-card.docker.west.com.cer /etc/ssl/certs
+
+sudo cp wild-card.docker.west.com.key /etc/pki/tls/private ( if needed )
+
+**sudo cp swn01-west-com-pkey.pem /etc/pki/tls/private ( if needed )
+
+Restart httpd service:
+--------------------------
+
+sudo systemctl status httpd
+
+sudo systemctl restart httpd
+
+Validate the cert ( *.docker.west.com ):
+----------------------------------------
+
+openssl x509 -enddate -noout -in wild-card.docker.west.com.cer
+
+Also login to https://star.docker.west.com 
+
+              https://wild-card.docker.west.com 
+			  
+			  
+			  
+Validate the cert ( artifacts.west.com ):
+----------------------------------------
+
+openssl x509 -enddate -noout -in artifacts.west.com.cer
+
+Also login to https://artifacts.west.com 
+
+              https://wild-card.docker.west.com 
+			  
+			  
+			  
+			  
+			  
+			  
+Artifactory cert replace with new artifacts.west.com
+**********************************************************************

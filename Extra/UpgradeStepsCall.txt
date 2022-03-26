@@ -1,0 +1,110 @@
+Artifactory Upgrade steps:
+****************************
+
+The upgrade procedure involves the following main steps:
+
+A. Backup PostgreSQL DB ( take snapshot of the VMs )
+A1. Backup artifactory ( take a snapshot of the VMs )
+B. Backup file store:      ????????
+du -sh /var/opt/jfrog/artifactory/data/    
+   4.0T    /var/opt/jfrog/artifactory/data/
+
+B1. Artifactory Backup is happening everyday at midnight:   ?????
+  
+C. Backup current artifactory :     ???????
+   du -sh /var/opt/jfrog/artifactory/backup/
+   4.3T    /var/opt/jfrog/artifactory/backup/
+   
+D. To backing up the database, you should back up your filestore (defined in $ARTIFACTORY_HOME/var/etc/artifactory/binarystore.xml)  ???????
+   
+   
+
+1. Download the package to upgrade (Linux Archive, RPM, Debian, Docker Compose, Helm).
+
+   ll /etc/yum.repos.d/
+    total 20
+     -rw-r--r--  1 root root  236 Feb 21  2018 bintray-jfrog-artifactory-pro-rpms.repo
+
+
+   yum -y install/upgrade  jfrog-artifactory-pro-7.15.0
+   
+2. Stop the current server
+
+  service artifactory stop
+
+3. Extract/Install the package according to the installer distribution type.     ??????
+
+  yum -y install  jfrog-artifactory-pro-7.15.0
+  
+4. Check the Migration Log and review system.yaml to validate the migration was successful (only for upgrading from v6.x).
+   
+   migration log: $JFROG_HOME/artifactory/var/log/migration.log
+   
+   system.yaml configuration: $JFROG_HOME/artifactory/var/etc/system.yaml
+   
+5. Start the service using the start scripts or OS service management.
+
+   service artifactory start
+   
+6. Reset the reverse proxy
+   
+   navigate to 
+   Administration > Artifactory > General > HTTP Settings adjust your Reverse Proxy Settings and generate a new configuration template
+   
+6. Check the Artifactory Log for the status of the service.
+
+   tail -f $JFROG_HOME/artifactory/var/log/console.log
+   
+   
+   
+   
+Xray Upgrade steps:
+***************************
+
+Home directory:  /opt/jfrog/xray/scripts/
+
+The upgrade procedure involves the following steps:
+
+1. Download Xray (Docker Compose, RPM, Debian).
+sudo wget https://releases.jfrog.io/artifactory/jfrog-xray/xray-rpm/3.17.2/jfrog-xray-3.17.2-rpm.tar.gz
+
+2. Stop the Xray service
+
+cd /opt/jfrog/xray/scripts
+./xray.sh stop
+
+
+3. Install and extract  Xray according to the distribution type.
+
+  sudo wget https://releases.jfrog.io/artifactory/jfrog-xray/xray-rpm/3.17.2/jfrog-xray-3.17.2-rpm.tar.gz
+  
+  tar -xvf jfrog-xray-3.17.2-rpm|.tar.gz
+  cd jfrog-xray-3.17.2-rpm
+  
+3a. Make sure mongo DB is running
+
+3b. Run the installer scripts:
+   ./install.sh
+
+3. Check the Migration Log and review system.yaml to validate the migration was successful (only for upgrading from v3.x).
+
+    migration log: $JFROG_HOME/xray/var/log/migration.log file
+	system.yaml configuration: $JFROG_HOME/xray/var/etc/system.yaml
+	
+4. Start the service using the start scripts or OS service management.
+   
+   systemctl start xray.service
+
+5. Check the Xray Log for the status of the service.
+
+   tail -f $JFROG_HOME/var/log/console.log
+   
+   
+Post Data Migration Steps (MongoDB to PostgreSQL):         ????
+******************************************************
+
+After the migration is successfully ended, it is recommended to complete the following steps:
+
+a. Validate that your Xray data has migrated successfully.
+b. Remove MongoDB configuration from the system.yaml.
+c. For RPM installations, uninstall the MongoDB database.

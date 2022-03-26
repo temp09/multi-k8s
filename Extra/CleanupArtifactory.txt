@@ -1,0 +1,53 @@
+Artifactory Cleanup:
+---------------------
+
+curl -X POST -v -u aullah "https://artifacts.sandbox.west.com/artifactory/api/plugins/execute/cleanup?params=months=1;repos=libs-release-local;dryRun=true;paceTimeMS=2000;disablePropertiesSupport=true"
+
+
+curl -X POST -v -u aullah "https://artifacts.sandbox.west.com/artifactory/api/plugins/execute/cleanup?params=timeUnit=month;timeInterval=1;repos=libs-release-local;dryRun=true;paceTimeMS=2000;disablePropertiesSupport=true"
+
+
+curl -X POST -v -u admin:admin "http://led35554.west.com:8081/artifactory/api/plugins/execute/cleanup?params=months=1;repos=libs-release-local;dryRun=false;paceTimeMS=2000;disablePropertiesSupport=true"
+
+curl -X GET -v -u aullah "http://led35554.west.com:8081/artifactory/api/search/usage?notUsedSince=long&createdBefore=long&repos=libs-release-local
+
+
+
+#!/bin/bash
+curl -u $USERNAME:$PASSWORD -X GET "http://led35554.west.com/artifactory/api/repositories" | tee r.json
+rm -f createRepo.py
+cat << EOF >> createRepo.py 
+import os
+import json
+with open('r.json', encoding='utf-8-sig') as json_file:
+    text = json_file.read()
+    json_data = json.loads(text)
+for i in range(len(json_data)):
+    if 'dev' in json_data[i]['key'] and  json_data[i]['packageType'] != 'Docker' and json_data[i]['type'] == 'LOCAL' and 'archive' not in json_data[i]['key']:
+        print("REPO: {}, TYPE: {}, PKG: {}".format(json_data[i]['key'], json_data[i]['type'], json_data[i]['packageType']))
+
+#for i in range(dindex):
+#    print("REPO: \"{}\", PKG: \"{}\"".format(repo[i], pkg[i]))
+        os.system("""curl -u $USERNAME:$PASSWORD -X PUT http://led35554.west.com:8081/artifactory/api/repositories/"""+json_data[i]["key"]+"""-archive -H "Content-Type: application/json" -d '{"key": \""""+json_data[i]["key"]+"""-archive\", "rclass": "local", "packageType": \""""+json_data[i]["packageType"]+"""\"}'""")
+#led35554 is sandbox artifactory
+EOF
+cat createRepo.py
+python3 createRepo.py
+
+
+
+rm -f runPlugin.py
+cat << EOF >> runPlugin.py
+import os
+import json
+with open('r.json', encoding='utf-8-sig') as json_file:
+    text = json_file.read()
+    json_data = json.loads(text)
+for i in range(len(json_data)):
+    if 'dev' in json_data[i]['key'] and  json_data[i]['packageType'] != 'Docker' and json_data[i]['type'] == 'LOCAL' and 'archive' not in json_data[i]['key']:
+       # print("REPO: {}, TYPE: {}, PKG: {}".format(json_data['repo'][i]['key'], json_data['repo'][i]['type'], json_data['repo'][i]['packageType'])
+         os.system('curl -X POST -v -u $USERNAME:$PASSWORD "http://led35554.west.com:8081/artifactory/api/plugins/execute/archive_old_artifacts?params=srcRepo='+json_data[i]["key"]+';lastDownloadedDays=30;excludePropertySet=keeper:true;archiveRepo='+json_data[i]["key"]+'-archive"')
+        #os.system('curl -X POST -v -u $USERNAME:$PASSWORD "http://led35554.west.com:8081/artifactory/api/plugins/execute/archive_old_artifacts?params=srcRepo=+json_data["repo"][i]["key"]+;lastDownloadedDays=30;excludePropertySet=keeper:true;archiveRepo=+json_data["repo"][i]["key"]+-archive"')
+EOF
+cat runPlugin.py
+python3 runPlugin.py
