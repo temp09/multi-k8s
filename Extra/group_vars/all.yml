@@ -1,8 +1,0 @@
-# All global variables
-#
-
-apigeeUser: 'apigee'
-configFilePath: '/usr/local/configFile'
-licenseFilePath: '/usr/local/license.txt'
-gitDownloadPath: '/tmp/apigeePackages'
-devConfigFilePath: '/usr/local/devPortalConfigFile'
