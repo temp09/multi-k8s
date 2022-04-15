@@ -1,0 +1,18 @@
+---
+# tasks file for OpenLDAP
+
+
+- name: Check if OpenLDAP is running
+  shell: ps aux | grep apigee-openldap  | grep -v grep
+  ignore_errors: true
+  register: openldap_output
+#- debug: 
+#       msg: "{{openldap_output.stdout}}"
+
+- name: Install OpenLDAP
+  shell: /opt/apigee/apigee-setup/bin/setup.sh -p ld -f {{ configFilePath }}
+  when: openldap_output.stdout == ""
+  become: true
+  become_method: su
+  become_user: root
+

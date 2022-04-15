@@ -1,0 +1,38 @@
+---
+# tasks file for Router_MessageProcessor
+
+- name: Update system limits on Message Processor nodes
+  pam_limits:
+            domain: "{{ item.domain }}"
+            limit_type: "{{ item.limit_type }}"
+            limit_item: "{{ item.limit_item }}"
+            value: "{{ item.value }}"
+  with_items:
+            - { domain: '{{ apigeeUser }}', limit_type: 'soft', limit_item: 'nofile', value: '32768' }
+            - { domain: '{{ apigeeUser }}', limit_type: 'hard', limit_item: 'nofile', value: '65536' }
+  become: true
+  become_method: su
+  become_user: root
+
+- name: Check if EdgeRouter is running
+  shell: ps aux | grep edge-router  | grep -v grep
+  ignore_errors: true
+  register: edgerouter_output
+#- debug: 
+#       msg: "{{edgerouter_output.stdout}}"
+
+- name: Check if MessageProcessor is running
+  shell: ps aux | grep edge-message-processor  | grep -v grep
+  ignore_errors: true
+  register: messageprocessor_output
+#- debug: 
+#       msg: "{{messageprocessor_output.stdout}}"
+
+- name: Install EdgeRouter and MessageProcessor
+  shell: /opt/apigee/apigee-setup/bin/setup.sh -p rmp -f {{ configFilePath }}
+  when: edgerouter_output.stdout == "" or messageprocessor_output.stdout == ""
+  become: true
+  become_method: su
+  become_user: root
+
+

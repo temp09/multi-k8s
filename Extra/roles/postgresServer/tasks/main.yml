@@ -1,0 +1,19 @@
+---
+# tasks file for Postgres_Server
+
+
+- name: Check if Postgres is running
+  shell: ps aux | grep edge-postgres-server  | grep -v grep
+  ignore_errors: true
+  register: postgresserver_output
+
+#- debug: 
+#       msg: "{{postgresserver_output.stdout}}"
+
+- name: Install Postgres server
+  shell: /opt/apigee/apigee-setup/bin/setup.sh -p ps -f {{ configFilePath }}
+  when: postgresserver_output.stdout == ""
+  become: true
+  become_method: su
+  become_user: root
+

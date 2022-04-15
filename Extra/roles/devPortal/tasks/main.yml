@@ -1,0 +1,63 @@
+---
+# tasks file for devPortal
+#
+#
+
+- name: Copy configFile
+  copy:
+      src: '{{ gitDownloadPath }}/devPortalConfFile-{{ env }}-{{ dc }}'
+      dest: '{{ devConfigFilePath }}'
+      mode: 0755
+      remote_src: true
+
+#- name: Set the IP Address
+#  set_fact:
+#          IP_Address: "{{ ansible_default_ipv4.address }}"
+
+#- name: Update the config file with IP of the Developer Portal host
+#  lineinfile:
+#            path: '{{ devConfigFilePath }}'
+#            regexp: '^IP1='
+#            line: 'IP1={{ IP_Address }}'
+
+
+- name: Check if Developer Portal is running
+  shell: ps aux | grep apigee-drupal-devportal | grep -v grep
+  ignore_errors: true
+  register: devPortal_output
+
+- name: Remove old php packages 
+  yum: 
+     name: "{{ item }}"
+     state: absent
+  ignore_errors: true
+  with_items: 
+            - php 
+            - php-cli
+            - php-common
+            - php-gd
+            - php-mbstring
+            - php-mysql
+            - php-pdo
+            - php-pear
+            - php-pecl-apc
+            - php-process
+            - php-xml
+  when: devPortal_output.stdout == ""
+
+- name: Install Developer Portal
+  shell: /opt/apigee/apigee-setup/bin/setup.sh -p dp -f {{ devConfigFilePath }}
+  when: devPortal_output.stdout == ""
+  become: true
+  become_method: su
+  become_user: root
+
+- name: Copy upstart script to /etc/init.d
+  copy:
+      remote_src: true
+      src: /opt/apigee/apigee-drupal-devportal/init.d/apigee-drupal-devportal
+      dest: /etc/init.d/
+      mode: 0755
+      owner: root
+      group: root
+

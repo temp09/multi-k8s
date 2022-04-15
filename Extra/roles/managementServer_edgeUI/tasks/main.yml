@@ -1,0 +1,66 @@
+---
+# tasks file for ManagementServer_EdgeUI
+
+- name: Check if ManagementServer is running
+  shell: ps aux | grep edge-management-server  | grep -v grep
+  ignore_errors: true
+  register: managementserver_output
+
+#- debug: 
+#       msg: "{{managementserver_output.stdout}}"
+
+- name: Check if EdgeUI is running
+  shell: ps aux | grep edge-ui  | grep -v grep
+  ignore_errors: true
+  register: edgeui_output
+
+#- debug: 
+#       msg: "{{edgeui_output.stdout}}"
+
+- name: Install ManagementServer and EdgeUI
+  shell: /opt/apigee/apigee-setup/bin/setup.sh -p ms -f {{ configFilePath }}
+  when: managementserver_output.stdout == "" or edgeui_output.stdout == ""
+  become: true
+  become_method: su
+  become_user: root
+
+# Create ui.properties file 
+
+- name: Create ui.properties file  
+  copy:
+      content: |
+                conf_apigee-base_apigee.feature.enabletraceforinternaladdresses="true"
+                conf_apigee-base_apigee.feature.devportaltemplate="http://apideveloper.sysdev.west.com:8079/"
+      dest: /opt/apigee/customer/application/ui.properties 
+      backup: yes
+      mode: 0755
+  become: true
+  become_method: su
+  become_user: root
+  when: env == "dev"
+
+- name: Create ui.properties file
+  copy:
+      content: |
+                conf_apigee-base_apigee.feature.enabletraceforinternaladdresses="true"
+                conf_apigee-base_apigee.feature.devportaltemplate="https://apicentral.west.com:8079/"
+      dest: /opt/apigee/customer/application/ui.properties
+      backup: yes
+      mode: 0755
+  become: true
+  become_method: su
+  become_user: root
+  when: env == "prod"
+
+# Create management-server.properties file
+
+- name: Create management-server.properties file
+  copy:
+      content: |
+               conf_cluster_rpc.connect.timeout=40
+      dest: /opt/apigee/customer/application/management-server.properties
+      backup: yes
+      mode: 0755
+  become: true
+  become_method: su
+  become_user: root

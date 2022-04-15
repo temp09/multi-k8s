@@ -1,0 +1,7 @@
+---
+# vars file for java
+#
+#
+
+javaVersion: '1.8.0_162'
+javaPkgName: 'jdk-8u162-linux-x64.tar.gz'

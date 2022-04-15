@@ -1,0 +1,45 @@
+---
+# tasks file for java
+#
+
+- name: Create new directory 
+  file: 
+      path: /usr/java
+      state: directory
+      mode: 0755
+
+#- name: Copy JDK tar to install directory
+#  copy:
+#      remote_src: true
+#      src: "{{ gitDownloadPath }}/{{ javaPkgName }}"
+#      dest: /usr/java
+
+- name: Extract JDK tar 
+  unarchive:
+           remote_src: true 
+           src: "{{ gitDownloadPath }}/{{ javaPkgName }}"
+           dest: /usr/java
+
+- debug:
+       msg: "Installing Java {{ javaVersion }} version"
+
+- name: Set directory permissoin
+  file:
+      path: "/usr/java/jdk{{ javaVersion }}"
+      owner: root
+      group: root
+      mode: 0755
+      state: directory
+
+- name: Create a file under root user profile 
+  blockinfile:
+             dest: /etc/profile.d/java.sh
+             create: yes
+             block: |
+                  #!/bin/bash
+                  JAVA_HOME=/usr/java/jdk{{ javaVersion }}
+                  JAVA_FONTS=/usr/share/fonts/default
+                  PATH=$JAVA_HOME/bin:$PATH
+                  export PATH JAVA_HOME JAVA_FONTS
+                  export CLASSPATH=
+            

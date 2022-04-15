@@ -1,0 +1,19 @@
+---
+# tasks file for Qpid_Server
+#
+
+- name: Check if QPID server is running
+  shell: ps aux | grep edge-qpid-server  | grep -v grep
+  ignore_errors: true
+  register: qpidserver_output
+  
+#- debug:
+#        msg: "{{qpidserver_output.stdout}}"
+
+- name: Install Qpid server
+  shell: /opt/apigee/apigee-setup/bin/setup.sh -p qs -f {{ configFilePath }}
+  when: qpidserver_output.stdout == ""
+  become: true
+  become_method: su
+  become_user: root
+
